@@ -3,36 +3,35 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatSliderModule} from '@angular/material/slider';
 import { HeaderComponent } from './header/header.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatIconModule} from '@angular/material/icon';
 import { ComponentsLayoutComponent } from './components-layout/components-layout.component';
-import {MatButtonModule} from '@angular/material/button';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {MatListModule} from '@angular/material/list';
-import {ComponentsDillerDirective} from './components-layout/components-diller.directive';
 import {FormsModule} from '@angular/forms';
+import {MaterialModule} from './shared/material.module';
+import { PreviewComponent } from './preview/preview.component';
+import {ComponentsStorageService} from './shared/services/components-storage.service';
+import {CustomComponentModule} from './shared/custom-component.module';
+import { ComponentsTreeComponent } from './components-tree/components-tree.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     ComponentsLayoutComponent,
-    ComponentsDillerDirective
+    PreviewComponent,
+    ComponentsTreeComponent
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatSliderModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        DragDropModule,
-        MatListModule,
-        FormsModule
-    ],
-  providers: [],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    DragDropModule,
+    FormsModule,
+    MaterialModule,
+    CustomComponentModule
+  ],
+  providers: [
+    ComponentsStorageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

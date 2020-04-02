@@ -6,7 +6,7 @@
         <ng-template ngFor let-item [ngForOf]="componentList | keyvalue">
           <mat-list-item
             *ngIf="selectedCategory != item.key; else selectedOrder == 'Category' ? selectedItem : noFocusItem"
-            (click)="onSelected(item.key, 'Category')"
+            (click)="onSelected(item.key)"
           >
             <p mat-line>{{item.key}}</p>
           </mat-list-item>
@@ -16,46 +16,43 @@
             </mat-list-item>
           </ng-template>
           <ng-template #noFocusItem>
-            <mat-list-item class="no-focus-item" (click)="onSelected(item.key, 'Category')">
+            <mat-list-item class="no-focus-item" (click)="onSelected(item.key)">
               <p mat-line>{{item.key}}</p>
             </mat-list-item>
           </ng-template>
         </ng-template>
       </mat-list>
     </div>
+
     <div class="palette-components-list">
       <mat-list>
         <ng-template ngFor let-item [ngForOf]="componentList.get(selectedCategory)">
           <mat-list-item
+            draggable="true"
             *ngIf="selectedComponent != item.title; else selectedOrder == 'Component' ? selectedItem : noFocusItem"
-            (click)="onSelected(item.title, 'Component')"
-            appDiller
-            (dragStart)="onDragStart(item.title, 'Component')"
-            (dragMove)="onDragMove()"
-            (dragEnd)="onDragEnd()"
+            (click)="onSelected(item.title, item.type)"
+            (dragstart)=" dragging = true; createPermission = true; primaryEvent = $event; onSelected(item.title, item.type)"
           >
             <p mat-line>{{item.title}}</p>
           </mat-list-item>
           <ng-template #selectedItem>
             <mat-list-item
               class="selected-item"
-              appDiller
-              [(ngModel)]="dragging"
-              (dragStart)="onDragStart()"
-              (dragMove)="onDragMove()"
-              (dragEnd)="onDragEnd()"
+              (pointerdown)="dragging = true; primaryEvent = $event; onDragStart(item.tag)"
             >
               <p mat-line>{{item.title}}</p>
+              <div #componentContainerContainer class="container">
+                <ng-template #componentContainer>
+                </ng-template>
+              </div>
             </mat-list-item>
           </ng-template>
           <ng-template #noFocusItem>
             <mat-list-item
+              draggable="true"
               class="no-focus-item"
-              (click)="onSelected(item.title, 'Component')"
-              appDiller
-              (dragStart)="onDragStart(item.title, 'Component')"
-              (dragMove)="onDragMove()"
-              (dragEnd)="onDragEnd()"
+              (click)="onSelected(item.title, item.type)"
+              (dragstart)=" dragging = true; createPermission = true; primaryEvent = $event; onSelected(item.title, item.type)"
             >
               <p mat-line>{{item.title}}</p>
             </mat-list-item>
@@ -64,5 +61,4 @@
       </mat-list>
     </div>
   </div>
-  <div class="component-tree-container"></div>
 </div>

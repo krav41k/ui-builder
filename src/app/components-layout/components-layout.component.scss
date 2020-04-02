@@ -32,6 +32,7 @@
 
 mat-list {
   padding: 0;
+  position: relative;
 }
 
 .selected-item {
@@ -43,10 +44,9 @@ mat-list {
   background: #E1E8ED;
 }
 
-.component-tree-container {
-  flex: 1;
-  width: 100%;
-  outline: 1px solid red;
+.container {
+  position: absolute;
+  right: 30px;
 }
 
 .draggable {

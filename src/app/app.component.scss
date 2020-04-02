@@ -8,6 +8,39 @@
 }
 .second-container {
   flex: 1;
+  display: flex;
+  flex-direction: row;
   width: 100%;
+}
+
+.components-container {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  height: 100%;
+  bottom: 0;
+  box-shadow: -1px 0px 0px 0px grey, 0.5px 0px 0px 0px grey;
+}
+
+app-components-layout {
+  display: flex;
+  flex-direction: row;
+  flex: 1.2;
+  width: 100%;
+  box-shadow: -1px 0px 0px 0px grey, 0.5px 0px 0px 0px grey;
+}
+
+app-components-tree {
+  flex: 1;
+  width: 100%;
+  outline: 1px solid red;
+}
+
+app-components-layout {
+  flex: 25%;
+}
+
+app-preview {
+  flex: 75%;
 }
 
