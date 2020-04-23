@@ -1,1 +1,8 @@
-<p>components-tree works!</p>
+<div class="main-container">
+  <mat-card class="title">
+    Component Tree
+  </mat-card>
+
+  <tree-branch [tree]="componentsSS.root" (rotate)="rotate($event)"></tree-branch>
+</div>
+

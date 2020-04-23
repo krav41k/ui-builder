@@ -4,27 +4,28 @@ import {ComponentsStorageService} from '../shared/services/components-storage.se
 export interface ModelInterface {
   parent;
   type;
+  name: string;
   id: number;
+  level: number;
   componentRef?;
 
   style?: CSSStyleDeclaration;
 }
 
 export class SimpleModelClass implements ModelInterface {
-  constructor(public parent: ModelInterface, public type, public id: number) {}
+  constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
 }
 
 export class ExtendedModelClass implements ModelInterface {
-  subObjectsList = new Map<number, ModelInterface>();
+  subObjectsList = new Map<number, any>();
   order = [];
   componentRef;
 
-  constructor(public parent: ModelInterface, public type, public id: number) {}
+  constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
 
   addObject(obj: ModelInterface, id) {
     this.subObjectsList.set(id, obj);
     this.order.push(id);
-    console.log(obj.type);
     this.componentRef.instance.addComponent = [id, obj];
   }
 }

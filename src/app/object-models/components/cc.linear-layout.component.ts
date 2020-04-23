@@ -13,6 +13,7 @@ export class CCLinearLayoutComponent extends ExtendedComponentClass implements A
   blueprint = new Map<string, string>([
     ['width', '100%'],
     ['height', '100%'],
+    ['backgroundColor', 'white'],
     ['display', 'flex'],
     ['flexDirection', 'row']
   ]);

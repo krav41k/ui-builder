@@ -1,5 +1,9 @@
 <div class="main-container">
-  <mat-toolbar></mat-toolbar>
+  <div #componentContainerContainer class="container">
+    <ng-template #componentContainer>
+    </ng-template>
+  </div>
+  <mat-card class="title">Palette</mat-card>
   <div class="palette-container">
     <div class="palette-categories-list">
       <mat-list>
@@ -41,10 +45,10 @@
               (pointerdown)="dragging = true; primaryEvent = $event; onDragStart(item.tag)"
             >
               <p mat-line>{{item.title}}</p>
-              <div #componentContainerContainer class="container">
-                <ng-template #componentContainer>
-                </ng-template>
-              </div>
+<!--              <div #componentContainerContainer class="container">-->
+<!--                <ng-template #componentContainer>-->
+<!--                </ng-template>-->
+<!--              </div>-->
             </mat-list-item>
           </ng-template>
           <ng-template #noFocusItem>

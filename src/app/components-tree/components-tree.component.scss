@@ -1,0 +1,46 @@
+.main-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+}
+
+.title {
+  padding: 0 0 0 20px;
+  font-weight: normal;
+  color: black;
+  position: relative;
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.branch {
+  margin-left: 10px;
+  border: 1px solid black;
+}
+
+.box {
+  background: #BADA55;
+  border: 1px solid black;
+  padding: 10px 20px;
+  display: inline-block;
+
+  &.dragging {
+    background: coral;
+  }
+
+  &.helper {
+    width: 100px;
+  }
+}
+
+.draggable {
+  cursor: move;
+  user-select: none;
+}
+
+.movable:not(.dragging) {
+  transition: transform 300ms ease-in-out;
+}

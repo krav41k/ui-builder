@@ -11,7 +11,10 @@ import {MaterialModule} from './shared/material.module';
 import { PreviewComponent } from './preview/preview.component';
 import {ComponentsStorageService} from './shared/services/components-storage.service';
 import {CustomComponentModule} from './shared/custom-component.module';
-import { ComponentsTreeComponent } from './components-tree/components-tree.component';
+import {ComponentsTreeComponent} from './components-tree/components-tree.component';
+import {HttpClientModule} from '@angular/common/http';
+import {CdkTreeModule} from '@angular/cdk/tree';
+import {TreeBranchComponent} from './components-tree/tree-branch.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,8 @@ import { ComponentsTreeComponent } from './components-tree/components-tree.compo
     HeaderComponent,
     ComponentsLayoutComponent,
     PreviewComponent,
-    ComponentsTreeComponent
+    ComponentsTreeComponent,
+    TreeBranchComponent
   ],
   imports: [
     BrowserModule,
@@ -27,10 +31,12 @@ import { ComponentsTreeComponent } from './components-tree/components-tree.compo
     DragDropModule,
     FormsModule,
     MaterialModule,
-    CustomComponentModule
+    CustomComponentModule,
+    HttpClientModule,
+    CdkTreeModule,
   ],
   providers: [
-    ComponentsStorageService
+    ComponentsStorageService,
   ],
   bootstrap: [AppComponent]
 })

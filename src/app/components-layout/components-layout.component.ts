@@ -14,16 +14,12 @@ import {MatFormField} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {CCLinearLayoutComponent} from '../object-models/components/cc.linear-layout.component';
+import {Axis} from '../shared/classes/Axis';
 
 export interface ComponentItem {
   title: string;
   tag: any;
   type: 'simple' | 'extended';
-}
-
-export class Axis {
-  x: number;
-  y: number;
 }
 
 @Component({
@@ -48,6 +44,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   public componentList: Map<string, ComponentItem[]>;
 
   constructor(private resolver: ComponentFactoryResolver, private renderer: Renderer2, private componentsSS: ComponentsStorageService) {
+    // некоторые пункты списка закоментированы, потому что они подключаются через propertyInterface(еще не реализовано)
     this.componentList = new Map<string, ComponentItem[]>([
       ['Form Controls', [
         {title: 'Autocomplete', tag: MatAutocomplete, type: 'simple'},
@@ -58,7 +55,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
         {title: 'Radio button', tag: '', type: 'simple'},
         {title: 'Select', tag: 'MatSelect', type: 'simple'},
         {title: 'Slider', tag: 'MatSlider', type: 'simple'},
-        {title: 'Slide toggle', tag: 'MatSlider', type: 'simple'}
+        {title: 'Slide toggle', tag: 'MatSlider', type: 'simple'},
       ]],
       ['Navigation', [
         {title: 'Menu', tag: 'MatMenu', type: 'simple'},
@@ -105,6 +102,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   ngOnChanges(): void {}
 
   ngAfterViewChecked(): void {
+    // Проверка нужна для драга когда элемент списка не был выбран, а сразу начал перетягиваться
     if (this.createPermission) {
       setTimeout(() => {
         this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
@@ -112,9 +110,10 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
       });
     }
 
-    // убрать проверку из ngAfterViewChecked
+    // *убрать проверку из ngAfterViewChecked
   }
 
+  // менеджит выбор элементов в списке
   onSelected(title: string, componentType?: string) {
     if (componentType) {
       this.selectedComponent = title;
@@ -130,6 +129,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
     }
   }
 
+  // создает выбраный компонент под курсором
   onDragStart(tag) {
     this.selectedComponentTag = tag;
     // const element = this.renderer.createElement();
@@ -147,6 +147,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
     this.containerRef.nativeElement.style.transform = `translateX(${x}px) translateY(${y}px)`;
   }
 
+  // при перемещении курсора передвигает компонент за ним
   @HostListener('document:pointermove', ['$event']) onDragMove(event: PointerEvent) {
     if (this.dragging) {
       const x = event.clientX - this.axis.x;
@@ -155,6 +156,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
     }
   }
 
+  // удаляет компонент и сообщает об этом сторедж сервису
   @HostListener('document:pointerup') onDragEnd() {
     if (this.dragging) {
       this.dragging = false;
@@ -162,9 +164,9 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
       this.containerRef.nativeElement.style.transform = '';
       this.componentsSS.onWedding({
         componentClass: this.selectedComponentTag,
-        componentType: this.selectedComponentType
+        componentType: this.selectedComponentType,
+        componentName: this.selectedComponent
       });
-      console.log('got drag end');
     }
   }
 }

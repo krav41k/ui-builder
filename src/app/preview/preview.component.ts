@@ -20,15 +20,9 @@ import {ExtendedModelClass} from '../object-models/model.classes';
 export class PreviewComponent implements OnInit, AfterViewInit {
   @ViewChild('container', { read: ViewContainerRef }) container;
   componentRef;
-  constructor(private resolver: ComponentFactoryResolver, public componentsStorageService: ComponentsStorageService) {
-    // componentsStorageService.root = new CCLinearLayoutComponent(null, 0);
+  constructor(private resolver: ComponentFactoryResolver, public componentsStorageService: ComponentsStorageService) {}
 
-    // console.log(componentsStorageService.root);
-
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.container.clear();
