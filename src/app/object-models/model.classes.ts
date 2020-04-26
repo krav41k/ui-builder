@@ -26,7 +26,7 @@ export class ExtendedModelClass implements ModelInterface {
   addObject(obj: ModelInterface, id) {
     this.subObjectsList.set(id, obj);
     this.order.push(id);
-    this.componentRef.instance.addComponent = [id, obj];
+    this.componentRef.instance.addComponent = {id, comp: obj};
   }
 }
 
@@ -59,15 +59,9 @@ export class ExtendedComponentClass extends SimpleComponentClass {
     super.styleApplier(component);
 
     this.selfComponent = component;
-    if (typeof component.order !== 'undefined') {
-      if (component.order.length > 0) {
-        this.container.clear();
-        for (const id of component.order) {
-          const item = component.subObjectsList.get(id);
-          this.render(item);
-        }
-      }
-    }
+    // if (typeof component.order !== 'undefined') {
+    //   this.rerender();
+    // }
   }
 
   @Input() set addComponent(newComponent: ModelInterface) {
@@ -84,11 +78,22 @@ export class ExtendedComponentClass extends SimpleComponentClass {
     super(el);
   }
 
+  rerender() {
+    const component = this.selfComponent;
+    if (component.order.length > 0) {
+      this.container.clear();
+      for (const id of component.order) {
+        const comp = component.subObjectsList.get(id);
+        this.render({id, comp});
+      }
+    }
+  }
+
   render(item) {
-    const factory = this.resolver.resolveComponentFactory(item[1].type);
-    item[1].componentRef = this.container.createComponent(factory);
-    item[1].componentRef.instance.component = item[1];
-    this.componentsSS.bindUpdate(item[0], item[1]);
+    const factory = this.resolver.resolveComponentFactory(item.comp.type);
+    item.comp.componentRef = this.container.createComponent(factory);
+    item.comp.componentRef.instance.component = item.comp;
+    this.componentsSS.bindUpdate(item.id, item.comp);
   }
 }
 

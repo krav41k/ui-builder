@@ -15,9 +15,9 @@ import {FlatTreeControl} from '@angular/cdk/tree';
 import {ArrayDataSource} from '@angular/cdk/collections';
 import {ExtendedModelClass, ModelInterface, SimpleModelClass} from '../object-models/model.classes';
 import {SortableDirective} from '../shared/directives/sortable.directive';
-import {RotateEvent} from '../shared/directives/sortable-list.directive';
 import {CDSortableDirective} from '../shared/directives/cd.sortable.directive';
 import {TreeBranchComponent} from './tree-branch.component';
+import {RotateEvent} from '../shared/services/tree-control.service';
 
 @Component({
   selector: 'app-components-tree',
@@ -30,7 +30,7 @@ export class ComponentsTreeComponent implements OnInit, OnDestroy {
 
   constructor(public componentsSS: ComponentsStorageService) {
     this.componentsSS.componentsSteam$.subscribe(value => {
-      console.log('Subscribe: ', value);
+      // console.log('Subscribe: ', value);
       this.actualComponentList = value;
     });
   }
@@ -42,19 +42,21 @@ export class ComponentsTreeComponent implements OnInit, OnDestroy {
   }
 
   rotate(event: RotateEvent) {
-    const currentComp = this.componentsSS.componentsList.get(event.currentIndex);
-    const rotateComp = this.componentsSS.componentsList.get(event.newIndex);
-    console.log(event);
+    const currentComp = this.componentsSS.componentsList.get(event.currentIndex + 1);
+    const rotateComp = this.componentsSS.componentsList.get(event.rotateIndex + 1);
     if (currentComp.parent.id === rotateComp.parent.id) {
-      const currentIndex = currentComp.parent.order.indexOf(event.currentIndex);
-      const rotateIndex = currentComp.parent.order.indexOf(event.newIndex);
-      console.log(`current order index ${currentIndex}`);
-      console.log(`rotate order index ${rotateIndex}`);
+      const currentValue = currentComp.parent.order[event.currentIndex];
+      const rotateValue = currentComp.parent.order[event.rotateIndex];
+      console.log(`current order index ${event.currentIndex}, current value ${currentValue}`);
+      console.log(`rotate order index ${event.rotateIndex}, rotate value ${rotateValue}`);
       console.log(`order before = ${currentComp.parent.order}`);
-      currentComp.parent.order[rotateIndex] = event.currentIndex;
-      currentComp.parent.order[currentIndex] = event.newIndex;
+      currentComp.parent.order[event.rotateIndex] = currentValue;
+      currentComp.parent.order[event.currentIndex] = rotateValue;
       // console.log(`order after = ${this.componentsSS.root.order}`);
       console.log(`order after = ${currentComp.parent.order}`);
+      // currentComp.parent.rerender(currentComp.parent);
+      // currentComp.parent.instance.
+      currentComp.parent.componentRef.instance.rerender();
     }
   }
 }

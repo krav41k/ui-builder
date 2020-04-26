@@ -15,6 +15,7 @@ import {ComponentsTreeComponent} from './components-tree/components-tree.compone
 import {HttpClientModule} from '@angular/common/http';
 import {CdkTreeModule} from '@angular/cdk/tree';
 import {TreeBranchComponent} from './components-tree/tree-branch.component';
+import {TreeControlService} from './shared/services/tree-control.service';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {TreeBranchComponent} from './components-tree/tree-branch.component';
   ],
   providers: [
     ComponentsStorageService,
+    TreeControlService,
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,4 @@
 import {
-  AfterContentInit, AfterViewInit,
   Component,
   ContentChildren,
   EventEmitter,
@@ -10,9 +9,9 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {ExtendedModelClass} from '../object-models/model.classes';
-import {RotateEvent} from '../shared/directives/sortable-list.directive';
 import {CDSortableDirective} from '../shared/directives/cd.sortable.directive';
 import {SortableDirective} from '../shared/directives/sortable.directive';
+import {RotateEvent} from '../shared/services/tree-control.service';
 
 @Component({
   selector: 'tree-branch',
@@ -26,7 +25,5 @@ export class TreeBranchComponent {
   @Input() set tree(tree: ExtendedModelClass) {
     this.branch = tree;
   }
-
-  @Output() rotate = new EventEmitter<RotateEvent>();
 }
 

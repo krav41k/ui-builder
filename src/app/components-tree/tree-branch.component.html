@@ -1,38 +1,32 @@
-<ng-template [ngIf]="branch.id === 0" [ngIfThen]="root" [ngIfElse]="common">
+<div cdSortable>{{branch.name}}</div>
+<ng-template ngFor let-item [ngForOf]="branch.order">
+  <ng-template
+    [ngIf]="branch.subObjectsList.get(item).order !== undefined" [ngIfThen]="extendedBranch" [ngIfElse]="simpleBranch"
+  ></ng-template>
+  <ng-template #extendedBranch>
+    <tree-branch [tree]="branch.subObjectsList.get(item)"></tree-branch>
+  </ng-template>
+  <ng-template #simpleBranch>
+    <div cdSortable>
+      {{branch.subObjectsList.get(item).name}}
+    </div>
+  </ng-template>
 </ng-template>
-<ng-template #root>
-  <div cdSortableList (rotate)="rotate.emit($event)">
-    <p class="root-component">{{branch.name}}</p>
-    <ng-template ngFor let-item [ngForOf]="branch.order">
-      <ng-template
-        [ngIf]="branch.subObjectsList.get(item).order !== undefined" [ngIfThen]="extendedBranch" [ngIfElse]="simpleBranch"
-      ></ng-template>
-      <ng-template #extendedBranch>
-        <tree-branch [tree]="branch.subObjectsList.get(item)"></tree-branch>
-      </ng-template>
-      <ng-template #simpleBranch>
-        <div cdSortable>
-          {{branch.subObjectsList.get(item).name}}
-        </div>
-      </ng-template>
-    </ng-template>
-  </div>
-</ng-template>
-<ng-template #common>
-  <div>
-    <div cdSortable>{{branch.name}}</div>
-    <ng-template ngFor let-item [ngForOf]="branch.order">
-      <ng-template
-        [ngIf]="branch.subObjectsList.get(item).order !== undefined" [ngIfThen]="extendedBranch" [ngIfElse]="simpleBranch"
-      ></ng-template>
-      <ng-template #extendedBranch>
-        <tree-branch [tree]="branch.subObjectsList.get(item)"></tree-branch>
-      </ng-template>
-      <ng-template #simpleBranch>
-        <div cdSortable>
-          {{branch.subObjectsList.get(item).name}}
-        </div>
-      </ng-template>
-    </ng-template>
-  </div>
-</ng-template>
+
+<!--<div cdSortable *ngFor="let item of branch.order">-->
+<!--    <ng-template-->
+<!--      [ngIf]="branch.subObjectsList.get(item).order !== undefined" [ngIfThen]="extendedBranch" [ngIfElse]="simpleBranch"-->
+<!--    ></ng-template>-->
+<!--    <ng-template #extendedBranch>-->
+<!--      <div class="list-item">-->
+<!--        {{branch.subObjectsList.get(item).name}}-->
+<!--      </div>-->
+<!--      <tree-branch [tree]="branch.subObjectsList.get(item)"></tree-branch>-->
+<!--    </ng-template>-->
+<!--    <ng-template #simpleBranch>-->
+<!--      <div class="list-item">-->
+<!--        {{branch.subObjectsList.get(item).name}}-->
+<!--      </div>-->
+<!--    </ng-template>-->
+<!--</div>-->
+

@@ -49,3 +49,45 @@
     </ng-template>
   </div>
 </div>
+
+------------------------------------------------------------------
+
+root
+
+  <div cdSortableList (rotate)="rotate($event)">
+    <p class="root-component">{{componentsSS.root.name}}</p>
+    <ng-template ngFor let-item [ngForOf]="componentsSS.root.order">
+      <ng-template
+        [ngIf]="componentsSS.root.subObjectsList.get(item).order !== undefined"
+        [ngIfThen]="extendedBranch"
+        [ngIfElse]="simpleBranch">
+      </ng-template>
+      <ng-template #extendedBranch>
+        <tree-branch cdSortable [tree]="componentsSS.root.subObjectsList.get(item)"></tree-branch>
+      </ng-template>
+      <ng-template #simpleBranch>
+        <div cdSortable>
+          {{componentsSS.root.subObjectsList.get(item).name}}
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+
+
+tree branch
+
+  <div cdSortable>{{branch.name}}</div>
+  <ng-template ngFor let-item [ngForOf]="branch.order">
+    <ng-template
+      [ngIf]="branch.subObjectsList.get(item).order !== undefined" [ngIfThen]="extendedBranch" [ngIfElse]="simpleBranch"
+    ></ng-template>
+    <ng-template #extendedBranch>
+      <tree-branch [tree]="branch.subObjectsList.get(item)"></tree-branch>
+    </ng-template>
+    <ng-template #simpleBranch>
+      <div cdSortable>
+        {{branch.subObjectsList.get(item).name}}
+      </div>
+    </ng-template>
+  </ng-template>
+
