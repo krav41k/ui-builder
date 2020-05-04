@@ -3,7 +3,7 @@
     Component Tree
   </mat-card>
 
-<!--  <div cdSortableList (rotate)="rotate($event)">-->
+  <div class="tree-list">
     <p class="root-component">{{componentsSS.root.name}}</p>
     <ng-template ngFor let-item [ngForOf]="componentsSS.root.order">
       <ng-template
@@ -15,33 +15,11 @@
         <tree-branch [tree]="componentsSS.root.subObjectsList.get(item)"></tree-branch>
       </ng-template>
       <ng-template #simpleBranch>
-        <div cdSortable>
+        <div cdSortable [sortableComponent]="componentsSS.root.subObjectsList.get(item)" class="list-item">
           {{componentsSS.root.subObjectsList.get(item).name}}
         </div>
       </ng-template>
     </ng-template>
-<!--  </div>-->
-
-<!--  <div (rotate)="rotate($event)">-->
-<!--    <p class="root-component">{{componentsSS.root.name}}</p>-->
-<!--    <div cdSortable *ngFor="let item of componentsSS.root.order">-->
-<!--      <ng-template-->
-<!--        [ngIf]="componentsSS.root.subObjectsList.get(item).order !== undefined"-->
-<!--        [ngIfThen]="extendedBranch"-->
-<!--        [ngIfElse]="simpleBranch">-->
-<!--      </ng-template>-->
-<!--      <ng-template #extendedBranch>-->
-<!--        <div class="list-item">-->
-<!--          {{componentsSS.root.subObjectsList.get(item).name}}-->
-<!--        </div>-->
-<!--        <tree-branch [tree]="componentsSS.root.subObjectsList.get(item)"></tree-branch>-->
-<!--      </ng-template>-->
-<!--      <ng-template #simpleBranch>-->
-<!--        <div class="list-item">-->
-<!--          {{componentsSS.root.subObjectsList.get(item).name}}-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+  </div>
+</div>
 

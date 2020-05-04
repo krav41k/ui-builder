@@ -24,7 +24,7 @@ import {TreeControlService} from './shared/services/tree-control.service';
     ComponentsLayoutComponent,
     PreviewComponent,
     ComponentsTreeComponent,
-    TreeBranchComponent
+    TreeBranchComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,17 +9,22 @@ export interface ModelInterface {
   level: number;
   componentRef?;
 
-  style?: CSSStyleDeclaration;
+  style?: string;
+  flexData?: any;
 }
 
 export class SimpleModelClass implements ModelInterface {
+  style;
+
   constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
 }
 
 export class ExtendedModelClass implements ModelInterface {
+  style;
   subObjectsList = new Map<number, any>();
   order = [];
   componentRef;
+  nestedSwitch = true;
 
   constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
 
@@ -31,22 +36,29 @@ export class ExtendedModelClass implements ModelInterface {
 }
 
 export class SimpleComponentClass {
+  el;
+  selfComponent: SimpleModelClass;
   blueprint;
 
   @Input() set component(component: ExtendedModelClass) {
-    this.styleApplier(component);
+    this.selfComponent = component;
+    // this.styleApplier();
   }
 
-  constructor(public el: ElementRef) {}
-
-  styleApplier(component) {
-    if (component.style === undefined) {
+  styleApplier() {
+    if (this.selfComponent !== undefined) {
+      if (this.selfComponent.style === undefined) {
+        for (const item of this.blueprint) {
+          this.el.nativeElement.style[item[0]] = item[1];
+        }
+        this.selfComponent.style = this.el.nativeElement.style.cssText;
+      } else {
+        this.el.nativeElement.style.cssText = this.selfComponent.style;
+      }
+    } else {
       for (const item of this.blueprint) {
         this.el.nativeElement.style[item[0]] = item[1];
       }
-      component.style = this.el.nativeElement.style;
-    } else {
-      this.el.nativeElement.style = component.style;
     }
   }
 }
@@ -56,9 +68,9 @@ export class ExtendedComponentClass extends SimpleComponentClass {
   container;
 
   @Input() set component(component: ExtendedModelClass) {
-    super.styleApplier(component);
-
     this.selfComponent = component;
+
+    super.styleApplier();
     // if (typeof component.order !== 'undefined') {
     //   this.rerender();
     // }
@@ -75,13 +87,13 @@ export class ExtendedComponentClass extends SimpleComponentClass {
   }
 
   constructor(private resolver: ComponentFactoryResolver, private componentsSS: ComponentsStorageService, public el: ElementRef) {
-    super(el);
+    super();
   }
 
-  rerender() {
+  async rerender() {
     const component = this.selfComponent;
-    if (component.order.length > 0) {
-      this.container.clear();
+    if (component.order.length >= 0) {
+      await this.container.clear();
       for (const id of component.order) {
         const comp = component.subObjectsList.get(id);
         this.render({id, comp});

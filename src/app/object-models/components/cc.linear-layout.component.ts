@@ -24,11 +24,10 @@ export class CCLinearLayoutComponent extends ExtendedComponentClass implements A
   }
 
   ngAfterViewInit() {
+    this.styleApplier();
     if (this.selfComponent !== undefined) {
-      if (typeof this.selfComponent.order !== 'undefined') {
-        setTimeout(() => {
-          this.rerender();
-        });
+      if (this.selfComponent.order !== undefined) {
+          this.rerender().then();
       }
     }
   }

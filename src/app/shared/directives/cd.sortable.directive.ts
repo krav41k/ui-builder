@@ -1,14 +1,27 @@
-import {Directive, ElementRef} from '@angular/core';
+import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
 import {DraggableDirective} from './draggable.directive';
 import {TreeControlService} from '../services/tree-control.service';
 
 @Directive({
   selector: '[cdSortable]'
 })
-export class CDSortableDirective extends DraggableDirective {
+export class CDSortableDirective extends DraggableDirective implements OnInit {
 
-  constructor(public element: ElementRef, treeControlService: TreeControlService) {
+  @Input() sortableComponent;
+
+  constructor(element: ElementRef, private treeControlService: TreeControlService, private renderer: Renderer2) {
     super(element);
-    treeControlService.newTreeItem(this);
+    this.dragStart.subscribe(() => {
+      treeControlService.changeSelectedItem(element);
+    });
+  }
+
+  ngOnInit() {
+    this.addPadding();
+    this.treeControlService.newTreeItem(this, this.sortableComponent);
+  }
+
+  public addPadding() {
+    this.renderer.setStyle(this.element.nativeElement, 'paddingLeft', `${this.sortableComponent.level * 10}px`);
   }
 }

@@ -15,6 +15,7 @@ import {MatInputModule} from '@angular/material/input';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {CCLinearLayoutComponent} from '../object-models/components/cc.linear-layout.component';
 import {Axis} from '../shared/classes/Axis';
+import {CCButtonComponent} from '../object-models/components/cc.button.component';
 
 export interface ComponentItem {
   title: string;
@@ -74,7 +75,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
         {title: 'Tree', tag: 'MatTree', type: 'extended'}
       ]],
       ['Buttons & Indicators', [
-        {title: 'Button', tag: 'MatButton', type: 'simple'},
+        {title: 'Button', tag: CCButtonComponent, type: 'simple'},
         {title: 'Button toggle', tag: 'MatButtonToggle', type: 'simple'},
         // {title: 'Badge', tag: 'MatBadge', type: 'simple'},
         {title: 'Chips', tag: 'MatChips', type: 'simple'},
@@ -104,8 +105,8 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   ngAfterViewChecked(): void {
     // Проверка нужна для драга когда элемент списка не был выбран, а сразу начал перетягиваться
     if (this.createPermission) {
+      this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
       setTimeout(() => {
-        this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
         this.createPermission = false;
       });
     }
@@ -132,11 +133,6 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   // создает выбраный компонент под курсором
   onDragStart(tag) {
     this.selectedComponentTag = tag;
-    // const element = this.renderer.createElement();
-    // const text = this.renderer.createText('test');
-    // this.renderer.addClass(element, 'mat-checkbox');
-    // this.renderer.addClass(element, 'mat-accent');
-    // this.renderer.appendChild(this.container.nativeElement, element);
     this.container.clear();
     const factory = this.resolver.resolveComponentFactory(tag);
     this.container.createComponent(factory);

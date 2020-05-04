@@ -1,7 +1,11 @@
-import {ComponentRef, ElementRef, Injectable, ViewContainerRef} from '@angular/core';
+import {ElementRef, Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {CDSortableDirective} from '../directives/cd.sortable.directive';
-import {SortableDirective} from '../directives/sortable.directive';
 import {ComponentsStorageService} from './components-storage.service';
+
+export interface TreeItem {
+  sortableDirective: CDSortableDirective;
+  sortableComponent;
+}
 
 export interface RotateEvent {
   currentIndex: number;
@@ -23,34 +27,54 @@ const vCenter = (rect: ClientRect): number => {
   return rect.top + rect.height / 2;
 };
 
-
 @Injectable()
 export class TreeControlService {
 
-  treeDirectivesList: CDSortableDirective[] = [];
+  treeItemList: TreeItem[] = [];
   private clientRects: ClientRect[];
+  private floatComponent;
+  private selectedItem: ElementRef;
 
   constructor(private componentsSS: ComponentsStorageService) {}
 
-  public newTreeItem(item: CDSortableDirective) {
-    console.log('+ subscribe');
-    this.treeDirectivesList.push(item);
-    item.dragStart.subscribe(() => {
+  public changeSelectedItem(el: ElementRef) {
+    if (this.selectedItem !== el) {
+      if (this.selectedItem !== undefined) {
+        this.selectedItem.nativeElement.classList.remove('selected');
+      }
+      el.nativeElement.classList.add('selected');
+      this.selectedItem = el;
+    }
+  }
+
+  public newTreeItem(directive: CDSortableDirective, component) {
+    const index = this.treeItemList.findIndex(item => item.sortableComponent === component);
+    if (index === -1) {
+      this.treeItemList.push({sortableDirective: directive, sortableComponent: component});
+    } else {
+      this.treeItemList[index].sortableDirective.dragStart.unsubscribe();
+      this.treeItemList[index].sortableDirective.dragMove.unsubscribe();
+
+      this.treeItemList[index].sortableDirective = directive;
+      if (component === this.floatComponent) {
+        this.changeSelectedItem(directive.element);
+        directive.dragging = true;
+      }
+    }
+    directive.dragStart.subscribe(() => {
       this.treeListFormation();
     });
-    item.dragMove.subscribe((event) => {
-      this.detectSorting(item, event);
+    directive.dragMove.subscribe((event) => {
+      this.detectSorting(directive, event);
     });
   }
 
   private treeListFormation() {
-    this.clientRects = this.treeDirectivesList.map(sortable => sortable.element.nativeElement.getBoundingClientRect());
-    console.log('start drag');
+    this.clientRects = this.treeItemList.map(sortable => sortable.sortableDirective.element.nativeElement.getBoundingClientRect());
   }
 
-  private detectSorting(sortable: SortableDirective, event: PointerEvent) {
-    const currentIndex = this.treeDirectivesList.indexOf(sortable);
-    console.log(currentIndex);
+  private detectSorting(directive: CDSortableDirective, event: PointerEvent) {
+    const currentIndex = this.treeItemList.findIndex(item => item.sortableDirective === directive);
     const currentRect = this.clientRects[currentIndex];
     this.clientRects
       .slice()
@@ -77,35 +101,20 @@ export class TreeControlService {
           this.rotate({
             currentIndex,
             rotateIndex
-          }, sortable, this.treeDirectivesList[rotateIndex]);
+          }, this.treeItemList[currentIndex], this.treeItemList[rotateIndex]);
         }
       });
   }
 
-  private rotate(event: RotateEvent, currentDirective, rotateDirective) {
-    this.componentListRotate(event);
-    this.directiveListRotate(event, currentDirective, rotateDirective);
+  private rotate(event: RotateEvent, currentComponent, rotateComponent) {
+    this.floatComponent = currentComponent.sortableComponent;
+    this.componentsSS.swapComponents(currentComponent.sortableComponent, rotateComponent.sortableComponent);
+    this.treeListFormation();
+    this.directiveListRotate(event, currentComponent, rotateComponent);
   }
 
-  private componentListRotate(event: RotateEvent) {
-    const currentComp = this.componentsSS.componentsList.get(event.currentIndex + 1);
-    const rotateComp = this.componentsSS.componentsList.get(event.rotateIndex + 1);
-    if (currentComp.parent.id === rotateComp.parent.id) {
-      const currentValue = currentComp.parent.order[event.currentIndex];
-      const rotateValue = currentComp.parent.order[event.rotateIndex];
-      console.log(`current order index ${event.currentIndex}, current value ${currentValue}`);
-      console.log(`rotate order index ${event.rotateIndex}, rotate value ${rotateValue}`);
-      console.log(`order before = ${currentComp.parent.order}`);
-      currentComp.parent.order[event.rotateIndex] = currentValue;
-      currentComp.parent.order[event.currentIndex] = rotateValue;
-      console.log(`order after = ${currentComp.parent.order}`);
-      currentComp.parent.componentRef.instance.rerender();
-      this.treeListFormation();
-    }
-  }
-
-  private directiveListRotate(event , currentDirective, rotateDirective) {
-    this.treeDirectivesList[event.currentIndex] = rotateDirective;
-    this.treeDirectivesList[event.rotateIndex] = currentDirective;
+  private directiveListRotate(event , currentComponent, rotateComponent) {
+    this.treeItemList[event.currentIndex] = rotateComponent;
+    this.treeItemList[event.rotateIndex] = currentComponent;
   }
 }
