@@ -32,7 +32,7 @@ export class TreeControlService {
 
   treeItemList: TreeItem[] = [];
   private clientRects: ClientRect[];
-  private floatComponent;
+  public floatComponent;
   private selectedItem: ElementRef;
 
   constructor(private componentsSS: ComponentsStorageService) {}
@@ -44,6 +44,7 @@ export class TreeControlService {
       }
       el.nativeElement.classList.add('selected');
       this.selectedItem = el;
+      this.floatComponent = null;
     }
   }
 

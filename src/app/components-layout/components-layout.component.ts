@@ -105,8 +105,8 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   ngAfterViewChecked(): void {
     // Проверка нужна для драга когда элемент списка не был выбран, а сразу начал перетягиваться
     if (this.createPermission) {
-      this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
       setTimeout(() => {
+        this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
         this.createPermission = false;
       });
     }

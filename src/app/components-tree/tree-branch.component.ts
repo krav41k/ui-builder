@@ -4,6 +4,7 @@ import {
   Input,
 } from '@angular/core';
 import {ExtendedModelClass} from '../object-models/model.classes';
+import {TreeControlService} from '../shared/services/tree-control.service';
 
 @Component({
   selector: 'tree-branch',
@@ -40,6 +41,8 @@ export class TreeBranchComponent implements AfterContentInit {
   @Input() set tree(tree: ExtendedModelClass) {
     this.branch = tree;
   }
+
+  constructor(private treeControlService: TreeControlService) {}
 
   ngAfterContentInit(): void {
     this.toggle();
