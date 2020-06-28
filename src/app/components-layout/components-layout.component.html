@@ -1,8 +1,8 @@
+<div #componentContainerContainer class="container">
+  <ng-template #componentContainer>
+  </ng-template>
+</div>
 <div class="main-container">
-  <div #componentContainerContainer class="container">
-    <ng-template #componentContainer>
-    </ng-template>
-  </div>
   <mat-card class="title">Palette</mat-card>
   <div class="palette-container">
     <div class="palette-categories-list">
@@ -42,7 +42,7 @@
           <ng-template #selectedItem>
             <mat-list-item
               class="selected-item"
-              (pointerdown)="dragging = true; primaryEvent = $event; onDragStart(item.tag)"
+              (pointerdown)="dragging = true; primaryEvent = $event; onDragStart(item.viewComponent, item.preViewComponent)"
             >
               <p mat-line>{{item.title}}</p>
 <!--              <div #componentContainerContainer class="container">-->

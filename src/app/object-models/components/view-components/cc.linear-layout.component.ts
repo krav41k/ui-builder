@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {ExtendedComponentClass} from '../model.classes';
-import {ComponentsStorageService} from '../../shared/services/components-storage.service';
+import {ExtendedComponentClass} from '../../model.classes';
+import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 
 @Component({
   selector: 'cc-linear-layout',

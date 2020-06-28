@@ -59,8 +59,8 @@ mat-list {
   position: absolute;
   z-index: 10;
   pointer-events: none;
-  width: max-content;
-  height: max-content;
+  //min-width: max-content;
+  //min-height: max-content;
 }
 
 .title {

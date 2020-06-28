@@ -10,7 +10,7 @@ import {TreeControlService} from '../shared/services/tree-control.service';
   selector: 'tree-branch',
   template: `
     <div cdSortable [sortableComponent]="branch" class="list-item">
-      <div class="tree-branch-toggle" (click)="toggle()">{{toggleSymbol}}</div>
+      <div class="tree-branch-toggle" (click)="toggle(branch.nestedSwitch)">{{toggleSymbol}}</div>
       {{branch.name}}
     </div>
     <ng-template [ngIf]="branch.nestedSwitch">
@@ -39,18 +39,20 @@ export class TreeBranchComponent implements AfterContentInit {
   toggleSymbol = '-';
 
   @Input() set tree(tree: ExtendedModelClass) {
+    tree.subObjectsList.forEach(item => {
+      item.level = tree.level + 1;
+    });
     this.branch = tree;
   }
 
   constructor(private treeControlService: TreeControlService) {}
 
   ngAfterContentInit(): void {
-    this.toggle();
-    this.toggle();
+    this.toggle(!this.branch.nestedSwitch);
   }
 
-  toggle() {
-    if (this.branch.nestedSwitch === true) {
+  toggle(toggle) {
+    if (toggle) {
       this.branch.nestedSwitch = false;
       this.toggleSymbol = '+';
     } else {

@@ -13,13 +13,16 @@ import {MatDatepicker} from '@angular/material/datepicker';
 import {MatFormField} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {CCLinearLayoutComponent} from '../object-models/components/cc.linear-layout.component';
+import {CCLinearLayoutComponent} from '../object-models/components/view-components/cc.linear-layout.component';
 import {Axis} from '../shared/classes/Axis';
-import {CCButtonComponent} from '../object-models/components/cc.button.component';
+import {CCButtonComponent} from '../object-models/components/view-components/cc.button.component';
+import {CCPVLinearLayoutComponent} from '../object-models/components/pre-view-components/cc.pv-linear-layout.component';
+import {CCPVButtonComponent} from '../object-models/components/pre-view-components/cc.pv-button.component';
 
 export interface ComponentItem {
   title: string;
-  tag: any;
+  viewComponent: any;
+  preViewComponent: any;
   type: 'simple' | 'extended';
 }
 
@@ -35,7 +38,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   selectedCategory = 'Form Controls';
   selectedComponent = 'Checkbox';
   selectedComponentType = 'simple';
-  selectedComponentTag = MatCheckbox;
+  selectedComponentView = MatCheckbox;
   dragging = false;
   createPermission = false;
   primaryEvent;
@@ -48,41 +51,41 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
     // некоторые пункты списка закоментированы, потому что они подключаются через propertyInterface(еще не реализовано)
     this.componentList = new Map<string, ComponentItem[]>([
       ['Form Controls', [
-        {title: 'Autocomplete', tag: MatAutocomplete, type: 'simple'},
-        {title: 'Checkbox', tag: MatCheckbox, type: 'simple'},
-        {title: 'Datepicker', tag: MatDatepicker, type: 'simple'},
-        {title: 'Form field', tag: MatFormField, type: 'simple'},
-        {title: 'Input', tag: MatInputModule, type: 'simple'},
-        {title: 'Radio button', tag: '', type: 'simple'},
-        {title: 'Select', tag: 'MatSelect', type: 'simple'},
-        {title: 'Slider', tag: 'MatSlider', type: 'simple'},
-        {title: 'Slide toggle', tag: 'MatSlider', type: 'simple'},
+        {title: 'Autocomplete', viewComponent: MatAutocomplete, preViewComponent: undefined, type: 'simple'},
+        {title: 'Checkbox', viewComponent: MatCheckbox, preViewComponent: undefined, type: 'simple'},
+        {title: 'Datepicker', viewComponent: MatDatepicker, preViewComponent: undefined, type: 'simple'},
+        {title: 'Form field', viewComponent: MatFormField, preViewComponent: undefined, type: 'simple'},
+        {title: 'Input', viewComponent: MatInputModule, preViewComponent: undefined, type: 'simple'},
+        {title: 'Radio button', viewComponent: '', preViewComponent: undefined, type: 'simple'},
+        {title: 'Select', viewComponent: 'MatSelect', preViewComponent: undefined, type: 'simple'},
+        {title: 'Slider', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
+        {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
       ]],
       ['Navigation', [
-        {title: 'Menu', tag: 'MatMenu', type: 'simple'},
-        {title: 'Sidenav', tag: 'MatSidenav', type: 'simple'},
-        {title: 'Toolbar', tag: 'MatToolbar', type: 'simple'}
+        {title: 'Menu', viewComponent: 'MatMenu', preViewComponent: undefined, type: 'simple'},
+        {title: 'Sidenav', viewComponent: 'MatSidenav', preViewComponent: undefined, type: 'simple'},
+        {title: 'Toolbar', viewComponent: 'MatToolbar', preViewComponent: undefined, type: 'simple'}
       ]],
       ['Layout', [
-        {title: 'Linear layout', tag: CCLinearLayoutComponent, type: 'extended'},
-        {title: 'Card', tag: 'MatCard', type: 'extended'},
-        {title: 'Divider', tag: 'MatDivider', type: 'extended'},
-        {title: 'Expansion Panel', tag: 'MatExpansion', type: 'extended'},
-        {title: 'Grid list', tag: 'MatGridList', type: 'extended'},
-        {title: 'List', tag: 'MatList', type: 'extended'},
-        {title: 'Stepper', tag: 'MatStepper', type: 'extended'},
-        {title: 'Tabs', tag: 'MatTabs', type: 'extended'},
-        {title: 'Tree', tag: 'MatTree', type: 'extended'}
+        {title: 'Linear layout', viewComponent: CCLinearLayoutComponent, preViewComponent: CCPVLinearLayoutComponent, type: 'extended'},
+        {title: 'Card', viewComponent: 'MatCard', preViewComponent: undefined, type: 'extended'},
+        {title: 'Divider', viewComponent: 'MatDivider', preViewComponent: undefined, type: 'extended'},
+        {title: 'Expansion Panel', viewComponent: 'MatExpansion', preViewComponent: undefined, type: 'extended'},
+        {title: 'Grid list', viewComponent: 'MatGridList', preViewComponent: undefined, type: 'extended'},
+        {title: 'List', viewComponent: 'MatList', preViewComponent: undefined, type: 'extended'},
+        {title: 'Stepper', viewComponent: 'MatStepper', preViewComponent: undefined, type: 'extended'},
+        {title: 'Tabs', viewComponent: 'MatTabs', preViewComponent: undefined, type: 'extended'},
+        {title: 'Tree', viewComponent: 'MatTree', preViewComponent: undefined, type: 'extended'}
       ]],
       ['Buttons & Indicators', [
-        {title: 'Button', tag: CCButtonComponent, type: 'simple'},
-        {title: 'Button toggle', tag: 'MatButtonToggle', type: 'simple'},
-        // {title: 'Badge', tag: 'MatBadge', type: 'simple'},
-        {title: 'Chips', tag: 'MatChips', type: 'simple'},
-        {title: 'Icon', tag: 'MatIcon', type: 'simple'},
-        {title: 'Progress spinner', tag: 'MatProgressSpinner', type: 'simple'},
-        {title: 'Progress bar', tag: 'MatProgressBar', type: 'simple'},
-        // {title: 'Ripples', tag: 'MatRipple', type: 'simple'}
+        {title: 'Button', viewComponent: CCButtonComponent, preViewComponent: CCPVButtonComponent, type: 'simple'},
+        {title: 'Button toggle', viewComponent: 'MatButtonToggle', preViewComponent: undefined, type: 'simple'},
+        // {title: 'Badge', tag: 'MatBadge', preViewComponent: undefined, type: 'simple'},
+        {title: 'Chips', viewComponent: 'MatChips', preViewComponent: undefined, type: 'simple'},
+        {title: 'Icon', viewComponent: 'MatIcon', preViewComponent: undefined, type: 'simple'},
+        {title: 'Progress spinner', viewComponent: 'MatProgressSpinner', preViewComponent: undefined, type: 'simple'},
+        {title: 'Progress bar', viewComponent: 'MatProgressBar', preViewComponent: undefined, type: 'simple'},
+        // {title: 'Ripples', tag: 'MatRipple', preViewComponent: '', type: 'simple'}
       ]],
       // ['Popups & Modals', [
       //   {title: 'Bottom Sheet', tag: 'MatBottomSheet'},
@@ -91,9 +94,9 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
       //   {title: 'Tooltip', tag: 'MatTooltip'}
       // ]],
       ['Data table', [
-        {title: 'Paginator', tag: 'MatPaginator', type: 'simple'},
-        {title: 'Sort header', tag: 'MatSort', type: 'simple'},
-        {title: 'Table', tag: 'MatTable', type: 'extended'}
+        {title: 'Paginator', viewComponent: 'MatPaginator', preViewComponent: undefined, type: 'simple'},
+        {title: 'Sort header', viewComponent: 'MatSort', preViewComponent: undefined, type: 'simple'},
+        {title: 'Table', viewComponent: 'MatTable', preViewComponent: undefined, type: 'extended'}
       ]]
     ]);
   }
@@ -106,7 +109,8 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
     // Проверка нужна для драга когда элемент списка не был выбран, а сразу начал перетягиваться
     if (this.createPermission) {
       setTimeout(() => {
-        this.onDragStart(this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent).tag);
+        const comp = this.componentList.get(this.selectedCategory).find(item => item.title === this.selectedComponent);
+        this.onDragStart(comp.viewComponent, comp.preViewComponent);
         this.createPermission = false;
       });
     }
@@ -131,16 +135,18 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
   }
 
   // создает выбраный компонент под курсором
-  onDragStart(tag) {
-    this.selectedComponentTag = tag;
+  onDragStart(viewComponent, previewComponent) {
+    this.selectedComponentView = viewComponent;
     this.container.clear();
-    const factory = this.resolver.resolveComponentFactory(tag);
-    this.container.createComponent(factory);
-    this.axis.x = this.containerRef.nativeElement.getBoundingClientRect().x;
-    this.axis.y = this.containerRef.nativeElement.getBoundingClientRect().y;
-    const x  = this.primaryEvent.clientX - this.axis.x;
-    const y = this.primaryEvent.clientY - this.axis.y;
-    this.containerRef.nativeElement.style.transform = `translateX(${x}px) translateY(${y}px)`;
+    if (previewComponent) {
+      const factory = this.resolver.resolveComponentFactory(previewComponent);
+      this.container.createComponent(factory);
+      this.axis.x = this.containerRef.nativeElement.getBoundingClientRect().x;
+      this.axis.y = this.containerRef.nativeElement.getBoundingClientRect().y;
+      const x  = this.primaryEvent.clientX - this.axis.x;
+      const y = this.primaryEvent.clientY - this.axis.y;
+      this.containerRef.nativeElement.style.transform = `translateX(${x}px) translateY(${y}px)`;
+    }
   }
 
   // при перемещении курсора передвигает компонент за ним
@@ -159,7 +165,7 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
       this.container.remove();
       this.containerRef.nativeElement.style.transform = '';
       this.componentsSS.onWedding({
-        componentClass: this.selectedComponentTag,
+        componentClass: this.selectedComponentView,
         componentType: this.selectedComponentType,
         componentName: this.selectedComponent
       });

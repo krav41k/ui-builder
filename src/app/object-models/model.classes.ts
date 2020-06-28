@@ -42,7 +42,6 @@ export class SimpleComponentClass {
 
   @Input() set component(component: ExtendedModelClass) {
     this.selfComponent = component;
-    // this.styleApplier();
   }
 
   styleApplier() {
@@ -69,8 +68,6 @@ export class ExtendedComponentClass extends SimpleComponentClass {
 
   @Input() set component(component: ExtendedModelClass) {
     this.selfComponent = component;
-
-    super.styleApplier();
     // if (typeof component.order !== 'undefined') {
     //   this.rerender();
     // }

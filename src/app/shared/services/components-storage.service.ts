@@ -1,6 +1,6 @@
 import {HostListener, Injectable, Input} from '@angular/core';
 import {ExtendedModelClass, ModelInterface, SimpleModelClass} from '../../object-models/model.classes';
-import {CCLinearLayoutComponent} from '../../object-models/components/cc.linear-layout.component';
+import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable()
@@ -43,6 +43,7 @@ export class ComponentsStorageService {
     this.componentsList.set(this.idCounter, newComponent);
     this.componentsSteam$.next(this.componentsList);
     parentComponent.addObject(newComponent, this.idCounter);
+    // newComponent.
     this.idCounter++;
   }
 
@@ -50,6 +51,7 @@ export class ComponentsStorageService {
     this.componentsList.set(id, component);
   }
 
+  // Перемещение компонента
   swapComponents(firstComponent, secondComponent) {
     let updater = false;
     switch (true) {
@@ -68,8 +70,7 @@ export class ComponentsStorageService {
         updater = true;
         break;
 
-      case (secondComponent.nestedSwitch !== undefined
-        && secondComponent.nestedSwitch
+      case (secondComponent.nestedSwitch
         && secondComponent.parent !== firstComponent):
         console.log('case 2');
         firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(firstComponent.id), 1);

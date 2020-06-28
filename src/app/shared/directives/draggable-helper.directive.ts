@@ -1,40 +1,41 @@
-import { Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import { DraggableDirective } from './draggable.directive';
-import { GlobalPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
+import {Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {GlobalPositionStrategy, Overlay, OverlayRef} from '@angular/cdk/overlay';
+import {TemplatePortal} from '@angular/cdk/portal';
+import {CDViewDraggableDirective} from './cd.view-draggable.directive';
 
 @Directive({
-  selector: '[appDraggableHelper]',
-  exportAs: 'appDraggableHelper'
+  selector: '[cdDraggableHelper]',
+  exportAs: 'cdDraggableHelper'
 })
 export class DraggableHelperDirective implements OnInit, OnDestroy {
-  private overlayRef: OverlayRef;
-  private positionStrategy = new GlobalPositionStrategy();
-  private startPosition?: { x: number; y: number };
 
-  constructor(private draggable: DraggableDirective,
-              private templateRef: TemplateRef<any>,
+  private  overlayRef: OverlayRef;
+  private positionStrategy = new GlobalPositionStrategy();
+  private startPosition?: { x: number; y: number};
+  private subList: Subscription[] = [];
+
+  constructor(private templateRef: TemplateRef<any>,
               private viewContainerRef: ViewContainerRef,
-              private overlay: Overlay) { }
+              private viewDraggableDirective: CDViewDraggableDirective,
+              private overlay: Overlay) {}
 
   ngOnInit(): void {
-    this.draggable.dragStart.subscribe(event => this.onDragStart(event));
-    this.draggable.dragMove.subscribe(event => this.onDragMove(event));
-    this.draggable.dragEnd.subscribe(() => this.onDragEnd());
-
-    // create an overlay...
+    this.subList.push(this.viewDraggableDirective.dragStart.subscribe(event => this.onDragStart(event)));
+    this.subList.push(this.viewDraggableDirective.dragMove.subscribe(event => this.onDragMove(event)));
+    this.subList.push(this.viewDraggableDirective.dragEnd.subscribe(() => this.onDragEnd()));
     this.overlayRef = this.overlay.create({
       positionStrategy: this.positionStrategy
     });
   }
 
   ngOnDestroy(): void {
+    this.subList.forEach(sub => sub.unsubscribe());
     this.overlayRef.dispose();
   }
 
   private onDragStart(event: PointerEvent): void {
-    const clientRect = this.draggable.element.nativeElement.getBoundingClientRect();
-
+    const clientRect = this.viewDraggableDirective.element.nativeElement.getBoundingClientRect();
     this.startPosition = {
       x: event.clientX - clientRect.left,
       y: event.clientY - clientRect.top
@@ -52,6 +53,7 @@ export class DraggableHelperDirective implements OnInit, OnDestroy {
   }
 
   private onDragEnd(): void {
+    this.viewContainerRef.clear();
     this.overlayRef.detach();
   }
 }

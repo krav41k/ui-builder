@@ -9,7 +9,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {CCLinearLayoutComponent} from '../object-models/components/cc.linear-layout.component';
+import {CCLinearLayoutComponent} from '../object-models/components/view-components/cc.linear-layout.component';
 import {ExtendedModelClass} from '../object-models/model.classes';
 
 @Component({

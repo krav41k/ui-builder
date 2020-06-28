@@ -16,7 +16,7 @@ export class CDSortableDirective extends DraggableDirective implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.addPadding();
     this.treeControlService.newTreeItem(this, this.sortableComponent);
   }
