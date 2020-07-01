@@ -1,5 +1,6 @@
 import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
+import {ViewControlService} from '../shared/services/view-control.service';
 
 export interface ModelInterface {
   parent;
@@ -13,12 +14,15 @@ export interface ModelInterface {
   flexData?: any;
 }
 
+// DataClasses:
+// Simple class
 export class SimpleModelClass implements ModelInterface {
   style;
 
   constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
 }
 
+// Extended class
 export class ExtendedModelClass implements ModelInterface {
   style;
   subObjectsList = new Map<number, any>();
@@ -35,33 +39,68 @@ export class ExtendedModelClass implements ModelInterface {
   }
 }
 
-export class SimpleComponentClass {
+// Component Classes:
+// PreviewComponentClass
+export class PreviewComponentClass {
+
   el;
-  selfComponent: SimpleModelClass;
   blueprint;
 
-  @Input() set component(component: ExtendedModelClass) {
+  styleApplier() {
+    for (const item of this.blueprint) {
+      this.el.nativeElement.style[item[0]] = item[1];
+    }
+  }
+}
+
+// Simple component class
+export class SimpleComponentClass extends PreviewComponentClass {
+
+  private timeout;
+  selfComponent: SimpleModelClass;
+
+  @Input() set component(component: SimpleModelClass) {
     this.selfComponent = component;
   }
 
-  styleApplier() {
+  // @HostListener('pointerdown') onDragStart() {
+  //   this.viewControlService.drag(this.selfComponent.id, this.el);
+  // }
+  //
+  // @HostListener('dragover', ['$event']) onDragOver(event) {
+  //   console.log('drag over');
+  //   if (this.timeout !== undefined) {
+  //     window.clearTimeout(this.timeout);
+  //   }
+  //   this.timeout = window.setTimeout( () => {
+  //     // trigger the new event on event.target, so that it can bubble appropriately
+  //     this.viewControlService.onMouseMove(event);
+  //   }, 100);
+  // }
+  //
+  // @HostListener('dragleave') onDragLeave() {
+  //   console.log('drag leave');
+  // }
+
+  constructor(private viewControlService: ViewControlService) {
+    super();
+  }
+
+  styleProcessor() {
     if (this.selfComponent !== undefined) {
       if (this.selfComponent.style === undefined) {
-        for (const item of this.blueprint) {
-          this.el.nativeElement.style[item[0]] = item[1];
-        }
+        this.styleApplier();
         this.selfComponent.style = this.el.nativeElement.style.cssText;
       } else {
         this.el.nativeElement.style.cssText = this.selfComponent.style;
       }
     } else {
-      for (const item of this.blueprint) {
-        this.el.nativeElement.style[item[0]] = item[1];
-      }
+      this.styleApplier();
     }
   }
 }
 
+// Extended component class
 export class ExtendedComponentClass extends SimpleComponentClass {
   selfComponent: ExtendedModelClass;
   container;
@@ -83,8 +122,14 @@ export class ExtendedComponentClass extends SimpleComponentClass {
     }
   }
 
-  constructor(private resolver: ComponentFactoryResolver, private componentsSS: ComponentsStorageService, public el: ElementRef) {
-    super();
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    private componentsSS: ComponentsStorageService,
+    public el: ElementRef,
+    viewControlService: ViewControlService,
+    ) {
+
+    super(viewControlService);
   }
 
   async rerender() {

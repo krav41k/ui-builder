@@ -1,16 +1,14 @@
 import {
-  AfterContentInit,
   AfterViewInit,
-  Component, ComponentFactory,
-  ComponentFactoryResolver, ComponentRef,
-  ElementRef, HostListener,
+  Component,
+  ComponentFactoryResolver,
+  HostListener,
   OnInit,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {CCLinearLayoutComponent} from '../object-models/components/view-components/cc.linear-layout.component';
-import {ExtendedModelClass} from '../object-models/model.classes';
+import {ViewControlService} from '../shared/services/view-control.service';
 
 @Component({
   selector: 'app-preview',
@@ -20,7 +18,11 @@ import {ExtendedModelClass} from '../object-models/model.classes';
 export class PreviewComponent implements OnInit, AfterViewInit {
   @ViewChild('container', { read: ViewContainerRef }) container;
   componentRef;
-  constructor(private resolver: ComponentFactoryResolver, public componentsStorageService: ComponentsStorageService) {}
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    public componentsStorageService: ComponentsStorageService,
+    private viewControlService: ViewControlService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -33,6 +35,7 @@ export class PreviewComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:pointerup') onPointerUp() {
     this.componentsStorageService.onPointerUp();
+    this.viewControlService.onPointerUp();
   }
 }
 

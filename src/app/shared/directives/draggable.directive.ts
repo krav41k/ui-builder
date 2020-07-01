@@ -1,29 +1,39 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Output, ElementRef } from '@angular/core';
+import {Directive, EventEmitter, HostBinding, HostListener, Output, ElementRef, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[appDraggable]'
 })
-export class DraggableDirective {
-  @HostBinding('class.draggable') draggable = true;
+export class DraggableDirective implements OnInit {
 
-  @HostBinding('attr.touch-action') touchAction = 'none';
+  @HostBinding('class.draggable') draggable;
+
+  @HostBinding('attr.touch-action') touchAction;
 
   @Output() dragStart = new EventEmitter<PointerEvent>();
   @Output() dragMove = new EventEmitter<PointerEvent>();
   @Output() dragEnd = new EventEmitter<PointerEvent>();
 
-  @HostBinding('class.dragging') dragging = false;
+  @HostBinding('class.dragging') dragging;
 
   constructor(public element: ElementRef) {}
 
+  ngOnInit(): void {
+    this.draggable = true;
+    this.touchAction = 'none';
+    this.dragging = false;
+    console.log(this.element);
+  }
+
   @HostListener('pointerdown', ['$event'])
-  onPointerDown(event: PointerEvent): void {
+  private onPointerDown(event: PointerEvent): void {
+    event.stopPropagation();
+    console.log('pointer down');
     this.dragging = true;
     this.dragStart.emit(event);
   }
 
   @HostListener('document:pointermove', ['$event'])
-  onPointerMove(event: PointerEvent): void {
+  private onPointerMove(event: PointerEvent): void {
     if (!this.dragging) {
       return;
     }
@@ -32,7 +42,8 @@ export class DraggableDirective {
   }
 
   @HostListener('document:pointerup', ['$event'])
-  onPointerUp(event: PointerEvent): void {
+  private onPointerUp(event: PointerEvent): void {
+    console.log('pointer up');
     if (!this.dragging) {
       return;
     }

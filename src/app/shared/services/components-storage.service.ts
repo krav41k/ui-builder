@@ -1,18 +1,27 @@
-import {HostListener, Injectable, Input} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ExtendedModelClass, ModelInterface, SimpleModelClass} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable()
 export class ComponentsStorageService {
-  root = new ExtendedModelClass(null, CCLinearLayoutComponent, 0, 'LinearLayout', 0);
-  componentsList: Map<number, ModelInterface> = new Map<number, ModelInterface>([[0, this.root]]);
-  componentsSteam$ = new BehaviorSubject(this.componentsList);
-  idCounter = 1;
-  private newComponentData: { componentClass, componentType, componentName };
-  public newComponentCell = null;
 
-  @HostListener('document:pointerup') onPointerUp() {
+  public root;
+  public componentsList: Map<number, ModelInterface>;
+  public componentsSteam$;
+  public idCounter;
+  private newComponentData: { componentClass, componentType, componentName };
+  public newComponentCell;
+
+  constructor() {
+    this.root = new ExtendedModelClass(null, CCLinearLayoutComponent, 0, 'LinearLayout', 0);
+    this.componentsList = new Map<number, ModelInterface>([[0, this.root]]);
+    this.componentsSteam$ = new BehaviorSubject(this.componentsList);
+    this.idCounter = 1;
+    this.newComponentCell = null;
+  }
+
+  onPointerUp() {
     setTimeout(() => {
       if (this.newComponentData && this.newComponentCell !== null) {
         this.addComponent(this.newComponentCell, this.newComponentData);

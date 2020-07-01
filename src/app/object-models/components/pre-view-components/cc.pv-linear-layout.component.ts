@@ -1,25 +1,22 @@
 import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {ExtendedComponentClass} from '../../model.classes';
+import {ExtendedComponentClass, PreviewComponentClass} from '../../model.classes';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
+import {ViewControlService} from '../../../shared/services/view-control.service';
 
 @Component({
-  selector: 'cc-linear-layout',
+  selector: 'cc-preview-linear-layout',
   template: `
     <ng-container #container>Linear layout</ng-container>
   `,
 })
-export class CCPVLinearLayoutComponent extends ExtendedComponentClass implements AfterViewInit {
-  @ViewChild('container', { read: ViewContainerRef }) container;
+export class CCPVLinearLayoutComponent extends PreviewComponentClass implements AfterViewInit {
   blueprint = new Map<string, string>([
-    // ['padding', '50px'],
-    ['minWidth', '50px'],
-    ['minHeight', '50px'],
+    ['padding', '50px'],
     ['border', 'black dotted 1px'],
   ]);
 
-  constructor(public el: ElementRef, resolver: ComponentFactoryResolver, componentsSS: ComponentsStorageService) {
-
-    super(resolver, componentsSS, el);
+  constructor( public el: ElementRef ) {
+    super();
   }
 
   ngAfterViewInit() {

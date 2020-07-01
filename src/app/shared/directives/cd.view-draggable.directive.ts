@@ -1,4 +1,4 @@
-import {Directive, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {Directive, ElementRef, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {DraggableDirective} from './draggable.directive';
 
 @Directive({
@@ -12,7 +12,7 @@ export class CDViewDraggableDirective extends DraggableDirective implements OnIn
   }
 
   ngOnInit(): void {
-    console.log('directive applied');
+    this.dragStart.subscribe(() => console.log('test'));
   }
 
   ngOnDestroy(): void {}

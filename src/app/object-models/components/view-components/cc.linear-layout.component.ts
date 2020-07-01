@@ -1,11 +1,16 @@
-import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, ViewChild, ViewContainerRef} from '@angular/core';
 import {ExtendedComponentClass} from '../../model.classes';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
+import {ViewControlService} from '../../../shared/services/view-control.service';
 
 @Component({
   selector: 'cc-linear-layout',
   template: `
-    <ng-container #container></ng-container>
+    <div appDraggable>
+      <ng-container #container></ng-container>
+
+      <cc-preview-linear-layout *cdDraggableHelper></cc-preview-linear-layout>
+    </div>
   `,
 })
 export class CCLinearLayoutComponent extends ExtendedComponentClass implements AfterViewInit {
@@ -18,13 +23,17 @@ export class CCLinearLayoutComponent extends ExtendedComponentClass implements A
     ['flexDirection', 'row']
   ]);
 
-  constructor(public el: ElementRef, resolver: ComponentFactoryResolver, componentsSS: ComponentsStorageService) {
+  constructor(
+    public el: ElementRef,
+    resolver: ComponentFactoryResolver,
+    componentsSS: ComponentsStorageService,
+    viewControlService: ViewControlService) {
 
-    super(resolver, componentsSS, el);
+    super(resolver, componentsSS, el, viewControlService);
   }
 
   ngAfterViewInit() {
-    this.styleApplier();
+    this.styleProcessor();
     if (this.selfComponent !== undefined) {
       if (this.selfComponent.order !== undefined) {
           this.rerender().then();

@@ -27,11 +27,10 @@ import {CCPVButtonComponent} from '../object-models/components/pre-view-componen
     MaterialModule
   ],
   exports: [
-    CCLinearLayoutComponent,
     DraggableDirective,
     DraggableHelperDirective,
     CDSortableDirective,
     CDViewDraggableDirective,
-  ]
+  ],
 })
 export class CustomComponentModule {}

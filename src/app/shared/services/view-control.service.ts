@@ -1,36 +1,62 @@
 import {ElementRef, Injectable} from '@angular/core';
-import {CDViewDraggableDirective} from '../directives/cd.view-draggable.directive';
 import {ComponentsStorageService} from './components-storage.service';
+import {DraggableDirective} from '../directives/draggable.directive';
 
 export interface ViewItem {
-  viewDirective: CDViewDraggableDirective;
-  viewComponent;
+  viewDraggableDirective: DraggableDirective;
+  viewDomComponent;
 }
-
-const distance = (rectA: ClientRect, rectB: ClientRect): number => {
-  return Math.sqrt(
-    Math.pow(rectB.top - rectA.top, 2) +
-    Math.pow(rectB.left - rectA.left, 2)
-  );
-};
-
-const hCenter = (rect: ClientRect): number => {
-  return rect.left + rect.width / 2;
-};
-
-const vCenter = (rect: ClientRect): number => {
-  return rect.top + rect.height / 2;
-};
 
 @Injectable()
 export class ViewControlService {
 
-  viewItemList: ViewItem[] = [];
-  private  clientRects: ClientRect[];
-  public floatComponent;
-  private selectedItem: ElementRef;
+  private rootRect: ClientRect;
+
+  private draggableComponentId: number;
+  private draggableClientRect: ClientRect;
+  private dragOverComponentId: number;
+  private dragOverClientRect: ClientRect;
+  private dragOverPrimaryStyle: any;
+
+  onPointerUp() {
+    this.draggableComponentId = undefined;
+  }
 
   constructor(private componentsStorageService: ComponentsStorageService) {}
 
+  drag(id: number,  el: ElementRef) {
+    if (this.draggableComponentId === undefined) {
+      console.log(id);
+      this.dragOverComponentId = undefined;
+      this.draggableComponentId = id;
+      this.draggableClientRect = el.nativeElement.getBoundingClientRect();
+    }
+  }
 
+  dragOver(id, el, event) {
+    if (this.dragOverComponentId === undefined && this.draggableComponentId !== undefined) {
+      console.log('over');
+      this.dragOverComponentId = id;
+      console.log(el);
+      this.dragOverClientRect = el.nativeElement.getBoundingClientRect();
+    }
+  }
+
+  drop(id, el) {
+
+  }
+
+  onMouseMove(event: MouseEvent) {
+    if (this.draggableComponentId !== undefined) {
+      let element;
+      let display;
+      const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
+      display = item.style.display;
+      item.style.display = 'none';
+      element = document.elementFromPoint(event.x, event.y);
+      item.style.display = display;
+      // this.viewControlService.dragOver(this.selfComponent.id, this.el, event);
+      console.log(element);
+    }
+  }
 }
