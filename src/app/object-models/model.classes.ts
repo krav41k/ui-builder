@@ -2,8 +2,10 @@ import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input,
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {ViewControlService} from '../shared/services/view-control.service';
 
+export type ModelClass = SimpleModelClass | ExtendedModelClass;
+
 export interface ModelInterface {
-  parent;
+  parent: ExtendedModelClass;
   type;
   name: string;
   id: number;
@@ -19,20 +21,20 @@ export interface ModelInterface {
 export class SimpleModelClass implements ModelInterface {
   style;
 
-  constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
+  constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
 }
 
 // Extended class
 export class ExtendedModelClass implements ModelInterface {
   style;
-  subObjectsList = new Map<number, any>();
+  subObjectsList = new Map<number, ModelClass>();
   order = [];
   componentRef;
   nestedSwitch = true;
 
-  constructor(public parent: ModelInterface, public type, public id: number, public name, public level) {}
+  constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
 
-  addObject(obj: ModelInterface, id) {
+  addObject(obj: ModelClass, id) {
     this.subObjectsList.set(id, obj);
     this.order.push(id);
     this.componentRef.instance.addComponent = {id, comp: obj};
@@ -63,42 +65,24 @@ export class SimpleComponentClass extends PreviewComponentClass {
   selfComponent: SimpleModelClass;
 
   private previousPosition: {clientX: number; clientY: number} = {clientX: 0, clientY: 0};
-  private timeout;
+  public draggingS1 = false;
+  private timeoutS1;
 
-  private dragging = false;
-  dragStart = new EventEmitter<PointerEvent>();
-  dragMove = new EventEmitter<PointerEvent>();
-  dragEnd = new EventEmitter<PointerEvent>();
-
+  // pointer events for directive dragging strategy
   @HostListener('pointerdown', ['$event'])
-  private onPointerDown(event: PointerEvent): void {
+  private onDragStart(event: PointerEvent): void {
     event.stopPropagation();
+
     this.viewControlService.dragStart(this.selfComponent);
 
-    this.dragging = true;
-    this.dragStart.emit(event);
+    this.draggingS1 = true;
   }
 
-  @HostListener('document:pointermove', ['$event'])
-  private onPointerMove(event: PointerEvent): void {
-    if (this.dragging) {
-      this.dragMove.emit(event);
-    }
-  }
-
-  @HostListener('document:pointerup', ['$event'])
-  private onPointerUp(event) {
-    if (this.dragging) {
-      this.dragging = false;
-      this.dragEnd.emit(event);
-      this.viewControlService.onPointerUp();
-    }
-  }
-
+  // drag events for DOM dragging strategy
   @HostListener('dragenter', ['$event'])
   private onDragEnter(event: DragEvent) {
     event.stopPropagation();
-    if (!this.dragging) {
+    if (!this.draggingS1) {
       this.viewControlService.dragEnter(this.selfComponent, this.el);
     }
   }
@@ -106,13 +90,13 @@ export class SimpleComponentClass extends PreviewComponentClass {
   @HostListener('dragover', ['$event'])
   private onDragOver(event: DragEvent) {
     event.stopPropagation();
-    if (!this.dragging) {
+    if (!this.draggingS1) {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
-      if (this.timeout !== undefined) {
-        window.clearTimeout(this.timeout);
+      if (this.timeoutS1 !== undefined) {
+        window.clearTimeout(this.timeoutS1);
       }
-      this.timeout = window.setTimeout(() => {
+      this.timeoutS1 = window.setTimeout(() => {
         if (this.previousPosition.clientX !== event.clientX && this.previousPosition.clientY !== event.clientY) {
           this.previousPosition = {clientX: event.clientX, clientY: event.clientY};
           this.viewControlService.dragOver(event);
@@ -121,11 +105,19 @@ export class SimpleComponentClass extends PreviewComponentClass {
     }
   }
 
-  @HostListener('dragleave', ['$event'])
+  @HostListener('dragexit', ['$event'])
   private onDragLeave(event: DragEvent) {
     event.stopPropagation();
-    if (!this.dragging) {
+
+    if (!this.draggingS1) {
       this.viewControlService.dragClear();
+    }
+  }
+
+  @HostListener('dragend')
+  private onDragEnd() {
+    if (this.draggingS1) {
+      this.viewControlService.dragEnd();
     }
   }
 
@@ -164,10 +156,44 @@ export class ExtendedComponentClass extends SimpleComponentClass {
   selfComponent: ExtendedModelClass;
   containerRef;
 
-  @HostListener('document:pointerup', ['$event']) onWedding(event) {
+  private draggingS2;
+  private timeoutS2;
+  dragStart = new EventEmitter<PointerEvent>();
+  dragMove = new EventEmitter<PointerEvent>();
+  dragEnd = new EventEmitter<PointerEvent>();
+
+  @HostListener('pointerup') onWedding() {
     if (this.componentsSS.newComponentCell === null) {
       this.componentsSS.onWedding(this.selfComponent.id);
-      this.componentsSS.onPointerUp();
+    }
+  }
+
+  // pointer events for directive dragging strategy
+  @HostListener('pointerdown', ['$event'])
+  private onPointerDown(event: PointerEvent): void {
+    event.stopPropagation();
+    this.viewControlService.dragStart(this.selfComponent);
+
+    this.draggingS2 = true;
+    this.dragStart.emit(event);
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  private onPointerMove(event: PointerEvent): void {
+    if (this.draggingS2) {
+      // console.log(this.dragging);
+      this.dragMove.emit(event);
+      // this.viewControlService.onMouseMove(event);
+    }
+  }
+
+  @HostListener('document:pointerup', ['$event'])
+  private onPointerUp(event: PointerEvent) {
+    console.log('pointer up');
+    if (this.draggingS2) {
+      this.draggingS2 = false;
+      this.dragEnd.emit(event);
+      this.viewControlService.dragEnd();
     }
   }
 
@@ -176,8 +202,7 @@ export class ExtendedComponentClass extends SimpleComponentClass {
     private componentsSS: ComponentsStorageService,
     public el: ElementRef,
     viewControlService: ViewControlService,
-    ) {
-
+  ) {
     super(viewControlService);
   }
 

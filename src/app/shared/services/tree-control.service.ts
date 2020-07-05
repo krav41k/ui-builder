@@ -35,8 +35,6 @@ export class TreeControlService {
   public floatComponent;
   private selectedItem: ElementRef;
 
-  constructor(private componentsSS: ComponentsStorageService) {}
-
   public changeSelectedItem(el: ElementRef) {
     if (this.selectedItem !== el) {
       if (this.selectedItem !== undefined) {
@@ -109,7 +107,7 @@ export class TreeControlService {
 
   private rotate(event: RotateEvent, currentComponent, rotateComponent) {
     this.floatComponent = currentComponent.sortableComponent;
-    this.componentsSS.swapComponents(currentComponent.sortableComponent, rotateComponent.sortableComponent);
+    this.swapComponents(currentComponent.sortableComponent, rotateComponent.sortableComponent);
     this.treeListFormation();
     this.directiveListRotate(event, currentComponent, rotateComponent);
   }
@@ -117,5 +115,68 @@ export class TreeControlService {
   private directiveListRotate(event , currentComponent, rotateComponent) {
     this.treeItemList[event.currentIndex] = rotateComponent;
     this.treeItemList[event.rotateIndex] = currentComponent;
+  }
+
+  // Перемещение компонента
+  swapComponents(firstComponent, secondComponent) {
+    let updater = false;
+    switch (true) {
+      case (firstComponent.parent === secondComponent):
+        console.log('case 1');
+        const parentOrderIndex = secondComponent.parent.order.indexOf(secondComponent.id);
+
+        secondComponent.order.splice(secondComponent.order.indexOf(firstComponent.id), 1);
+        secondComponent.subObjectsList.delete(firstComponent.id);
+
+        firstComponent.parent = secondComponent.parent;
+
+        firstComponent.level = firstComponent.parent.level + 1;
+        firstComponent.parent.subObjectsList.set(firstComponent.id, firstComponent);
+        firstComponent.parent.order.splice(parentOrderIndex, 0, firstComponent.id);
+        updater = true;
+        break;
+
+      case (secondComponent.nestedSwitch
+        && secondComponent.parent !== firstComponent):
+        console.log('case 2');
+        firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(firstComponent.id), 1);
+        firstComponent.parent.subObjectsList.delete(firstComponent.id);
+
+        firstComponent.parent.componentRef.instance.rerender().then();
+        firstComponent.parent = secondComponent;
+
+        firstComponent.level = secondComponent.level + 1;
+        secondComponent.subObjectsList.set(firstComponent.id, firstComponent);
+        secondComponent.order.splice(0, 0, firstComponent.id);
+        updater = true;
+        break;
+
+      case (firstComponent.parent.id === secondComponent.parent.id):
+        console.log('case 3');
+        const firstOrderIndex = firstComponent.parent.order.indexOf(firstComponent.id);
+        const secondOrderIndex = secondComponent.parent.order.indexOf(secondComponent.id);
+        firstComponent.parent.order[secondOrderIndex] = firstComponent.id;
+        firstComponent.parent.order[firstOrderIndex] = secondComponent.id;
+        updater = true;
+        break;
+
+      case (secondComponent.nestedSwitch === undefined
+        && firstComponent.level !== secondComponent.level
+        && secondComponent.parent !== firstComponent):
+        console.log('case 4');
+        firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(firstComponent.id), 1);
+        firstComponent.parent.subObjectsList.delete(firstComponent.id);
+
+        firstComponent.parent = secondComponent.parent;
+
+        firstComponent.level = secondComponent.level;
+        firstComponent.parent.subObjectsList.set(firstComponent.id, firstComponent);
+        firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(secondComponent.id) + 1, 0, firstComponent.id);
+        updater = true;
+        break;
+    }
+    if (updater) {
+      firstComponent.parent.componentRef.instance.rerender().then();
+    }
   }
 }

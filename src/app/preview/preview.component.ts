@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ComponentFactoryResolver,
+  ComponentFactoryResolver, Host,
   HostListener,
   OnInit, Renderer2,
   ViewChild,
@@ -21,7 +21,8 @@ export class PreviewComponent implements OnInit, AfterViewInit {
     private resolver: ComponentFactoryResolver,
     private componentsStorageService: ComponentsStorageService,
     private viewControlService: ViewControlService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private componentsSS: ComponentsStorageService
   ) {
     this.viewControlService.renderer = renderer;
   }
@@ -35,6 +36,10 @@ export class PreviewComponent implements OnInit, AfterViewInit {
       this.componentsStorageService.root.componentRef = this.containerRef.createComponent(factory);
       this.componentsStorageService.root.componentRef.instance.component = this.componentsStorageService.root;
     });
+  }
+
+  @HostListener('document:pointerup') onWedding() {
+    this.componentsSS.onPointerUp();
   }
 }
 
