@@ -1,5 +1,13 @@
-.draggable-helper {
-  pointer-events: none;
-  opacity: 0.5;
-  border: black dotted 1px;
+.shadow-b-order {
+  box-shadow: inset 3px 3px 5px 0px red;
+  background: red;
+}
+
+.shadow-a-order {
+  box-shadow: inset -3px -3px 5px 0px red;
+  background: red;
+}
+
+.test {
+  background: red;
 }

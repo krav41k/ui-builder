@@ -5,29 +5,19 @@ import {Directive, EventEmitter, HostBinding, HostListener, Output, ElementRef, 
 })
 export class DraggableDirective implements OnInit {
 
-  @HostBinding('class.draggable') draggable;
-
-  @HostBinding('attr.touch-action') touchAction;
-
   @Output() dragStart = new EventEmitter<PointerEvent>();
   @Output() dragMove = new EventEmitter<PointerEvent>();
   @Output() dragEnd = new EventEmitter<PointerEvent>();
 
-  @HostBinding('class.dragging') dragging;
+  dragging = false;
 
-  constructor(public element: ElementRef) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.draggable = true;
-    this.touchAction = 'none';
-    this.dragging = false;
-    console.log(this.element);
-  }
+  ngOnInit(): void {}
 
   @HostListener('pointerdown', ['$event'])
   private onPointerDown(event: PointerEvent): void {
-    event.stopPropagation();
-    console.log('pointer down');
+    console.log('pointer down directive');
     this.dragging = true;
     this.dragStart.emit(event);
   }
@@ -43,7 +33,6 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('document:pointerup', ['$event'])
   private onPointerUp(event: PointerEvent): void {
-    console.log('pointer up');
     if (!this.dragging) {
       return;
     }

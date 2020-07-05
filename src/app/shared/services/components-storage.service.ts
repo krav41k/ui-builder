@@ -6,20 +6,12 @@ import {BehaviorSubject} from 'rxjs';
 @Injectable()
 export class ComponentsStorageService {
 
-  public root;
-  public componentsList: Map<number, ModelInterface>;
-  public componentsSteam$;
-  public idCounter;
+  public root = new ExtendedModelClass(null, CCLinearLayoutComponent, 0, 'LinearLayout', 0);
+  public componentsList: Map<number, ModelInterface> = new Map<number, ModelInterface>([[0, this.root]]);
+  public componentsSteam$ = new BehaviorSubject(this.componentsList);
+  public idCounter = 1;
   private newComponentData: { componentClass, componentType, componentName };
-  public newComponentCell;
-
-  constructor() {
-    this.root = new ExtendedModelClass(null, CCLinearLayoutComponent, 0, 'LinearLayout', 0);
-    this.componentsList = new Map<number, ModelInterface>([[0, this.root]]);
-    this.componentsSteam$ = new BehaviorSubject(this.componentsList);
-    this.idCounter = 1;
-    this.newComponentCell = null;
-  }
+  public newComponentCell = null;
 
   onPointerUp() {
     setTimeout(() => {

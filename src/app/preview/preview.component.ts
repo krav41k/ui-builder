@@ -3,7 +3,7 @@ import {
   Component,
   ComponentFactoryResolver,
   HostListener,
-  OnInit,
+  OnInit, Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -16,26 +16,25 @@ import {ViewControlService} from '../shared/services/view-control.service';
   styleUrls: ['./preview.component.scss']
 })
 export class PreviewComponent implements OnInit, AfterViewInit {
-  @ViewChild('container', { read: ViewContainerRef }) container;
-  componentRef;
+  @ViewChild('container', { read: ViewContainerRef }) containerRef;
   constructor(
     private resolver: ComponentFactoryResolver,
-    public componentsStorageService: ComponentsStorageService,
-    private viewControlService: ViewControlService
-  ) {}
+    private componentsStorageService: ComponentsStorageService,
+    private viewControlService: ViewControlService,
+    private renderer: Renderer2
+  ) {
+    this.viewControlService.renderer = renderer;
+  }
 
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.container.clear();
+    this.containerRef.clear();
     const factory = this.resolver.resolveComponentFactory(this.componentsStorageService.root.type);
-    this.componentsStorageService.root.componentRef = this.container.createComponent(factory);
-    this.componentsStorageService.root.componentRef.instance.component = this.componentsStorageService.root;
-  }
-
-  @HostListener('document:pointerup') onPointerUp() {
-    this.componentsStorageService.onPointerUp();
-    this.viewControlService.onPointerUp();
+    setTimeout(() => {
+      this.componentsStorageService.root.componentRef = this.containerRef.createComponent(factory);
+      this.componentsStorageService.root.componentRef.instance.component = this.componentsStorageService.root;
+    });
   }
 }
 

@@ -9,8 +9,8 @@ export class CDSortableDirective extends DraggableDirective implements OnInit {
 
   @Input() sortableComponent;
 
-  constructor(element: ElementRef, private treeControlService: TreeControlService, private renderer: Renderer2) {
-    super(element);
+  constructor(public element: ElementRef, private treeControlService: TreeControlService, private renderer: Renderer2) {
+    super();
     this.dragStart.subscribe(() => {
       treeControlService.changeSelectedItem(element);
     });

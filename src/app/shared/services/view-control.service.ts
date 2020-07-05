@@ -1,4 +1,4 @@
-import {ElementRef, Injectable} from '@angular/core';
+import {ElementRef, Injectable, Renderer2} from '@angular/core';
 import {ComponentsStorageService} from './components-storage.service';
 import {DraggableDirective} from '../directives/draggable.directive';
 
@@ -10,44 +10,56 @@ export interface ViewItem {
 @Injectable()
 export class ViewControlService {
 
-  private rootRect: ClientRect;
+  renderer: Renderer2;
 
-  private draggableComponentId: number;
-  private draggableClientRect: ClientRect;
-  private dragOverComponentId: number;
+  private draggableObject;
+  private dragOverComponentObj;
+  private dragOverEl: ElementRef;
   private dragOverClientRect: ClientRect;
-  private dragOverPrimaryStyle: any;
+  private dragOverPrimaryBoxShadow: string;
 
   onPointerUp() {
-    this.draggableComponentId = undefined;
+    this.dragClear();
+    this.draggableObject = undefined;
   }
 
   constructor(private componentsStorageService: ComponentsStorageService) {}
 
-  drag(id: number,  el: ElementRef) {
-    if (this.draggableComponentId === undefined) {
-      console.log(id);
-      this.dragOverComponentId = undefined;
-      this.draggableComponentId = id;
-      this.draggableClientRect = el.nativeElement.getBoundingClientRect();
+  dragStart(obj) {
+    if (this.draggableObject === undefined) {
+      this.dragOverComponentObj = undefined;
+      this.draggableObject = obj;
     }
   }
 
-  dragOver(id, el, event) {
-    if (this.dragOverComponentId === undefined && this.draggableComponentId !== undefined) {
-      console.log('over');
-      this.dragOverComponentId = id;
-      console.log(el);
-      this.dragOverClientRect = el.nativeElement.getBoundingClientRect();
+  dragEnter(obj, el: ElementRef) {
+    console.log('drag enter');
+    this.dragClear();
+
+    this.dragOverComponentObj = obj;
+    this.dragOverEl = el;
+    this.dragOverClientRect = el.nativeElement.getBoundingClientRect();
+    this.dragOverPrimaryBoxShadow = el.nativeElement.style.boxShadow;
+  }
+
+  dragOver(event: DragEvent) {
+    if (this.draggableObject !== undefined && this.dragOverComponentObj !== undefined) {
+     this.drawContour(event.clientX, event.clientY);
     }
   }
 
-  drop(id, el) {
-
+  dragClear() {
+    if (this.dragOverEl !== undefined) {
+      console.log(this.dragOverPrimaryBoxShadow);
+      this.dragOverComponentObj = undefined;
+      this.dragOverPrimaryBoxShadow === ''
+        ? this.renderer.removeStyle(this.dragOverEl.nativeElement, 'boxShadow')
+        : this.renderer.setStyle(this.dragOverEl.nativeElement, 'boxShadow', this.dragOverPrimaryBoxShadow);
+    }
   }
 
   onMouseMove(event: MouseEvent) {
-    if (this.draggableComponentId !== undefined) {
+    if (this.draggableObject !== undefined) {
       let element;
       let display;
       const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
@@ -55,8 +67,19 @@ export class ViewControlService {
       item.style.display = 'none';
       element = document.elementFromPoint(event.x, event.y);
       item.style.display = display;
-      // this.viewControlService.dragOver(this.selfComponent.id, this.el, event);
+      // this.dragOver(this.selfComponent.id, this.el, event);
       console.log(element);
     }
+  }
+
+  drawContour(x, y) {
+    console.log('draw');
+    this.renderer.setStyle(this.dragOverEl.nativeElement, 'boxShadow',
+      ((x - this.dragOverClientRect.left)
+        * (this.dragOverClientRect.top - this.dragOverClientRect.bottom)
+        - (y - this.dragOverClientRect.bottom)
+        * (this.dragOverClientRect.right - this.dragOverClientRect.left))
+      >= 0 ? 'inset 3px 3px 5px 0px red' : 'inset -3px -3px 5px 0px red'
+    );
   }
 }

@@ -10,7 +10,7 @@ import {MatButton} from '@angular/material/button';
 @Component({
   selector: 'cc-button',
   template: `
-    <div appDraggable>
+    <div draggable="true">
       <button mat-raised-button #coveredComponent>
         button
       </button>
