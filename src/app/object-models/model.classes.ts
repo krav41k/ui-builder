@@ -27,7 +27,7 @@ export class SimpleModelClass implements ModelInterface {
 // Extended class
 export class ExtendedModelClass implements ModelInterface {
   style;
-  subObjectsList = new Map<number, ModelClass>();
+  subObjectsList = new Map<number, any>();
   order = [];
   componentRef;
   nestedSwitch = true;
@@ -73,7 +73,7 @@ export class SimpleComponentClass extends PreviewComponentClass {
   private onDragStart(event: PointerEvent): void {
     event.stopPropagation();
 
-    this.viewControlService.dragStart(this.selfComponent);
+    this.viewControlService.dragStart(this.selfComponent, this.el);
 
     this.draggingS1 = true;
   }
@@ -114,8 +114,10 @@ export class SimpleComponentClass extends PreviewComponentClass {
     }
   }
 
-  @HostListener('dragend')
-  private onDragEnd() {
+  @HostListener('dragend', ['$event'])
+  private onDragEnd(event) {
+    event.stopPropagation();
+
     if (this.draggingS1) {
       this.viewControlService.dragEnd();
     }
@@ -156,46 +158,54 @@ export class ExtendedComponentClass extends SimpleComponentClass {
   selfComponent: ExtendedModelClass;
   containerRef;
 
-  private draggingS2;
+  private draggingS2 = false;
   private timeoutS2;
-  dragStart = new EventEmitter<PointerEvent>();
-  dragMove = new EventEmitter<PointerEvent>();
-  dragEnd = new EventEmitter<PointerEvent>();
+  // dragStart = new EventEmitter<PointerEvent>();
+  // dragMove = new EventEmitter<PointerEvent>();
+  // dragEnd = new EventEmitter<PointerEvent>();
 
-  @HostListener('pointerup') onWedding() {
+  @HostListener('pointerup', ['$event']) onWedding(event) {
     if (this.componentsSS.newComponentCell === null) {
       this.componentsSS.onWedding(this.selfComponent.id);
     }
+
+    // if (!this.draggingS2) {
+    //   this.viewControlService.dragEnd(event, this.selfComponent);
+    // }
   }
 
-  // pointer events for directive dragging strategy
-  @HostListener('pointerdown', ['$event'])
-  private onPointerDown(event: PointerEvent): void {
-    event.stopPropagation();
-    this.viewControlService.dragStart(this.selfComponent);
-
-    this.draggingS2 = true;
-    this.dragStart.emit(event);
-  }
-
-  @HostListener('document:pointermove', ['$event'])
-  private onPointerMove(event: PointerEvent): void {
-    if (this.draggingS2) {
-      // console.log(this.dragging);
-      this.dragMove.emit(event);
-      // this.viewControlService.onMouseMove(event);
-    }
-  }
-
-  @HostListener('document:pointerup', ['$event'])
-  private onPointerUp(event: PointerEvent) {
-    console.log('pointer up');
-    if (this.draggingS2) {
-      this.draggingS2 = false;
-      this.dragEnd.emit(event);
-      this.viewControlService.dragEnd();
-    }
-  }
+  // // pointer events for directive dragging strategy
+  // @HostListener('pointerdown', ['$event'])
+  // private onPointerDown(event: PointerEvent): void {
+  //   event.stopPropagation();
+  //   this.viewControlService.dragStart(this.selfComponent, this.el);
+  //
+  //   this.draggingS2 = true;
+  //   this.dragStart.emit(event);
+  // }
+  //
+  // @HostListener('document:pointermove', ['$event'])
+  // private onDocumentPointerMove(event: PointerEvent): void {
+  //   if (this.draggingS2) {
+  //     this.dragMove.emit(event);
+  //     // if (this.timeoutS2 !== undefined) {
+  //     //   window.clearTimeout(this.timeoutS2);
+  //     // }
+  //     // this.timeoutS2 = window.setTimeout(() => {
+  //     //   if (this.draggingS2) {
+  //     //     this.viewControlService.onMouseMove(event);
+  //     //   }
+  //     // }, 100);
+  //   }
+  // }
+  //
+  // @HostListener('document:pointerup', ['$event'])
+  // private onDocumentPointerUp(event: PointerEvent) {
+  //   if (this.draggingS2) {
+  //     this.draggingS2 = false;
+  //     this.dragEnd.emit(event);
+  //   }
+  // }
 
   constructor(
     private resolver: ComponentFactoryResolver,

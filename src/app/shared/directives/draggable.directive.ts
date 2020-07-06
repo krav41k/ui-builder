@@ -17,7 +17,6 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('pointerdown', ['$event'])
   private onPointerDown(event: PointerEvent): void {
-    console.log('pointer down directive');
     this.dragging = true;
     this.dragStart.emit(event);
   }

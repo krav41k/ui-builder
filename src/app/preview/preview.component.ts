@@ -22,7 +22,7 @@ export class PreviewComponent implements OnInit, AfterViewInit {
     private componentsStorageService: ComponentsStorageService,
     private viewControlService: ViewControlService,
     private renderer: Renderer2,
-    private componentsSS: ComponentsStorageService
+    private componentsSS: ComponentsStorageService,
   ) {
     this.viewControlService.renderer = renderer;
   }

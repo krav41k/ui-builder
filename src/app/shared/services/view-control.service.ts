@@ -4,19 +4,21 @@ import {ExtendedModelClass, ModelClass, SimpleModelClass} from '../../object-mod
 @Injectable()
 export class ViewControlService {
 
-  renderer: Renderer2;
+  public renderer: Renderer2;
 
   private draggableObject;
   private dragOverObject;
+  public draggableClientRect: ClientRect;
   private dragOverEl: ElementRef;
   private dragOverClientRect: ClientRect;
   private dragOverPrimaryBoxShadow: string;
   private firstHalf = true;
 
-  dragStart(obj) {
+  dragStart(obj, el: ElementRef) {
     if (this.draggableObject === undefined) {
       this.dragOverObject = undefined;
       this.draggableObject = obj;
+      this.draggableClientRect = el.nativeElement.getBoundingClientRect();
     }
   }
 
@@ -35,11 +37,12 @@ export class ViewControlService {
     }
   }
 
-  dragEnd() {
+  dragEnd(event?: PointerEvent, obj?: ModelClass) {
     if (this.draggableObject !== undefined) {
-      this.processMove(this.draggableObject, this.dragOverObject, this.firstHalf);
-      this.draggableObject = undefined;
+      const target = obj !== undefined ? obj : this.dragOverObject;
+      this.processMove(this.draggableObject, target, this.firstHalf, event);
       this.dragClear();
+      this.draggableObject = undefined;
     }
   }
 
@@ -49,20 +52,6 @@ export class ViewControlService {
       this.dragOverPrimaryBoxShadow === ''
         ? this.renderer.removeStyle(this.dragOverEl.nativeElement, 'boxShadow')
         : this.renderer.setStyle(this.dragOverEl.nativeElement, 'boxShadow', this.dragOverPrimaryBoxShadow);
-    }
-  }
-
-  onMouseMove(event: MouseEvent) {
-    if (this.draggableObject !== undefined) {
-      let element;
-      let display;
-      const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
-      display = item.style.display;
-      item.style.display = 'none';
-      element = document.elementFromPoint(event.x, event.y);
-      item.style.display = display;
-      // this.dragOver(this.selfComponent.id, this.el, event);
-      console.log(element);
     }
   }
 
@@ -84,38 +73,71 @@ export class ViewControlService {
     return result;
   }
 
-  processMove(component: ModelClass, target: ModelClass, firstHalf: boolean) {
-    // console.log(target.parent.order);
+  // function for find elements under another not children element
+  // onMouseMove(event: MouseEvent) {
+  //   if (this.draggableObject !== undefined) {
+  //     if (!this.checkZone(event.x, event.y, this.draggableClientRect)) {
+  //       let element;
+  //       let display;
+  //       const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
+  //       display = item.style.display;
+  //       item.style.display = 'none';
+  //       element = document.elementFromPoint(event.x, event.y);
+  //       item.style.display = display;
+  //       console.log(element);
+  //     }
+  //   }
+  // }
+
+  checkZone(x, y): boolean {
+    const draggableCR = this.draggableClientRect;
+    return draggableCR.left < x && draggableCR.right > x ? draggableCR.top < y && draggableCR.bottom > y : false;
+  }
+
+  processMove(component: ModelClass, target: ModelClass, firstHalf: boolean, event?: PointerEvent) {
+    console.log(component);
+    if (event !== undefined && this.checkZone(event.x, event.y)) {
+        return false;
+    }
     if (target instanceof SimpleModelClass) {
       if (component.parent === target.parent) {
         this.changeOrder(component, target, firstHalf, component.parent);
       } else {
-        this.changeParent(component, target, firstHalf, target.parent);
+        this.changeParent(component, firstHalf, target.parent, target);
       }
-      target.parent.componentRef.instance.rerender().then();
     } else {
-
+      if (component.parent.id === target.id) {
+        this.shiftOrder(component, firstHalf, target);
+      } else {
+        this.changeParent(component, firstHalf, target);
+      }
     }
-    // console.log(target.parent?.order);
   }
+
 
   shiftOrder(component: ModelClass, shift: boolean, parent: ExtendedModelClass) {
     parent.order.splice(parent.order.indexOf(component.id), 1);
     shift ? parent.order.unshift(component.id) : parent.order.push(component.id);
+    parent.componentRef.instance.rerender().then();
   }
 
-  changeParent(component: ModelClass, target: ModelClass, firstHalf: boolean, parent: ExtendedModelClass) {
+  changeParent(component: ModelClass, firstHalf: boolean, parent: ExtendedModelClass, target?: ModelClass) {
     component.parent.order.splice(parent.order.indexOf(component.id), 1);
     component.parent.subObjectsList.delete(component.id);
     component.parent.componentRef.instance.rerender().then();
 
     component.parent = parent;
 
-    const targetIndex = parent.order.indexOf(target.id);
+    if (target !== undefined) {
+      const targetIndex = parent.order.indexOf(target.id);
+      const insertionIndex = firstHalf ? targetIndex : targetIndex + 1;
+      parent.order.splice(insertionIndex, 0, component.id);
+    } else {
+      firstHalf ? parent.order.unshift(component.id) : parent.order.push(component.id);
+    }
     component.parent.subObjectsList.set(component.id, component);
     component.level = component.parent.level + 1;
-    const insertionIndex = firstHalf ? targetIndex : targetIndex + 1;
-    parent.order.splice(insertionIndex, 0, component.id);
+    parent.componentRef.instance.rerender().then();
   }
 
   changeOrder(component: ModelClass, target: ModelClass, firstHalf: boolean, parent: ExtendedModelClass) {
@@ -123,5 +145,6 @@ export class ViewControlService {
     const insertionIndex = firstHalf ? targetIndex : targetIndex + 1;
     parent.order.splice(parent.order.indexOf(component.id), 1);
     parent.order.splice(insertionIndex, 0, component.id);
+    parent.componentRef.instance.rerender().then();
   }
 }

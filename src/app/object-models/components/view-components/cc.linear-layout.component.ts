@@ -16,9 +16,9 @@ import {ViewControlService} from '../../../shared/services/view-control.service'
       <ng-container #container>
       </ng-container>
 
-      <cc-preview-linear-layout
-        *cdDraggableHelper="null;dragMove: dragMove;dragEnd: dragEnd"
-      ></cc-preview-linear-layout>
+<!--      <cc-preview-linear-layout-->
+<!--        *cdDraggableHelper="null;dragMove: dragMove;dragEnd: dragEnd"-->
+<!--      ></cc-preview-linear-layout>-->
   `,
   styleUrls: ['./style.scss']
 })
