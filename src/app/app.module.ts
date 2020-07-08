@@ -17,6 +17,7 @@ import {CdkTreeModule} from '@angular/cdk/tree';
 import {TreeBranchComponent} from './components-tree/tree-branch.component';
 import {TreeControlService} from './shared/services/tree-control.service';
 import {ViewControlService} from './shared/services/view-control.service';
+import { ComponentManagerComponent } from './component-manager/component-manager.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {ViewControlService} from './shared/services/view-control.service';
     PreviewComponent,
     ComponentsTreeComponent,
     TreeBranchComponent,
+    ComponentManagerComponent,
   ],
   imports: [
     BrowserModule,

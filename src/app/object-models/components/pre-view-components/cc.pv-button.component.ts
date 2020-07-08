@@ -24,6 +24,6 @@ export class CCPVButtonComponent extends PreviewComponentClass implements AfterV
   blueprint = new Map<string, string>([]);
 
   ngAfterViewInit(): void {
-    this.styleApplier();
+    this.applyStyle(this.el);
   }
 }

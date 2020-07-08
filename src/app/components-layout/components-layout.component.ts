@@ -60,6 +60,9 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
         {title: 'Select', viewComponent: 'MatSelect', preViewComponent: undefined, type: 'simple'},
         {title: 'Slider', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
         {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
+        {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
+        {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
+        {title: 'Slide', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
       ]],
       ['Navigation', [
         {title: 'Menu', viewComponent: 'MatMenu', preViewComponent: undefined, type: 'simple'},

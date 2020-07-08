@@ -1,4 +1,4 @@
-import {Directive, EventEmitter, HostBinding, HostListener, Output, ElementRef, OnInit} from '@angular/core';
+import {Directive, EventEmitter, HostListener, Output, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[appDraggable]'

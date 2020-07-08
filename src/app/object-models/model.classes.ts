@@ -1,4 +1,4 @@
-import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2} from '@angular/core';
+import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, ViewChild} from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {ViewControlService} from '../shared/services/view-control.service';
 
@@ -12,27 +12,28 @@ export interface ModelInterface {
   level: number;
   componentRef?;
 
-  style?: string;
   flexData?: any;
 }
 
 // DataClasses:
 // Simple class
 export class SimpleModelClass implements ModelInterface {
-  style;
+  public style;
+  public childrenStyle;
 
   constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
 }
 
 // Extended class
-export class ExtendedModelClass implements ModelInterface {
-  style;
+export class ExtendedModelClass extends SimpleModelClass {
   subObjectsList = new Map<number, any>();
   order = [];
   componentRef;
   nestedSwitch = true;
 
-  constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
+  constructor(parent: ExtendedModelClass, type, id: number, name, level) {
+    super(parent, type, id, name, level);
+  }
 
   addObject(obj: ModelClass, id) {
     this.subObjectsList.set(id, obj);
@@ -47,10 +48,11 @@ export class PreviewComponentClass {
 
   el;
   blueprint;
+  selfComponent: any;
 
-  styleApplier() {
+  applyStyle(el: ElementRef) {
     for (const item of this.blueprint) {
-      this.el.nativeElement.style[item[0]] = item[1];
+      el.nativeElement.style[item[0]] = item[1];
     }
   }
 }
@@ -65,14 +67,21 @@ export class SimpleComponentClass extends PreviewComponentClass {
   selfComponent: SimpleModelClass;
 
   private previousPosition: {clientX: number; clientY: number} = {clientX: 0, clientY: 0};
-  public draggingS1 = false;
+  private draggingS1 = false;
   private timeoutS1;
+
+
+  @ViewChild('coveredComponent', { read: ElementRef }) private childrenEl: ElementRef;
+  @ViewChild('coveredComponent', {read: ElementRef}) private set coveredComponent(element: ElementRef) {
+    element.nativeElement.style.pointerEvents = 'none';
+  }
 
   // pointer events for directive dragging strategy
   @HostListener('pointerdown', ['$event'])
   private onDragStart(event: PointerEvent): void {
     event.stopPropagation();
 
+    this.componentsSS.selectedComponentsSteam$.next(this.selfComponent);
     this.viewControlService.dragStart(this.selfComponent, this.el);
 
     this.draggingS1 = true;
@@ -107,6 +116,7 @@ export class SimpleComponentClass extends PreviewComponentClass {
 
   @HostListener('dragexit', ['$event'])
   private onDragLeave(event: DragEvent) {
+    console.log('drag exit');
     event.stopPropagation();
 
     if (!this.draggingS1) {
@@ -123,26 +133,28 @@ export class SimpleComponentClass extends PreviewComponentClass {
     }
   }
 
-  constructor(public viewControlService: ViewControlService) {
+  constructor(public viewControlService: ViewControlService, public componentsSS: ComponentsStorageService, public el: ElementRef) {
     super();
   }
 
   styleProcessor() {
-    if (this.selfComponent !== undefined) {
-      if (this.selfComponent.style === undefined) {
-        this.styleApplier();
-        this.selfComponent.style = this.el.nativeElement.style.cssText;
-      } else {
-        this.el.nativeElement.style.cssText = this.selfComponent.style;
-      }
+    if (this.selfComponent.style === undefined) {
+      this.applyStyle(this.el);
+      this.selfComponent.style = this.el.nativeElement.style.cssText;
     } else {
-      this.styleApplier();
+      this.el.nativeElement.style.cssText = this.selfComponent.style;
+    }
+    if (this.selfComponent.childrenStyle === undefined ) {
+      this.applyStyle(this.childrenEl);
+      this.selfComponent.childrenStyle = this.childrenEl.nativeElement.style.cssText;
+    } else {
+      this.childrenEl.nativeElement.style.cssText = this.selfComponent.childrenStyle;
     }
   }
 }
 
 // Extended component class
-export class ExtendedComponentClass extends SimpleComponentClass {
+export class ExtendedComponentClass extends PreviewComponentClass {
 
   @Input() set component(component: ExtendedModelClass) {
     this.selfComponent = component;
@@ -160,60 +172,107 @@ export class ExtendedComponentClass extends SimpleComponentClass {
 
   private draggingS2 = false;
   private timeoutS2;
-  // dragStart = new EventEmitter<PointerEvent>();
-  // dragMove = new EventEmitter<PointerEvent>();
-  // dragEnd = new EventEmitter<PointerEvent>();
+  private previousPosition: {clientX: number; clientY: number} = {clientX: 0, clientY: 0};
+  dragStart = new EventEmitter<PointerEvent>();
+  dragMove = new EventEmitter<PointerEvent>();
+  dragEnd = new EventEmitter<PointerEvent>();
 
-  @HostListener('pointerup', ['$event']) onWedding(event) {
+  @HostListener('pointerup') onWedding() {
     if (this.componentsSS.newComponentCell === null) {
       this.componentsSS.onWedding(this.selfComponent.id);
     }
+  }
 
-    // if (!this.draggingS2) {
-    //   this.viewControlService.dragEnd(event, this.selfComponent);
-    // }
+  // drag events for DOM dragging strategy
+  @HostListener('dragenter', ['$event'])
+  private onDragEnter(event: DragEvent) {
+    event.stopPropagation();
+    this.viewControlService.dragEnter(this.selfComponent, this.el);
+  }
+
+  @HostListener('dragover', ['$event'])
+  private onDragOver(event: DragEvent) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    if (this.timeoutS2 !== undefined) {
+      window.clearTimeout(this.timeoutS2);
+    }
+    this.timeoutS2 = window.setTimeout(() => {
+      if (this.previousPosition.clientX !== event.clientX && this.previousPosition.clientY !== event.clientY) {
+        this.previousPosition = {clientX: event.clientX, clientY: event.clientY};
+        this.viewControlService.dragOver(event);
+      }
+    }, 10);
+  }
+
+  @HostListener('dragexit', ['$event'])
+  private onDragLeave(event: DragEvent) {
+    console.log('drag exit');
+    event.stopPropagation();
+
+    this.viewControlService.dragClear();
+  }
+
+  @HostListener('dragend', ['$event'])
+  private onDragEnd(event) {
+    event.stopPropagation();
+
+    this.viewControlService.dragEnd();
   }
 
   // // pointer events for directive dragging strategy
-  // @HostListener('pointerdown', ['$event'])
-  // private onPointerDown(event: PointerEvent): void {
-  //   event.stopPropagation();
-  //   this.viewControlService.dragStart(this.selfComponent, this.el);
-  //
-  //   this.draggingS2 = true;
-  //   this.dragStart.emit(event);
-  // }
-  //
-  // @HostListener('document:pointermove', ['$event'])
-  // private onDocumentPointerMove(event: PointerEvent): void {
-  //   if (this.draggingS2) {
-  //     this.dragMove.emit(event);
-  //     // if (this.timeoutS2 !== undefined) {
-  //     //   window.clearTimeout(this.timeoutS2);
-  //     // }
-  //     // this.timeoutS2 = window.setTimeout(() => {
-  //     //   if (this.draggingS2) {
-  //     //     this.viewControlService.onMouseMove(event);
-  //     //   }
-  //     // }, 100);
-  //   }
-  // }
-  //
-  // @HostListener('document:pointerup', ['$event'])
-  // private onDocumentPointerUp(event: PointerEvent) {
-  //   if (this.draggingS2) {
-  //     this.draggingS2 = false;
-  //     this.dragEnd.emit(event);
-  //   }
-  // }
+  @HostListener('pointerdown', ['$event'])
+  private onPointerDown(event: PointerEvent): void {
+    event.stopPropagation();
+    this.componentsSS.selectedComponentsSteam$.next(this.selfComponent);
+    this.viewControlService.dragStart(this.selfComponent, this.el);
+
+    this.draggingS2 = true;
+    this.dragStart.emit(event);
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  private onDocumentPointerMove(event: PointerEvent): void {
+    if (this.draggingS2) {
+      this.dragMove.emit(event);
+    }
+    //   if (this.timeoutS2 !== undefined) {
+    //     window.clearTimeout(this.timeoutS2);
+    //   }
+    //   this.timeoutS2 = window.setTimeout(() => {
+    //     if (this.draggingS2) {
+    //       this.viewControlService.onMouseMove(event);
+    //     }
+    //   }, 100);
+  }
+
+  @HostListener('document:pointerup', ['$event'])
+  private onDocumentPointerUp(event: PointerEvent) {
+    if (this.draggingS2) {
+      this.draggingS2 = false;
+      this.dragEnd.emit(event);
+      this.viewControlService.dragEnd(event);
+    }
+  }
 
   constructor(
     private resolver: ComponentFactoryResolver,
-    private componentsSS: ComponentsStorageService,
     public el: ElementRef,
-    viewControlService: ViewControlService,
+    private viewControlService: ViewControlService,
+    private componentsSS: ComponentsStorageService,
   ) {
-    super(viewControlService);
+    super();
+
+  }
+
+  styleProcessing() {
+    if (this.selfComponent.style === undefined) {
+      this.applyStyle(this.el);
+      this.selfComponent.style = this.el.nativeElement.style.cssText;
+    } else {
+      this.el.nativeElement.style.cssText = this.selfComponent.style;
+    }
   }
 
   async rerender() {

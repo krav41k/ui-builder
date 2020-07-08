@@ -17,6 +17,11 @@ import {ViewControlService} from '../shared/services/view-control.service';
 })
 export class PreviewComponent implements OnInit, AfterViewInit {
   @ViewChild('container', { read: ViewContainerRef }) containerRef;
+
+  @HostListener('dragenter') private onDragEnter() {
+    this.viewControlService.dragClear();
+  }
+
   constructor(
     private resolver: ComponentFactoryResolver,
     private componentsStorageService: ComponentsStorageService,

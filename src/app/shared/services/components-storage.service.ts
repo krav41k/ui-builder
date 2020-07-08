@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ExtendedModelClass, ModelClass, ModelInterface, SimpleModelClass} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 
 @Injectable()
 export class ComponentsStorageService {
@@ -10,9 +10,12 @@ export class ComponentsStorageService {
   public componentsList: Map<number, ModelClass>
     = new Map<number, ModelClass>([[0, this.root]]);
   public componentsSteam$ = new BehaviorSubject(this.componentsList);
+  private selectedComponentCoordinates = {x: 0, y: 0};
   public idCounter = 1;
   private newComponentData: { componentClass, componentType, componentName };
   public newComponentCell = null;
+
+  public selectedComponentsSteam$: BehaviorSubject<ModelClass> = new BehaviorSubject(this.root);
 
   onPointerUp() {
     setTimeout(() => {
@@ -54,5 +57,13 @@ export class ComponentsStorageService {
 
   onWedding(data: number | any) {
     typeof data === 'number' ? this.newComponentCell = data : this.newComponentData = data;
+  }
+
+  // only for extended components
+  selectComponent(component: ModelClass, event: PointerEvent) {
+    if (this.selectedComponentCoordinates.x !== event.x && this.selectedComponentCoordinates.y !== event.y) {
+      this.selectedComponentCoordinates = {x: event.x, y: event.y};
+      this.selectedComponentsSteam$.next(component);
+    }
   }
 }

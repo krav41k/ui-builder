@@ -16,9 +16,9 @@ import {ViewControlService} from '../../../shared/services/view-control.service'
       <ng-container #container>
       </ng-container>
 
-<!--      <cc-preview-linear-layout-->
-<!--        *cdDraggableHelper="null;dragMove: dragMove;dragEnd: dragEnd"-->
-<!--      ></cc-preview-linear-layout>-->
+      <cc-preview-linear-layout
+        *cdDraggableHelper="null;dragMove: dragMove;dragEnd: dragEnd"
+      ></cc-preview-linear-layout>
   `,
   styleUrls: ['./style.scss']
 })
@@ -35,19 +35,16 @@ export class CCLinearLayoutComponent extends ExtendedComponentClass implements A
 
   constructor(
     resolver: ComponentFactoryResolver,
-    componentsSS: ComponentsStorageService,
+    el: ElementRef,
     viewControlService: ViewControlService,
-    public el: ElementRef
+    componentsSS: ComponentsStorageService
   ) {
-    super(resolver, componentsSS, el, viewControlService);
+    super(resolver, el, viewControlService, componentsSS);
   }
 
   ngAfterViewInit() {
-    this.styleProcessor();
-    if (this.selfComponent !== undefined) {
-      if (this.selfComponent.order !== undefined) {
-          this.rerender().then();
-      }
-    }
+    this.el.nativeElement.id = this.selfComponent.id;
+    this.styleProcessing();
+    this.rerender().then();
   }
 }

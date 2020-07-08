@@ -16,9 +16,9 @@
 .components-container {
   display: flex;
   flex-direction: column;
-  width: 500px;
   height: 100%;
   bottom: 0;
+  flex: 20%;
 }
 
 app-components-layout {
@@ -37,7 +37,19 @@ app-components-tree {
   box-sizing: border-box;
 }
 
+.view-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  bottom: 0;
+  flex: 80%;
+}
+
 app-preview {
-  flex: 75%;
+  flex: 2.5;
+}
+
+app-component-manager {
+  flex: 1;
 }
 

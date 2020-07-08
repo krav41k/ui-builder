@@ -20,6 +20,6 @@ export class CCPVLinearLayoutComponent extends PreviewComponentClass implements 
   }
 
   ngAfterViewInit() {
-    this.styleApplier();
+    this.applyStyle(this.el);
   }
 }

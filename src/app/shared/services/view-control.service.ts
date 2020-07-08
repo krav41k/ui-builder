@@ -1,5 +1,6 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
 import {ExtendedModelClass, ModelClass, SimpleModelClass} from '../../object-models/model.classes';
+import {ComponentsStorageService} from './components-storage.service';
 
 @Injectable()
 export class ViewControlService {
@@ -13,6 +14,8 @@ export class ViewControlService {
   private dragOverClientRect: ClientRect;
   private dragOverPrimaryBoxShadow: string;
   private firstHalf = true;
+
+  constructor(private componentsSS: ComponentsStorageService) {}
 
   dragStart(obj, el: ElementRef) {
     if (this.draggableObject === undefined) {
@@ -37,11 +40,17 @@ export class ViewControlService {
     }
   }
 
-  dragEnd(event?: PointerEvent, obj?: ModelClass) {
+  dragEnd(event?: PointerEvent) {
     if (this.draggableObject !== undefined) {
-      const target = obj !== undefined ? obj : this.dragOverObject;
-      this.processMove(this.draggableObject, target, this.firstHalf, event);
-      this.dragClear();
+      if (event !== undefined) {
+        const dragOverObject = this.findObject(event);
+        if (dragOverObject !== undefined) {
+          this.processMove(this.draggableObject, dragOverObject, this.firstHalf, event);
+        }
+      } else if (this.dragOverObject !== undefined) {
+        this.processMove(this.draggableObject, this.dragOverObject, this.firstHalf);
+        this.dragClear();
+      }
       this.draggableObject = undefined;
     }
   }
@@ -76,7 +85,7 @@ export class ViewControlService {
   // function for find elements under another not children element
   // onMouseMove(event: MouseEvent) {
   //   if (this.draggableObject !== undefined) {
-  //     if (!this.checkZone(event.x, event.y, this.draggableClientRect)) {
+  //     if (!this.checkZone(event.x, event.y)) {
   //       let element;
   //       let display;
   //       const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
@@ -84,10 +93,24 @@ export class ViewControlService {
   //       item.style.display = 'none';
   //       element = document.elementFromPoint(event.x, event.y);
   //       item.style.display = display;
-  //       console.log(element);
+  //       console.log(element.id);
+  //       console.log(this.componentsSS.componentsList.get(element));
   //     }
   //   }
   // }
+
+  findObject(event: PointerEvent): ModelClass {
+    if (!this.checkZone(event.x, event.y)) {
+      let element;
+      // let display;
+      // const item: HTMLElement = document.elementFromPoint(event.x, event.y) as HTMLElement;
+      // display = item.style.display;
+      // item.style.display = 'none';
+      element = document.elementFromPoint(event.x, event.y) as HTMLElement;
+      // item.style.display = display;
+      return element.id !== '' ? this.componentsSS.componentsList.get(+element.id) : undefined;
+    }
+  }
 
   checkZone(x, y): boolean {
     const draggableCR = this.draggableClientRect;
@@ -95,11 +118,10 @@ export class ViewControlService {
   }
 
   processMove(component: ModelClass, target: ModelClass, firstHalf: boolean, event?: PointerEvent) {
-    console.log(component);
-    if (event !== undefined && this.checkZone(event.x, event.y)) {
-        return false;
-    }
-    if (target instanceof SimpleModelClass) {
+    // if (event !== undefined && this.checkZone(event.x, event.y)) {
+    //     return false;
+    // }
+    if (!(target instanceof ExtendedModelClass)) {
       if (component.parent === target.parent) {
         this.changeOrder(component, target, firstHalf, component.parent);
       } else {
@@ -122,7 +144,7 @@ export class ViewControlService {
   }
 
   changeParent(component: ModelClass, firstHalf: boolean, parent: ExtendedModelClass, target?: ModelClass) {
-    component.parent.order.splice(parent.order.indexOf(component.id), 1);
+    component.parent.order.splice(component.parent.order.indexOf(component.id), 1);
     component.parent.subObjectsList.delete(component.id);
     component.parent.componentRef.instance.rerender().then();
 
