@@ -1,8 +1,45 @@
 .main-container {
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   bottom: 0;
   background: #e0e0e0;
+}
+
+.title {
+  background: yellow;
+  font-size: 20px;
+  font-family: 'Hammersmith One', sans-serif;
+  padding: 10px 10px 10px 20px;
+}
+
+.sc-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: lightslategrey;
+  padding: 10px 20px;
+}
+
+mat-expansion-panel {
+  background: none;
+}
+
+.property-applier-kit {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons-kit {
+  height: 52px;
+
+  button {
+    margin-right: 5px;
+  }
 }

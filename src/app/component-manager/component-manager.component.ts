@@ -9,14 +9,27 @@ import {Subscription} from 'rxjs';
 })
 export class ComponentManagerComponent implements OnInit, OnDestroy {
 
+  // sc - selected component
   public visibility = true;
+  public scId;
+  public scName;
+  public selectedComponent;
   sub: Subscription;
+
+  // layout
+
+  layoutWidth = '100%';
+  layoutHeight = '100%';
 
   constructor(
     componentsSS: ComponentsStorageService,
   ) {
     this.sub = componentsSS.selectedComponentsSteam$.subscribe((component) => {
       console.log(component);
+      console.log(component.type);
+      this.selectedComponent = component;
+      this.scName = component.name;
+      this.scId = component.id;
     });
   }
 
