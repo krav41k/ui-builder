@@ -9,6 +9,8 @@
       <div>{{scName}}</div>
     </div>
 
+    <mat-divider></mat-divider>
+
     <mat-accordion>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -16,6 +18,7 @@
             Layout
           </mat-panel-title>
         </mat-expansion-panel-header>
+
         <div class="property-applier-kit">
           <mat-form-field appearance="outline">
             <mat-label>Font size</mat-label>
@@ -39,88 +42,34 @@
               <mat-icon>close</mat-icon>
             </button>
           </div>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Component properties
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Color</mat-label>
-            <mat-select>
-              <mat-option value="primary">Primary</mat-option>
-              <mat-option value="accent">Accent</mat-option>
-              <mat-option value="warn">Warn</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <div class="buttons-kit">
-            <button mat-icon-button>
-              <mat-icon>done</mat-icon>
-            </button>
-            <button mat-icon-button>
-              <mat-icon>close</mat-icon>
-            </button>
+      <ng-template [ngIf]="scType">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Component properties
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div *ngFor="let item of componentPropertiesList | keyvalue" class="property-applier-kit">
+            <div [ngSwitch]="item.value.type">
+              <mat-form-field *ngSwitchCase="'input'" appearance="outline">
+                <mat-label>{{item.value.name}}</mat-label>
+                <input matInput [(ngModel)]="item.value.floatValue" placeholder="value">
+              </mat-form-field>
+              <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+                <mat-label>{{item.value.name}}</mat-label>
+                <mat-select [(ngModel)]="item.value.floatValue">
+                  <mat-option *ngFor="let option of item.value.availableValues" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-        <div class="property-applier-kit">
-          <mat-form-field appearance="outline">
-            <mat-label>Font size</mat-label>
-            <input matInput type="number" placeholder="Ex. 12">
-          </mat-form-field>
-        </div>
-      </mat-expansion-panel>
+        </mat-expansion-panel>
+      </ng-template>
     </mat-accordion>
   </div>
 </ng-template>
