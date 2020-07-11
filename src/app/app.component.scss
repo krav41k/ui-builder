@@ -3,6 +3,7 @@
   flex-direction: column;
   margin: 0;
   padding: 0;
+  bottom: 0;
   height: 100%;
   width: 100%;
 }
@@ -11,6 +12,9 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  position: absolute;
+  top: 64px;
+  bottom: 0;
 }
 
 .components-container {
@@ -43,6 +47,7 @@ app-components-tree {
   height: 100%;
   bottom: 0;
   flex: 80%;
+  overflow: hidden;
 }
 
 app-preview {
@@ -51,5 +56,7 @@ app-preview {
 
 app-component-manager {
   flex: 1;
+  height: 100%;
+  overflow: hidden;
 }
 

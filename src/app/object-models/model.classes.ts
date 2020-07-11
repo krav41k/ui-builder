@@ -10,7 +10,7 @@ export interface ModelInterface {
   name: string;
   id: number;
   level: number;
-  componentRef?;
+  componentRef;
 
   flexData?: any;
 }
@@ -19,6 +19,7 @@ export interface ModelInterface {
 // Simple class
 export class SimpleModelClass implements ModelInterface {
   public style;
+  public componentRef;
   public childrenStyle;
 
   constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
@@ -26,10 +27,9 @@ export class SimpleModelClass implements ModelInterface {
 
 // Extended class
 export class ExtendedModelClass extends SimpleModelClass {
-  subObjectsList = new Map<number, any>();
-  order = [];
-  componentRef;
-  nestedSwitch = true;
+  public subObjectsList = new Map<number, any>();
+  public order = [];
+  public nestedSwitch = true;
 
   constructor(parent: ExtendedModelClass, type, id: number, name, level) {
     super(parent, type, id, name, level);
@@ -50,8 +50,8 @@ export class PreviewComponentClass {
   blueprint;
   selfComponent: any;
 
-  applyStyle(el: ElementRef) {
-    for (const item of this.blueprint) {
+  applyStyle(el: ElementRef, blueprint) {
+    for (const item of blueprint) {
       el.nativeElement.style[item[0]] = item[1];
     }
   }
@@ -65,6 +65,7 @@ export class SimpleComponentClass extends PreviewComponentClass {
   }
 
   selfComponent: SimpleModelClass;
+  secondaryBlueprint;
 
   private previousPosition: {clientX: number; clientY: number} = {clientX: 0, clientY: 0};
   private draggingS1 = false;
@@ -139,13 +140,13 @@ export class SimpleComponentClass extends PreviewComponentClass {
 
   styleProcessor() {
     if (this.selfComponent.style === undefined) {
-      this.applyStyle(this.el);
+      this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
     } else {
       this.el.nativeElement.style.cssText = this.selfComponent.style;
     }
     if (this.selfComponent.childrenStyle === undefined ) {
-      this.applyStyle(this.childrenEl);
+      this.applyStyle(this.childrenEl, this.secondaryBlueprint);
       this.selfComponent.childrenStyle = this.childrenEl.nativeElement.style.cssText;
     } else {
       this.childrenEl.nativeElement.style.cssText = this.selfComponent.childrenStyle;
@@ -268,7 +269,7 @@ export class ExtendedComponentClass extends PreviewComponentClass {
 
   styleProcessing() {
     if (this.selfComponent.style === undefined) {
-      this.applyStyle(this.el);
+      this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
     } else {
       this.el.nativeElement.style.cssText = this.selfComponent.style;

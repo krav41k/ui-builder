@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {ExtendedModelClass, ModelClass, ModelInterface, SimpleModelClass} from '../../object-models/model.classes';
+import {ExtendedModelClass, ModelClass, SimpleModelClass} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
-import {BehaviorSubject, Subscription} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 @Injectable()
 export class ComponentsStorageService {
@@ -15,7 +15,7 @@ export class ComponentsStorageService {
   private newComponentData: { componentClass, componentType, componentName };
   public newComponentCell = null;
 
-  public selectedComponentsSteam$: BehaviorSubject<ModelClass> = new BehaviorSubject(this.root);
+  public selectedComponentsSteam$: Subject<ModelClass> = new Subject();
 
   onPointerUp() {
     setTimeout(() => {
