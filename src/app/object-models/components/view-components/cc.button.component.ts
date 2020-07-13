@@ -22,9 +22,7 @@ import {ComponentsStorageService} from '../../../shared/services/components-stor
 })
 export class CCButtonComponent extends SimpleComponentClass implements AfterViewInit {
 
-  blueprint = new Map<string, string>([
-
-  ]);
+  blueprint = new Map<string, string>([]);
   secondaryBlueprint = new Map<string, string>([
     ['backgroundColor', 'red']
   ]);

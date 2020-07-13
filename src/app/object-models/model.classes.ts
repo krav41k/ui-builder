@@ -20,7 +20,7 @@ export interface ModelInterface {
 export class SimpleModelClass implements ModelInterface {
   public style;
   public componentRef;
-  public childrenStyle;
+  public childStyle;
 
   constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
 }
@@ -72,7 +72,7 @@ export class SimpleComponentClass extends PreviewComponentClass {
   private timeoutS1;
 
 
-  @ViewChild('coveredComponent', { read: ElementRef }) private childrenEl: ElementRef;
+  @ViewChild('coveredComponent', { read: ElementRef }) private childEl: ElementRef;
   @ViewChild('coveredComponent', {read: ElementRef}) private set coveredComponent(element: ElementRef) {
     element.nativeElement.style.pointerEvents = 'none';
   }
@@ -142,14 +142,15 @@ export class SimpleComponentClass extends PreviewComponentClass {
     if (this.selfComponent.style === undefined) {
       this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
+      console.log('test');
     } else {
       this.el.nativeElement.style.cssText = this.selfComponent.style;
     }
-    if (this.selfComponent.childrenStyle === undefined ) {
-      this.applyStyle(this.childrenEl, this.secondaryBlueprint);
-      this.selfComponent.childrenStyle = this.childrenEl.nativeElement.style.cssText;
+    if (this.selfComponent.childStyle === undefined ) {
+      this.applyStyle(this.childEl, this.secondaryBlueprint);
+      this.selfComponent.childStyle = this.childEl.nativeElement.style.cssText;
     } else {
-      this.childrenEl.nativeElement.style.cssText = this.selfComponent.childrenStyle;
+      this.childEl.nativeElement.style.cssText = this.selfComponent.childStyle;
     }
   }
 }
