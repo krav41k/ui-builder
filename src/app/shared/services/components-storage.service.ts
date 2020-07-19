@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ExtendedModelClass, ModelClass, SimpleModelClass} from '../../object-models/model.classes';
+import {ExtendedModelClass, ComponentClass, SimpleModelClass} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
 import {BehaviorSubject, Subject} from 'rxjs';
 
@@ -7,15 +7,15 @@ import {BehaviorSubject, Subject} from 'rxjs';
 export class ComponentsStorageService {
 
   public root = new ExtendedModelClass(null, CCLinearLayoutComponent, 0, 'LinearLayout', 0);
-  public componentsList: Map<number, ModelClass>
-    = new Map<number, ModelClass>([[0, this.root]]);
+  public componentsList: Map<number, ComponentClass>
+    = new Map<number, ComponentClass>([[0, this.root]]);
   public componentsSteam$ = new BehaviorSubject(this.componentsList);
   private selectedComponentCoordinates = {x: 0, y: 0};
   public idCounter = 1;
   private newComponentData: { componentClass, componentType, componentName };
   public newComponentCell = null;
 
-  public selectedComponentsSteam$: Subject<ModelClass> = new Subject();
+  public selectedComponentsSteam$: Subject<ComponentClass> = new Subject();
 
   onPointerUp() {
     setTimeout(() => {
@@ -51,7 +51,7 @@ export class ComponentsStorageService {
     this.idCounter++;
   }
 
-  bindUpdate(id: number, component: ModelClass) {
+  bindUpdate(id: number, component: ComponentClass) {
     this.componentsList.set(id, component);
   }
 
@@ -60,7 +60,7 @@ export class ComponentsStorageService {
   }
 
   // only for extended components
-  selectComponent(component: ModelClass, event: PointerEvent) {
+  selectComponent(component: ComponentClass, event: PointerEvent) {
     if (this.selectedComponentCoordinates.x !== event.x && this.selectedComponentCoordinates.y !== event.y) {
       this.selectedComponentCoordinates = {x: event.x, y: event.y};
       this.selectedComponentsSteam$.next(component);

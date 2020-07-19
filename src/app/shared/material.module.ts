@@ -34,6 +34,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {OverlayModule} from '@angular/cdk/overlay';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatRadioModule,
     MatSelectModule,
     MatSliderModule,
+    MatSlideToggleModule,
 
     MatMenuModule,
     MatSidenavModule,
@@ -89,6 +91,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatRadioModule,
     MatSelectModule,
     MatSliderModule,
+    MatSlideToggleModule,
     MatMenuModule,
     MatSidenavModule,
     MatToolbarModule,

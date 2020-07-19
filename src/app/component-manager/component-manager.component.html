@@ -34,9 +34,9 @@
             </mat-form-field>
             <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline">
               <mat-label>{{item.value.name}}</mat-label>
-              <input matInput type="text" placeholder="value" [(ngModel)]="item.value.floatValue" [matAutocomplete]="autoGroup">
+              <input matInput type="text" placeholder="value" [matAutocomplete]="autoGroup" (input)="onInput($event, item.value.availableValues)" (focus)="onFocus($event, item.value.availableValues)">
               <mat-autocomplete #autoGroup="matAutocomplete">
-                <mat-option *ngFor="let option of item.value.availableValues" [value]="option">
+                <mat-option *ngFor="let option of filteredPropertiesObservable | async" [value]="option">
                   {{option}}
                 </mat-option>
               </mat-autocomplete>
@@ -76,9 +76,9 @@
               </mat-form-field>
               <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline">
                 <mat-label>{{item.value.name}}</mat-label>
-                <input matInput type="text" placeholder="value" [matAutocomplete]="autoGroup">
+                <input matInput type="text" placeholder="value" [matAutocomplete]="autoGroup" (input)="onInput($event, item.value.availableValues)" (focus)="onFocus($event, item.value.availableValues)">
                 <mat-autocomplete #autoGroup="matAutocomplete">
-                  <mat-option *ngFor="let option of item.value.availableValues" [value]="option">
+                  <mat-option *ngFor="let option of filteredPropertiesObservable | async" [value]="option">
                     {{option}}
                   </mat-option>
                 </mat-autocomplete>
@@ -120,14 +120,58 @@
               <mat-label>Property</mat-label>
               <input #selectedProperty="matInput" matInput type="text" placeholder="property" [matAutocomplete]="autoPropertyGroup" (input)="onInput($event, allPropertiesList)" (focus)="onFocus($event, allPropertiesList)">
               <mat-autocomplete #autoPropertyGroup="matAutocomplete">
-                <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property.name">
-                  {{property.name}}
+                <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
+                  {{property}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Value</mat-label>
               <input #propertyValue="matInput" matInput placeholder="value">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Angular Material special properties
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let item of selectedComponent.flexData | keyvalue ;index as i" class="property-applier-kit">
+          <div [ngSwitch]="item.value.availableValue" style="width: 100%">
+            <div *ngSwitchCase="'label'" class="property-group-label">
+              <span>{{item.value.value}}</span>
+            </div>
+            <mat-form-field *ngSwitchCase="'string'" appearance="outline">
+              <mat-label>{{item.key}}</mat-label>
+              <input matInput [(ngModel)]="item.value.value" placeholder="value">
+            </mat-form-field>
+            <mat-form-field *ngSwitchCase="'number'" appearance="outline">
+              <mat-label>{{item.key}}</mat-label>
+              <input matInput [(ngModel)]="item.value.value" placeholder="value" type="number">
+            </mat-form-field>
+            <mat-form-field *ngSwitchCase="'boolean'" floatLabel="always" appearance="outline">
+              <mat-slide-toggle [(ngModel)]="item.value.value"><span class="text-invisible">{{item.key}}</span></mat-slide-toggle>
+              <textarea matInput hidden></textarea>
+            </mat-form-field>
+            <mat-form-field *ngIf="isArray(item.value.availableValue)" appearance="outline">
+              <mat-label>{{item.key}}</mat-label>
+              <input
+                matInput
+                [(ngModel)]="item.value.value"
+                type="text"
+                placeholder="property"
+                [matAutocomplete]="autoPropertyGroup"
+                (input)="onInput($event, item.value.availableValue)"
+                (focus)="onFocus($event, item.value.availableValue)"
+              >
+              <mat-autocomplete #autoPropertyGroup="matAutocomplete">
+                <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
+                  {{property}}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
           </div>
         </div>

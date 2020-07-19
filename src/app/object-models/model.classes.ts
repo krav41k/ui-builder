@@ -1,8 +1,10 @@
 import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, ViewChild} from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {ViewControlService} from '../shared/services/view-control.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
-export type ModelClass = SimpleModelClass | ExtendedModelClass;
+export type ComponentClass = SimpleModelClass | ExtendedModelClass;
+// export type
 
 export interface ModelInterface {
   parent: ExtendedModelClass;
@@ -12,7 +14,7 @@ export interface ModelInterface {
   level: number;
   componentRef;
 
-  flexData?: any;
+  flexData?: Map<any, any>;
 }
 
 // DataClasses:
@@ -20,7 +22,39 @@ export interface ModelInterface {
 export class SimpleModelClass implements ModelInterface {
   public style;
   public componentRef;
+  flexData = new Map<string, {value: any, availableValue: any}>([
+    ['badge', {value: 'matBadge', availableValue: 'label'}],
+    ['badgeMessage', {value: '', availableValue: 'string'}],
+    ['badgeColor', {value: '', availableValue: ['primary', 'accent', 'warn']}],
+    ['badgeDisabled', {value: false, availableValue: 'boolean'}],
+    ['badgeOverlap', {value: false, availableValue: 'boolean'}],
+    ['badgePosition',
+      {value: 'above', availableValue: ['above after', 'above before', 'below before', 'below after', 'before', 'after', 'above', 'below']}
+    ],
+    ['badgeSize', {value: 'medium', availableValue: ['small', 'medium', 'large']}],
+
+    ['ripple', {value: 'matRipple', availableValue: 'label'}],
+    ['rippleDisabled', {value: true, availableValue: 'boolean'}],
+    ['rippleAnimation', {value: true, availableValue: 'boolean'}],
+    ['rippleUnbounded', {value: true, availableValue: 'boolean'}],
+    ['rippleRadius', {value: 0, availableValue: 'number'}],
+    ['rippleColor', {value: '', availableValue: ['primary', 'accent', 'warn']}],
+
+    ['snackBar', {value: 'matSnackBar', availableValue: 'label'}],
+    ['snackBarDisabled', {value: true, availableValue: 'boolean'}],
+    ['snackBarPositionH', {value: '', availableValue: ['start', 'center', 'end', 'left', 'right']}],
+    ['snackBarPositionV', {value: '', availableValue: ['top', 'bottom']}],
+    ['snackBarMessage', {value: 'message', availableValue: 'sting'}],
+    ['snackBarAction', {value: 'done', availableValue: 'string'}],
+
+    ['tooltip', {value: 'matTooltip', availableValue: 'label'}],
+    ['tooltipDisabled', {value: true, availableValue: 'boolean'}],
+    ['tooltipMessage', {value: 'message', availableValue: 'string'}],
+    ['tooltipPosition', {value: 'left', availableValue: ['left', 'right', 'above', 'below', 'before', 'after']}],
+  ]);
+
   public childStyle;
+
 
   constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
 }
@@ -35,7 +69,7 @@ export class ExtendedModelClass extends SimpleModelClass {
     super(parent, type, id, name, level);
   }
 
-  addObject(obj: ModelClass, id) {
+  addObject(obj: ComponentClass, id) {
     this.subObjectsList.set(id, obj);
     this.order.push(id);
     this.componentRef.instance.addComponent = {id, comp: obj};
@@ -72,7 +106,7 @@ export class SimpleComponentClass extends PreviewComponentClass {
   private timeoutS1;
 
 
-  @ViewChild('coveredComponent', { read: ElementRef }) private childEl: ElementRef;
+  @ViewChild('coveredComponent', { read: ElementRef }) public childEl: ElementRef;
   @ViewChild('coveredComponent', {read: ElementRef}) private set coveredComponent(element: ElementRef) {
     element.nativeElement.style.pointerEvents = 'none';
   }
@@ -134,7 +168,12 @@ export class SimpleComponentClass extends PreviewComponentClass {
     }
   }
 
-  constructor(public viewControlService: ViewControlService, public componentsSS: ComponentsStorageService, public el: ElementRef) {
+  constructor(
+    public viewControlService: ViewControlService,
+    public componentsSS: ComponentsStorageService,
+    public el: ElementRef,
+    public snackBar: MatSnackBar
+  ) {
     super();
   }
 
@@ -142,7 +181,6 @@ export class SimpleComponentClass extends PreviewComponentClass {
     if (this.selfComponent.style === undefined) {
       this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
-      console.log('test');
     } else {
       this.el.nativeElement.style.cssText = this.selfComponent.style;
     }
@@ -151,6 +189,19 @@ export class SimpleComponentClass extends PreviewComponentClass {
       this.selfComponent.childStyle = this.childEl.nativeElement.style.cssText;
     } else {
       this.childEl.nativeElement.style.cssText = this.selfComponent.childStyle;
+    }
+  }
+
+  openSnackBar() {
+    if (!this.selfComponent.flexData.get('matSnackBarDisabled').value) {
+      this.snackBar.open(
+        this.selfComponent.flexData.get('matSnackBarMessage').value, this.selfComponent.flexData.get('matSnackBarAction').value,
+        {
+          duration: 1000,
+          horizontalPosition: this.selfComponent.flexData.get('matSnackbarPositionH').value,
+          verticalPosition: this.selfComponent.flexData.get('matSnackbarPositionV').value,
+        }
+      );
     }
   }
 }

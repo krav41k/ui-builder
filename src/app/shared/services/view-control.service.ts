@@ -1,5 +1,5 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
-import {ExtendedModelClass, ModelClass, SimpleModelClass} from '../../object-models/model.classes';
+import {ExtendedModelClass, ComponentClass, SimpleModelClass} from '../../object-models/model.classes';
 import {ComponentsStorageService} from './components-storage.service';
 
 @Injectable()
@@ -99,7 +99,7 @@ export class ViewControlService {
   //   }
   // }
 
-  findObject(event: PointerEvent): ModelClass {
+  findObject(event: PointerEvent): ComponentClass {
     if (!this.checkZone(event.x, event.y)) {
       let element;
       // let display;
@@ -117,7 +117,7 @@ export class ViewControlService {
     return draggableCR.left < x && draggableCR.right > x ? draggableCR.top < y && draggableCR.bottom > y : false;
   }
 
-  processMove(component: ModelClass, target: ModelClass, firstHalf: boolean, event?: PointerEvent) {
+  processMove(component: ComponentClass, target: ComponentClass, firstHalf: boolean, event?: PointerEvent) {
     // if (event !== undefined && this.checkZone(event.x, event.y)) {
     //     return false;
     // }
@@ -137,13 +137,13 @@ export class ViewControlService {
   }
 
 
-  shiftOrder(component: ModelClass, shift: boolean, parent: ExtendedModelClass) {
+  shiftOrder(component: ComponentClass, shift: boolean, parent: ExtendedModelClass) {
     parent.order.splice(parent.order.indexOf(component.id), 1);
     shift ? parent.order.unshift(component.id) : parent.order.push(component.id);
     parent.componentRef.instance.rerender().then();
   }
 
-  changeParent(component: ModelClass, firstHalf: boolean, parent: ExtendedModelClass, target?: ModelClass) {
+  changeParent(component: ComponentClass, firstHalf: boolean, parent: ExtendedModelClass, target?: ComponentClass) {
     component.parent.order.splice(component.parent.order.indexOf(component.id), 1);
     component.parent.subObjectsList.delete(component.id);
     component.parent.componentRef.instance.rerender().then();
@@ -162,7 +162,7 @@ export class ViewControlService {
     parent.componentRef.instance.rerender().then();
   }
 
-  changeOrder(component: ModelClass, target: ModelClass, firstHalf: boolean, parent: ExtendedModelClass) {
+  changeOrder(component: ComponentClass, target: ComponentClass, firstHalf: boolean, parent: ExtendedModelClass) {
     const targetIndex = parent.order.indexOf(target.id);
     const insertionIndex = firstHalf ? targetIndex : targetIndex + 1;
     parent.order.splice(parent.order.indexOf(component.id), 1);

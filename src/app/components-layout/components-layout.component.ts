@@ -62,12 +62,11 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
         {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
         {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
         {title: 'Slide toggle', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
-        {title: 'Slide', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
       ]],
       ['Navigation', [
         {title: 'Menu', viewComponent: 'MatMenu', preViewComponent: undefined, type: 'simple'},
-        {title: 'Sidenav', viewComponent: 'MatSidenav', preViewComponent: undefined, type: 'simple'},
-        {title: 'Toolbar', viewComponent: 'MatToolbar', preViewComponent: undefined, type: 'simple'}
+        // {title: 'Sidenav', viewComponent: 'MatSidenav', preViewComponent: undefined, type: 'simple'},
+        // {title: 'Toolbar', viewComponent: 'MatToolbar', preViewComponent: undefined, type: 'simple'}
       ]],
       ['Layout', [
         {title: 'Linear layout', viewComponent: CCLinearLayoutComponent, preViewComponent: CCPVLinearLayoutComponent, type: 'extended'},

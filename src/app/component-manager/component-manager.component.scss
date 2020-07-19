@@ -30,11 +30,13 @@
 mat-accordion {
   height: 100%;
   overflow: auto;
+  width: 100%;
 }
 
 mat-expansion-panel {
   background: none;
   overflow-y: hidden;
+  width: 100%;
 }
 
 .property-applier-kit {
@@ -71,4 +73,13 @@ mat-expansion-panel {
 
 .property-value-selection {
   margin-top: 20px;
+}
+
+.property-group-label {
+  margin: 5px;
+  width: 100%;
+  text-align: center;
+  //font-weight: bold;
+  color: gray;
+  border-bottom: solid gray 1px;
 }

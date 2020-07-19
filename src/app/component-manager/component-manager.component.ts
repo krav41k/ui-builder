@@ -34,8 +34,10 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
 
   filterEmitter: EventEmitter<any> = new EventEmitter<any>();
   filteredPropertiesObservable: Observable<any> = new Observable<any>(subscriber => {
-    this.filterEmitter.subscribe((obj) => {
-      subscriber.next(this.filter(obj.value, obj.list));
+    this.filterEmitter.subscribe((obj: {value: string, list: Map<string, PropertyItem> | string[]}) => {
+      Array.isArray(obj.list)
+        ? subscriber.next(this.filter(obj.value, obj.list))
+        : subscriber.next(this.filter(obj.value, Array.from(obj.list.values(), item => item.name)));
     });
   });
   allPropertiesList = new Map<string, PropertyItem>([
@@ -419,7 +421,7 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
       }
 
       this.selectedComponent = component;
-      this.selectedComponent = component;
+
       this.scId = component.id;
       this.scName = component.name;
       this.scType = !(component instanceof ExtendedModelClass);
@@ -506,10 +508,9 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
     obj.floatValue = obj.actualValue;
   }
 
-  filter(value: string, list: Map<string, PropertyItem>): PropertyItem[] {
+  filter(value: string, list: string[]): any {
     const filterValue = value.toLowerCase();
-
-    return Array.from(list.values()).filter(property => property.name.toLowerCase().indexOf(filterValue) === 0);
+    return list.filter(item => item.toLowerCase().indexOf(filterValue) === 0);
   }
 
   onFocus(event: FocusEvent, list: Map<string, PropertyItem>) {
@@ -541,5 +542,9 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
       list.set(obj2.toLowerCase(), item);
       this.applyStyle(item, obj1);
     }
+  }
+
+  isArray(item): boolean {
+    return Array.isArray(item);
   }
 }
