@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, IterableDiffers} from '@angular/core';
 import {ExtendedModelClass, ComponentClass, SimpleModelClass} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
 import {BehaviorSubject, Subject} from 'rxjs';
@@ -10,12 +10,16 @@ export class ComponentsStorageService {
   public componentsList: Map<number, ComponentClass>
     = new Map<number, ComponentClass>([[0, this.root]]);
   public componentsSteam$ = new BehaviorSubject(this.componentsList);
+
   private selectedComponentCoordinates = {x: 0, y: 0};
   public idCounter = 1;
   private newComponentData: { componentClass, componentType, componentName };
   public newComponentCell = null;
 
   public selectedComponentsSteam$: Subject<ComponentClass> = new Subject();
+
+  public eventsStatusSteam$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
 
   onPointerUp() {
     setTimeout(() => {
@@ -65,5 +69,12 @@ export class ComponentsStorageService {
       this.selectedComponentCoordinates = {x: event.x, y: event.y};
       this.selectedComponentsSteam$.next(component);
     }
+  }
+
+  public exportProject() {
+    // console.log(JSON.stringify(Object.assign({}, Array.from(this.componentsList.values()))));
+    // console.log(this.componentsList.values());
+    const array = [];
+
   }
 }

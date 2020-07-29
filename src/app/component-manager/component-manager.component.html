@@ -15,34 +15,14 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Layout
+            <mat-panel-title>Layout</mat-panel-title>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let item of layoutPropertiesList | keyvalue ;index as i" class="property-applier-kit">
-          <div [ngSwitch]="item.value.type">
-            <mat-form-field *ngSwitchCase="'input'" appearance="outline">
-              <mat-label>{{item.value.name}}</mat-label>
-              <input matInput [(ngModel)]="item.value.floatValue" placeholder="value">
-            </mat-form-field>
-            <mat-form-field *ngSwitchCase="'select'" appearance="outline">
-              <mat-label>{{item.value.name}}</mat-label>
-              <mat-select [(ngModel)]="item.value.floatValue">
-                <mat-option *ngFor="let option of item.value.availableValues" [value]="option">
-                  {{option}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline">
-              <mat-label>{{item.value.name}}</mat-label>
-              <input matInput type="text" placeholder="value" [matAutocomplete]="autoGroup" (input)="onInput($event, item.value.availableValues)" (focus)="onFocus($event, item.value.availableValues)">
-              <mat-autocomplete #autoGroup="matAutocomplete">
-                <mat-option *ngFor="let option of filteredPropertiesObservable | async" [value]="option">
-                  {{option}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-          </div>
-          <div *ngIf="item.value.floatValue !== item.value.actualValue" class="buttons-kit">
+        <div *ngFor="let item of layoutPropertiesList | keyvalue" class="property-applier-kit">
+
+          <flexible-input [label]="item.value.name" [data]="item.value"></flexible-input>
+
+          <div *ngIf="item.value.value !== item.value.actualValue" class="buttons-kit">
             <button mat-icon-button (click)="applyInput(item.value, 'main')">
               <mat-icon>done</mat-icon>
             </button>
@@ -53,38 +33,18 @@
         </div>
       </mat-expansion-panel>
 
-      <ng-template [ngIf]="scType">
+      <ng-template [ngIf]="scIsSimple">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Component properties
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div *ngFor="let item of componentPropertiesList | keyvalue;index as i" class="property-applier-kit">
-            <div [ngSwitch]="item.value.type">
-              <mat-form-field *ngSwitchCase="'input'" appearance="outline">
-                <mat-label>{{item.value.name}}</mat-label>
-                <input matInput [(ngModel)]="item.value.floatValue" placeholder="value">
-              </mat-form-field>
-              <mat-form-field *ngSwitchCase="'select'" appearance="outline">
-                <mat-label>{{item.value.name}}</mat-label>
-                <mat-select [(ngModel)]="item.value.floatValue">
-                  <mat-option *ngFor="let option of item.value.availableValues" [value]="option">
-                    {{option}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline">
-                <mat-label>{{item.value.name}}</mat-label>
-                <input matInput type="text" placeholder="value" [matAutocomplete]="autoGroup" (input)="onInput($event, item.value.availableValues)" (focus)="onFocus($event, item.value.availableValues)">
-                <mat-autocomplete #autoGroup="matAutocomplete">
-                  <mat-option *ngFor="let option of filteredPropertiesObservable | async" [value]="option">
-                    {{option}}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
-            <div *ngIf="item.value.floatValue !== item.value.actualValue" class="buttons-kit">
+          <div *ngFor="let item of componentPropertiesList | keyvalue" class="property-applier-kit">
+
+            <flexible-input [label]="item.value.name" [data]="item.value"></flexible-input>
+
+            <div *ngIf="item.value.value !== item.value.actualValue" class="buttons-kit">
               <button mat-icon-button (click)="applyInput(item.value, 'secondary')">
                 <mat-icon>done</mat-icon>
               </button>
@@ -106,7 +66,7 @@
           <div class="layout-selection">
             <mat-button-toggle-group #propertyGroup="matButtonToggleGroup" name="layoutSelect">
               <mat-button-toggle value="main">Layout</mat-button-toggle>
-              <mat-button-toggle [disabled]="!scType" value="secondary">Component</mat-button-toggle>
+              <mat-button-toggle [disabled]="!scIsSimple" value="secondary">Component</mat-button-toggle>
             </mat-button-toggle-group>
             <button
               mat-icon-button
@@ -115,65 +75,61 @@
               <mat-icon>done</mat-icon>
             </button>
           </div>
-          <div class="property-value-selection">
-            <mat-form-field appearance="outline">
-              <mat-label>Property</mat-label>
-              <input #selectedProperty="matInput" matInput type="text" placeholder="property" [matAutocomplete]="autoPropertyGroup" (input)="onInput($event, allPropertiesList)" (focus)="onFocus($event, allPropertiesList)">
-              <mat-autocomplete #autoPropertyGroup="matAutocomplete">
-                <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
-                  {{property}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Value</mat-label>
-              <input #propertyValue="matInput" matInput placeholder="value">
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Property</mat-label>
+            <input #selectedProperty="matInput" matInput type="text" placeholder="property" [matAutocomplete]="autoPropertyGroup" (input)="onInput($event, allPropertiesList)" (focus)="onFocus($event, allPropertiesList)">
+            <mat-autocomplete #autoPropertyGroup="matAutocomplete">
+              <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
+                {{property}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Value</mat-label>
+            <input #propertyValue="matInput" matInput placeholder="value">
+          </mat-form-field>
         </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel *ngIf="content !== undefined">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Angular Material component properties
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+          <mat-accordion>
+            <mat-expansion-panel class="insert-form-field">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{content.operationName}}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <flexible-input *ngFor="let item of content.requiredFields" [label]="item.name" [data]="item" class="insert-form-field"></flexible-input>
+              <button mat-stroked-button class="width100" (click)="addContent()">ADD</button>
+
+              <mat-accordion *ngFor="let item of content.value; index as i">
+                <mat-expansion-panel class="insert-form-field">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{content.prefix + i}}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <flexible-input *ngFor="let field of getKeys(item)" [label]="field" [data]="item" [key]="field" [inputType]="'string'" class="insert-form-field"></flexible-input>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </mat-expansion-panel>
+          </mat-accordion>
+        <flexible-input *ngFor="let item of selectedComponent.flexComponentData | keyvalue" [label]="item.key" [data]="item.value" class="property-applier-kit"></flexible-input>
       </mat-expansion-panel>
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Angular Material special properties
+            <mat-panel-title>Angular Material special properties</mat-panel-title>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let item of selectedComponent.flexData | keyvalue ;index as i" class="property-applier-kit">
-          <div [ngSwitch]="item.value.availableValue" style="width: 100%">
-            <div *ngSwitchCase="'label'" class="property-group-label">
-              <span>{{item.value.value}}</span>
-            </div>
-            <mat-form-field *ngSwitchCase="'string'" appearance="outline">
-              <mat-label>{{item.key}}</mat-label>
-              <input matInput [(ngModel)]="item.value.value" placeholder="value">
-            </mat-form-field>
-            <mat-form-field *ngSwitchCase="'number'" appearance="outline">
-              <mat-label>{{item.key}}</mat-label>
-              <input matInput [(ngModel)]="item.value.value" placeholder="value" type="number">
-            </mat-form-field>
-            <mat-form-field *ngSwitchCase="'boolean'" floatLabel="always" appearance="outline">
-              <mat-slide-toggle [(ngModel)]="item.value.value"><span class="text-invisible">{{item.key}}</span></mat-slide-toggle>
-              <textarea matInput hidden></textarea>
-            </mat-form-field>
-            <mat-form-field *ngIf="isArray(item.value.availableValue)" appearance="outline">
-              <mat-label>{{item.key}}</mat-label>
-              <input
-                matInput
-                [(ngModel)]="item.value.value"
-                type="text"
-                placeholder="property"
-                [matAutocomplete]="autoPropertyGroup"
-                (input)="onInput($event, item.value.availableValue)"
-                (focus)="onFocus($event, item.value.availableValue)"
-              >
-              <mat-autocomplete #autoPropertyGroup="matAutocomplete">
-                <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
-                  {{property}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-          </div>
+        <div *ngFor="let item of selectedComponent.angularMaterialData | keyvalue ;index as i" class="property-applier-kit">
+          <flexible-input [label]="item.key" [data]="item.value" class="width100"></flexible-input>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

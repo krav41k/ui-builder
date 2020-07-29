@@ -85,6 +85,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
   ],
   exports: [
     MatAutocompleteModule,
+    MatCheckboxModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,

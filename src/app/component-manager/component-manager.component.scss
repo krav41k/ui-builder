@@ -39,6 +39,21 @@ mat-expansion-panel {
   width: 100%;
 }
 
+mat-panel-title {
+  display: flex;
+  align-items: center;
+}
+
+mat-form-field {
+
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  &::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
 .property-applier-kit {
   width: 100%;
   display: flex;
@@ -71,15 +86,21 @@ mat-expansion-panel {
   }
 }
 
-.property-value-selection {
-  margin-top: 20px;
-}
-
 .property-group-label {
-  margin: 5px;
   width: 100%;
   text-align: center;
   //font-weight: bold;
   color: gray;
   border-bottom: solid gray 1px;
+}
+
+.insert-form-field {
+  margin-bottom: 15px;
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+.width100 {
+  width: 100%;
 }

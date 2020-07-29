@@ -1,6 +1,11 @@
 <mat-toolbar>
-  <span>Project X</span>
+  <button mat-icon-button (click)="componentsSS.exportProject()">
+    <mat-icon>
+      insert_drive_file
+    </mat-icon>
+  </button>
   <span class="spacer"></span>
-  <button mat-raised-button style="background: black">Basic</button>
+
+  <mat-slide-toggle (change)="changeState($event)">activate components</mat-slide-toggle>
   <mat-icon class="icon">delete</mat-icon>
 </mat-toolbar>

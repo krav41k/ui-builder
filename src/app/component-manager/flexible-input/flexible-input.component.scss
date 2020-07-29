@@ -1,0 +1,16 @@
+.property-group-label {
+  width: 100%;
+  text-align: center;
+  color: gray;
+  border-bottom: solid gray 1px;
+}
+
+mat-form-field {
+
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  &::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}

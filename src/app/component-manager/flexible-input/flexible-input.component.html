@@ -1,0 +1,56 @@
+<ng-container *ngIf="data">
+  <ng-template [ngIf]="key === undefined" [ngIfElse]="customKeyValue">
+    <div [ngSwitch]="data.inputType === undefined ? inputType : data.inputType" style="width: 100%">
+      <div *ngSwitchCase="'label'" class="property-group-label">
+        <span>{{data.value}}</span>
+      </div>
+      <mat-form-field *ngSwitchCase="'string'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <input matInput [(ngModel)]="data.value">
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'number'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <input matInput [(ngModel)]="data.value" type="number">
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'boolean'" floatLabel="always" appearance="outline">
+        <mat-slide-toggle [(ngModel)]="data.value"><span class="text-invisible">{{label}}</span></mat-slide-toggle>
+        <textarea matInput hidden></textarea>
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <mat-select [(ngModel)]="data.value">
+          <mat-option *ngFor="let option of data.availableValues" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </ng-template>
+  <ng-template #customKeyValue>
+    <div [ngSwitch]="data.inputType === undefined ? inputType : data.inputType" style="width: 100%">
+      <div *ngSwitchCase="'label'" class="property-group-label">
+        <span>{{data[key]}}</span>
+      </div>
+      <mat-form-field *ngSwitchCase="'string'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <input matInput [(ngModel)]="data[key]">
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'number'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <input matInput [(ngModel)]="data[key]" type="number">
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'boolean'" floatLabel="always" appearance="outline">
+        <mat-slide-toggle [(ngModel)]="data[key]"><span class="text-invisible">{{label}}</span></mat-slide-toggle>
+        <textarea matInput hidden></textarea>
+      </mat-form-field>
+      <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+        <mat-label>{{label}}</mat-label>
+        <mat-select [(ngModel)]="data[key]">
+          <mat-option *ngFor="let option of data.availableValues" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </ng-template>
+</ng-container>

@@ -1,5 +1,5 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
-import {ExtendedModelClass, ComponentClass, SimpleModelClass} from '../../object-models/model.classes';
+import {ExtendedModelClass, ComponentClass} from '../../object-models/model.classes';
 import {ComponentsStorageService} from './components-storage.service';
 
 @Injectable()

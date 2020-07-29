@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ComponentsStorageService} from '../shared/services/components-storage.service';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(public componentsSS: ComponentsStorageService) { }
 
   ngOnInit(): void {
   }
 
+  changeState(event) {
+    this.componentsSS.eventsStatusSteam$.next(event.checked);
+  }
 }

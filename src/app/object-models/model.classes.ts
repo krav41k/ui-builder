@@ -1,7 +1,15 @@
-import {ComponentFactoryResolver, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, ViewChild} from '@angular/core';
+import {
+  ComponentFactoryResolver,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input, OnDestroy,
+  ViewChild
+} from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {ViewControlService} from '../shared/services/view-control.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Subscription} from 'rxjs';
 
 export type ComponentClass = SimpleModelClass | ExtendedModelClass;
 // export type
@@ -14,7 +22,8 @@ export interface ModelInterface {
   level: number;
   componentRef;
 
-  flexData?: Map<any, any>;
+  angularMaterialData?: Map<any, any>;
+  flexComponentData?: Map<any, any>;
 }
 
 // DataClasses:
@@ -22,36 +31,39 @@ export interface ModelInterface {
 export class SimpleModelClass implements ModelInterface {
   public style;
   public componentRef;
-  flexData = new Map<string, {value: any, availableValue: any}>([
-    ['badge', {value: 'matBadge', availableValue: 'label'}],
-    ['badgeMessage', {value: '', availableValue: 'string'}],
-    ['badgeColor', {value: '', availableValue: ['primary', 'accent', 'warn']}],
-    ['badgeDisabled', {value: false, availableValue: 'boolean'}],
-    ['badgeOverlap', {value: false, availableValue: 'boolean'}],
-    ['badgePosition',
-      {value: 'above', availableValue: ['above after', 'above before', 'below before', 'below after', 'before', 'after', 'above', 'below']}
-    ],
-    ['badgeSize', {value: 'medium', availableValue: ['small', 'medium', 'large']}],
+  angularMaterialData = new Map<string, {value: any, inputType: string, availableValues?: any}>([
+    ['badge', {value: 'matBadge', inputType: 'label'}],
+    ['badgeMessage', {value: '', inputType: 'string'}],
+    ['badgeColor', {value: '', inputType: 'select', availableValues: ['primary', 'accent', 'warn']}],
+    ['badgeDisabled', {value: false, inputType: 'boolean'}],
+    ['badgeOverlap', {value: false, inputType: 'boolean'}],
+    ['badgePosition', {
+      value: 'above',
+      inputType: 'select',
+      availableValues: ['above after', 'above before', 'below before', 'below after', 'before', 'after', 'above', 'below']
+    }],
+    ['badgeSize', {value: 'medium', inputType: 'select', availableValues: ['small', 'medium', 'large']}],
 
-    ['ripple', {value: 'matRipple', availableValue: 'label'}],
-    ['rippleDisabled', {value: true, availableValue: 'boolean'}],
-    ['rippleAnimation', {value: true, availableValue: 'boolean'}],
-    ['rippleUnbounded', {value: true, availableValue: 'boolean'}],
-    ['rippleRadius', {value: 0, availableValue: 'number'}],
-    ['rippleColor', {value: '', availableValue: ['primary', 'accent', 'warn']}],
+    ['ripple', {value: 'matRipple', inputType: 'label'}],
+    ['rippleDisabled', {value: true, inputType: 'boolean'}],
+    ['rippleAnimation', {value: true, inputType: 'boolean'}],
+    ['rippleUnbounded', {value: true, inputType: 'boolean'}],
+    ['rippleRadius', {value: 0, inputType: 'number'}],
+    ['rippleColor', {value: '', inputType: 'select', availableValues: ['primary', 'accent', 'warn']}],
 
-    ['snackBar', {value: 'matSnackBar', availableValue: 'label'}],
-    ['snackBarDisabled', {value: true, availableValue: 'boolean'}],
-    ['snackBarPositionH', {value: '', availableValue: ['start', 'center', 'end', 'left', 'right']}],
-    ['snackBarPositionV', {value: '', availableValue: ['top', 'bottom']}],
-    ['snackBarMessage', {value: 'message', availableValue: 'sting'}],
-    ['snackBarAction', {value: 'done', availableValue: 'string'}],
+    ['snackBar', {value: 'matSnackBar', inputType: 'label'}],
+    ['snackBarDisabled', {value: true, inputType: 'boolean'}],
+    ['snackBarPositionH', {value: 'start', inputType: 'select', availableValues: ['start', 'center', 'end', 'left', 'right']}],
+    ['snackBarPositionV', {value: 'top', inputType: 'select', availableValues: ['top', 'bottom']}],
+    ['snackBarMessage', {value: 'message', inputType: 'sting'}],
+    ['snackBarAction', {value: 'done', inputType: 'string'}],
 
-    ['tooltip', {value: 'matTooltip', availableValue: 'label'}],
-    ['tooltipDisabled', {value: true, availableValue: 'boolean'}],
-    ['tooltipMessage', {value: 'message', availableValue: 'string'}],
-    ['tooltipPosition', {value: 'left', availableValue: ['left', 'right', 'above', 'below', 'before', 'after']}],
+    ['tooltip', {value: 'matTooltip', inputType: 'label'}],
+    ['tooltipDisabled', {value: true, inputType: 'boolean'}],
+    ['tooltipMessage', {value: 'message', inputType: 'string'}],
+    ['tooltipPosition', {value: 'left', inputType: 'select', availableValues: ['left', 'right', 'above', 'below', 'before', 'after']}],
   ]);
+  public flexComponentData;
 
   public childStyle;
 
@@ -92,7 +104,7 @@ export class PreviewComponentClass {
 }
 
 // Simple component class
-export class SimpleComponentClass extends PreviewComponentClass {
+export class SimpleComponentClass extends PreviewComponentClass implements OnDestroy {
 
   @Input() set component(component: SimpleModelClass) {
     this.selfComponent = component;
@@ -105,10 +117,19 @@ export class SimpleComponentClass extends PreviewComponentClass {
   private draggingS1 = false;
   private timeoutS1;
 
-
-  @ViewChild('coveredComponent', { read: ElementRef }) public childEl: ElementRef;
+  subscriptions: Subscription[] = [];
+  childEl: ElementRef;
+  // @ViewChild('coveredComponent', { read: ElementRef }) public childEl: ElementRef;
   @ViewChild('coveredComponent', {read: ElementRef}) private set coveredComponent(element: ElementRef) {
-    element.nativeElement.style.pointerEvents = 'none';
+    if (element !== undefined) {
+      this.childEl = element;
+
+      this.subscriptions.push(this.componentsSS.eventsStatusSteam$.subscribe(state => state
+        ? element.nativeElement.style.pointerEvents = 'auto'
+        : element.nativeElement.style.pointerEvents = 'none'
+      ));
+      this.compStyleProcessingS();
+    }
   }
 
   // pointer events for directive dragging strategy
@@ -151,7 +172,6 @@ export class SimpleComponentClass extends PreviewComponentClass {
 
   @HostListener('dragexit', ['$event'])
   private onDragLeave(event: DragEvent) {
-    console.log('drag exit');
     event.stopPropagation();
 
     if (!this.draggingS1) {
@@ -177,13 +197,25 @@ export class SimpleComponentClass extends PreviewComponentClass {
     super();
   }
 
-  styleProcessor() {
+  ngOnDestroy(): any {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  styleProcessing() {
+    this.compStyleProcessingM();
+    this.compStyleProcessingS();
+  }
+
+  compStyleProcessingM() {
     if (this.selfComponent.style === undefined) {
       this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
     } else {
       this.el.nativeElement.style.cssText = this.selfComponent.style;
     }
+  }
+
+  compStyleProcessingS() {
     if (this.selfComponent.childStyle === undefined ) {
       this.applyStyle(this.childEl, this.secondaryBlueprint);
       this.selfComponent.childStyle = this.childEl.nativeElement.style.cssText;
@@ -193,13 +225,14 @@ export class SimpleComponentClass extends PreviewComponentClass {
   }
 
   openSnackBar() {
-    if (!this.selfComponent.flexData.get('matSnackBarDisabled').value) {
+    if (!this.selfComponent.angularMaterialData.get('snackBarDisabled').value) {
       this.snackBar.open(
-        this.selfComponent.flexData.get('matSnackBarMessage').value, this.selfComponent.flexData.get('matSnackBarAction').value,
+        this.selfComponent.angularMaterialData.get('snackBarMessage').value,
+        this.selfComponent.angularMaterialData.get('snackBarAction').value,
         {
           duration: 1000,
-          horizontalPosition: this.selfComponent.flexData.get('matSnackbarPositionH').value,
-          verticalPosition: this.selfComponent.flexData.get('matSnackbarPositionV').value,
+          horizontalPosition: this.selfComponent.angularMaterialData.get('snackBarPositionH').value,
+          verticalPosition: this.selfComponent.angularMaterialData.get('snackBarPositionV').value,
         }
       );
     }
