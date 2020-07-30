@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponentClass} from '../../model.classes';
+import {PreviewComponent} from '../../model.classes';
 import {MatFormField} from '@angular/material/form-field';
 
 @Component({
@@ -10,7 +10,7 @@ import {MatFormField} from '@angular/material/form-field';
     </mat-form-field>
   `
 })
-export class CCPVAutocompleteComponent  extends PreviewComponentClass implements AfterViewInit {
+export class CCPVAutocompleteComponent  extends PreviewComponent implements AfterViewInit {
   @ViewChild(MatFormField, { read: ElementRef }) el;
   blueprint = new Map<string, string>([]);
 

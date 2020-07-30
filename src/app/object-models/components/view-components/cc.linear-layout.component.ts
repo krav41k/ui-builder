@@ -2,11 +2,11 @@ import {
   AfterViewInit,
   Component,
   ComponentFactoryResolver,
-  ElementRef, EventEmitter, HostListener, Output, Renderer2,
+  ElementRef, EventEmitter, HostListener, OnDestroy, Output, Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {ExtendedComponentClass} from '../../model.classes';
+import {ExtendedComponent} from '../../model.classes';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {ViewControlService} from '../../../shared/services/view-control.service';
 
@@ -22,7 +22,7 @@ import {ViewControlService} from '../../../shared/services/view-control.service'
   `,
   styleUrls: ['./style.scss']
 })
-export class CCLinearLayoutComponent extends ExtendedComponentClass implements AfterViewInit {
+export class CCLinearLayoutComponent extends ExtendedComponent {
 
   @ViewChild('container', { read: ViewContainerRef }) containerRef;
   blueprint = new Map<string, string>([
@@ -40,11 +40,5 @@ export class CCLinearLayoutComponent extends ExtendedComponentClass implements A
     componentsSS: ComponentsStorageService
   ) {
     super(resolver, el, viewControlService, componentsSS);
-  }
-
-  ngAfterViewInit() {
-    this.el.nativeElement.id = this.selfComponent.id;
-    this.styleProcessing();
-    this.rerender().then();
   }
 }

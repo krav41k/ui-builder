@@ -24,9 +24,12 @@ import {FlexibleInputComponent} from '../component-manager/flexible-input/flexib
 import {CCSlideToggleComponent} from '../object-models/components/view-components/cc.slide-toggle.component';
 import {CCPVSlideToggleComponent} from '../object-models/components/pre-view-components/cc.pv.slide-toggle.component';
 import {DialogExchangerComponent} from '../dialog-exchanger/dialog-exchanger.component';
+import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes';
 
 @NgModule({
   declarations: [
+    SimpleComponent,
+    ExtendedComponent,
     FlexibleInputComponent,
     DialogExchangerComponent,
 

@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponentClass} from '../../model.classes';
+import {PreviewComponent} from '../../model.classes';
 import {MatRadioGroup} from '@angular/material/radio';
 
 @Component({
@@ -10,7 +10,7 @@ import {MatRadioGroup} from '@angular/material/radio';
     </mat-radio-group>
   `
 })
-export class CCPVRadioButtonComponent extends PreviewComponentClass implements AfterViewInit {
+export class CCPVRadioButtonComponent extends PreviewComponent implements AfterViewInit {
   @ViewChild(MatRadioGroup, { read: ElementRef }) el;
   blueprint = new Map<string, string>([]);
 

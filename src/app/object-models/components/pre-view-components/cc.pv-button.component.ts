@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {PreviewComponentClass, SimpleComponentClass} from '../../model.classes';
+import {PreviewComponent, SimpleComponent} from '../../model.classes';
 import {MatButton} from '@angular/material/button';
 
 @Component({
@@ -19,7 +19,7 @@ import {MatButton} from '@angular/material/button';
     </button>
   `,
 })
-export class CCPVButtonComponent extends PreviewComponentClass implements AfterViewInit {
+export class CCPVButtonComponent extends PreviewComponent implements AfterViewInit {
   @ViewChild(MatButton, { read: ElementRef }) el;
   blueprint = new Map<string, string>([]);
 

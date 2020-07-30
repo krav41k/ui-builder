@@ -1,4 +1,6 @@
 import {
+  AfterViewInit,
+  Component,
   ComponentFactoryResolver,
   ElementRef,
   EventEmitter,
@@ -90,7 +92,7 @@ export class ExtendedModelClass extends SimpleModelClass {
 
 // Component Classes:
 // PreviewComponentClass
-export class PreviewComponentClass {
+export class PreviewComponent {
 
   el;
   blueprint;
@@ -103,8 +105,13 @@ export class PreviewComponentClass {
   }
 }
 
-// Simple component class
-export class SimpleComponentClass extends PreviewComponentClass implements OnDestroy {
+@Component({
+  selector: 'simple-component',
+  template: `
+    <div></div>
+  `
+})
+export class SimpleComponent extends PreviewComponent implements AfterViewInit, OnDestroy {
 
   @Input() set component(component: SimpleModelClass) {
     this.selfComponent = component;
@@ -197,6 +204,11 @@ export class SimpleComponentClass extends PreviewComponentClass implements OnDes
     super();
   }
 
+  ngAfterViewInit(): void {
+    this.el.nativeElement.id = this.selfComponent.id;
+    this.styleProcessing();
+  }
+
   ngOnDestroy(): any {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -240,7 +252,13 @@ export class SimpleComponentClass extends PreviewComponentClass implements OnDes
 }
 
 // Extended component class
-export class ExtendedComponentClass extends PreviewComponentClass {
+@Component({
+  selector: 'extended-component',
+  template: `
+    <div></div>
+  `
+})
+export class ExtendedComponent extends PreviewComponent implements AfterViewInit {
 
   @Input() set component(component: ExtendedModelClass) {
     this.selfComponent = component;
@@ -349,7 +367,12 @@ export class ExtendedComponentClass extends PreviewComponentClass {
     private componentsSS: ComponentsStorageService,
   ) {
     super();
+  }
 
+  ngAfterViewInit() {
+    this.el.nativeElement.id = this.selfComponent.id;
+    this.styleProcessing();
+    this.rerender().then();
   }
 
   styleProcessing() {

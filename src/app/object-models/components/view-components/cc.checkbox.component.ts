@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {ViewControlService} from '../../../shared/services/view-control.service';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {SimpleComponentClass} from '../../model.classes';
+import {SimpleComponent} from '../../model.classes';
 
 @Component({
   selector: 'cc-checkbox',
@@ -38,7 +38,7 @@ import {SimpleComponentClass} from '../../model.classes';
     </div>
   `
 })
-export class CCCheckboxComponent  extends SimpleComponentClass implements OnInit, AfterViewInit {
+export class CCCheckboxComponent  extends SimpleComponent implements OnInit {
   blueprint = new Map<string, string>([]);
   secondaryBlueprint = new Map<string, string>([
     // ['backgroundColor', 'red']
@@ -63,10 +63,5 @@ export class CCCheckboxComponent  extends SimpleComponentClass implements OnInit
         ['labelPosition', {value: 'before', inputType: 'select', availableValues: ['labelPosition', 'after']}],
       ]);
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.el.nativeElement.id = this.selfComponent.id;
-    this.styleProcessing();
   }
 }

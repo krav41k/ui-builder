@@ -1,9 +1,9 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef, OnInit,
+  ElementRef, OnDestroy, OnInit,
 } from '@angular/core';
-import {SimpleComponentClass} from '../../model.classes';
+import {SimpleComponent} from '../../model.classes';
 import {ViewControlService} from '../../../shared/services/view-control.service';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -184,7 +184,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   `,
   styleUrls: ['./style.scss']
 })
-export class CCButtonComponent extends SimpleComponentClass implements OnInit, AfterViewInit {
+export class CCButtonComponent extends SimpleComponent implements OnInit {
 
   blueprint = new Map<string, string>([]);
   secondaryBlueprint = new Map<string, string>([
@@ -214,10 +214,5 @@ export class CCButtonComponent extends SimpleComponentClass implements OnInit, A
           ]}]
       ]);
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.el.nativeElement.id = this.selfComponent.id;
-    this.styleProcessing();
   }
 }

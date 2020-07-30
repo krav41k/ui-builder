@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponentClass} from '../../model.classes';
+import {PreviewComponent} from '../../model.classes';
 import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
@@ -8,7 +8,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
     <mat-checkbox></mat-checkbox>
   `
 })
-export class CCPVCheckboxComponent extends PreviewComponentClass implements AfterViewInit {
+export class CCPVCheckboxComponent extends PreviewComponent implements AfterViewInit {
   @ViewChild(MatCheckbox, { read: ElementRef }) el;
   blueprint = new Map<string, string>([]);
 

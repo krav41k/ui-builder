@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, OnInit} from '@angular/core';
-import {SimpleComponentClass} from '../../model.classes';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {SimpleComponent} from '../../model.classes';
 import {ViewControlService} from '../../../shared/services/view-control.service';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -20,7 +20,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   `,
   styleUrls: ['./style.scss']
 })
-export class CCAutocompleteComponent extends SimpleComponentClass implements OnInit, AfterViewInit {
+export class CCAutocompleteComponent extends SimpleComponent implements OnInit {
 
   blueprint = new Map<string, string>([]);
   secondaryBlueprint = new Map<string, string>([
@@ -42,10 +42,5 @@ export class CCAutocompleteComponent extends SimpleComponentClass implements OnI
         ['disabled', {value: false, inputType: 'boolean'}]
       ]);
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.el.nativeElement.id = this.selfComponent.id;
-    this.styleProcessing();
   }
 }
