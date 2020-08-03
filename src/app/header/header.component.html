@@ -1,7 +1,17 @@
 <mat-toolbar>
-  <button mat-icon-button (click)="componentsSS.exportProject()">
+  <button mat-icon-button matTooltip="New project">
     <mat-icon>
       insert_drive_file
+    </mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Import project" (click)="importProject()">
+    <mat-icon>
+      cloud_download
+    </mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Export project" (click)="exportProject()">
+    <mat-icon>
+      cloud_upload
     </mat-icon>
   </button>
   <span class="spacer"></span>

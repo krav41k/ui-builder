@@ -1,14 +1,11 @@
-import {Component} from '@angular/core';
-import {ComponentsStorageService} from '../shared/services/components-storage.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'dialog-exchanger',
   templateUrl: './dialog-exchanger.component.html'
 })
 export class DialogExchangerComponent {
-  constructor(
-    public componentsSS: ComponentsStorageService,
-  ) {
 
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data) {}
 }

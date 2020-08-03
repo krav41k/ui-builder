@@ -35,6 +35,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {ClipboardModule} from '@angular/cdk/clipboard';
 
 @NgModule({
   imports: [
@@ -81,7 +82,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
     MatNativeDateModule,
 
-    OverlayModule
+    OverlayModule,
+    ClipboardModule,
   ],
   exports: [
     MatAutocompleteModule,
@@ -120,6 +122,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatSortModule,
     MatTableModule,
     MatNativeDateModule,
+    OverlayModule,
+    ClipboardModule,
   ]
 })
 export class MaterialModule {}

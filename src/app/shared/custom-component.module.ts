@@ -56,11 +56,11 @@ import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes
     CDSortableDirective,
     MatDirectiveApplierDirective,
   ],
-  imports: [
-    MaterialModule,
-    CommonModule,
-    FormsModule,
-  ],
+    imports: [
+        MaterialModule,
+        CommonModule,
+        FormsModule,
+    ],
   exports: [
     DraggableDirective,
     DraggableHelperDirective,

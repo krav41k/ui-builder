@@ -1,1 +1,27 @@
-test
+<div [ngSwitch]="data?.procedure">
+  <div *ngSwitchCase="'export'">
+    <h2 mat-dialog-title>Project export</h2>
+    <mat-dialog-content class="mat-typography">
+      <textarea cols="70" rows="20" disabled>
+        {{data.data | json}}
+      </textarea>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button [mat-dialog-close]="true" [cdkCopyToClipboard]="data.data | json">Copy</button>
+    </mat-dialog-actions>
+  </div>
+  <div *ngSwitchCase="'import'">
+    <h2 mat-dialog-title>Project import</h2>
+    <mat-dialog-content class="mat-typography">
+      <textarea cols="70" rows="20" [(ngModel)]="data.data"></textarea>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button [mat-dialog-close]="data.data">Done</button>
+    </mat-dialog-actions>
+  </div>
+  <div *ngSwitchDefault class="center-align">
+
+  </div>
+</div>

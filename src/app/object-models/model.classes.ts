@@ -14,10 +14,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Subscription} from 'rxjs';
 
 export type ComponentClass = SimpleModelClass | ExtendedModelClass;
-// export type
 
 export interface ModelInterface {
-  parent: ExtendedModelClass;
+  parent?: ExtendedModelClass;
   type;
   name: string;
   id: number;
@@ -31,7 +30,7 @@ export interface ModelInterface {
 // DataClasses:
 // Simple class
 export class SimpleModelClass implements ModelInterface {
-  public style;
+  // public style;
   public componentRef;
   angularMaterialData = new Map<string, {value: any, inputType: string, availableValues?: any}>([
     ['badge', {value: 'matBadge', inputType: 'label'}],
@@ -65,12 +64,18 @@ export class SimpleModelClass implements ModelInterface {
     ['tooltipMessage', {value: 'message', inputType: 'string'}],
     ['tooltipPosition', {value: 'left', inputType: 'select', availableValues: ['left', 'right', 'above', 'below', 'before', 'after']}],
   ]);
-  public flexComponentData;
 
-  public childStyle;
+  constructor(
+    public type,
+    public id: number,
+    public name,
+    public level,
 
-
-  constructor(public parent: ExtendedModelClass, public type, public id: number, public name, public level) {}
+    public parent?: ExtendedModelClass,
+    public style?,
+    public childStyle?,
+    public flexComponentData?
+  ) {}
 }
 
 // Extended class
@@ -79,14 +84,14 @@ export class ExtendedModelClass extends SimpleModelClass {
   public order = [];
   public nestedSwitch = true;
 
-  constructor(parent: ExtendedModelClass, type, id: number, name, level) {
-    super(parent, type, id, name, level);
+  constructor(type, id: number, name, level, parent?: ExtendedModelClass, style?) {
+    super(type, id, name, level, parent, style);
   }
 
   addObject(obj: ComponentClass, id) {
     this.subObjectsList.set(id, obj);
     this.order.push(id);
-    this.componentRef.instance.addComponent = {id, comp: obj};
+    this.componentRef.instance.addComponent = {comp: obj, id};
   }
 }
 
@@ -268,6 +273,7 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
   }
 
   @Input() set addComponent(newComponent: ModelInterface) {
+    console.log(newComponent);
     this.render(newComponent);
   }
 
@@ -390,7 +396,7 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
       await this.containerRef.clear();
       for (const id of component.order) {
         const comp = component.subObjectsList.get(id);
-        this.render({id, comp});
+        this.render({comp, id});
       }
     }
   }
