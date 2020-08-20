@@ -13,13 +13,13 @@
     "directive-selector": [
       true,
       "attribute",
-      ["app", "cd",""],
+      ["app", "cd","ub"],
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      ["app", "cc",""],
+      ["app", "cc","ub"],
       "kebab-case"
     ],
     "import-blacklist": [

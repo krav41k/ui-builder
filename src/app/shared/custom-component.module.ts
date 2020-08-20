@@ -25,6 +25,7 @@ import {CCSlideToggleComponent} from '../object-models/components/view-component
 import {CCPVSlideToggleComponent} from '../object-models/components/pre-view-components/cc.pv.slide-toggle.component';
 import {DialogExchangerComponent} from '../dialog-exchanger/dialog-exchanger.component';
 import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes';
+import {CapacityComponent} from '../capacity/capacity.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes
     ExtendedComponent,
     FlexibleInputComponent,
     DialogExchangerComponent,
+    CapacityComponent,
 
     CCLinearLayoutComponent,
     CCButtonComponent,
@@ -56,17 +58,18 @@ import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes
     CDSortableDirective,
     MatDirectiveApplierDirective,
   ],
-    imports: [
-        MaterialModule,
-        CommonModule,
-        FormsModule,
-    ],
+  imports: [
+    MaterialModule,
+    CommonModule,
+    FormsModule,
+  ],
   exports: [
     DraggableDirective,
     DraggableHelperDirective,
     CDSortableDirective,
     MatDirectiveApplierDirective,
     FlexibleInputComponent,
+    CapacityComponent,
   ],
 })
 export class CustomComponentModule {}

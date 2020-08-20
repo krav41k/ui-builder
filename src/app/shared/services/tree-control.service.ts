@@ -1,10 +1,11 @@
 import {ElementRef, Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {CDSortableDirective} from '../directives/cd.sortable.directive';
 import {ComponentsStorageService} from './components-storage.service';
+import {ComponentClass} from '../../object-models/model.classes';
 
 export interface TreeItem {
   sortableDirective: CDSortableDirective;
-  sortableComponent;
+  sortableComponent: ComponentClass;
 }
 
 export interface RotateEvent {
@@ -37,7 +38,7 @@ export class TreeControlService {
 
   public changeSelectedItem(el: ElementRef) {
     if (this.selectedItem !== el) {
-      if (this.selectedItem !== undefined) {
+      if (this.selectedItem) {
         this.selectedItem.nativeElement.classList.remove('selected');
       }
       el.nativeElement.classList.add('selected');
@@ -46,7 +47,7 @@ export class TreeControlService {
     }
   }
 
-  public newTreeItem(directive: CDSortableDirective, component) {
+  public newTreeItem(directive: CDSortableDirective, component: ComponentClass) {
     const index = this.treeItemList.findIndex(item => item.sortableComponent === component);
     if (index === -1) {
       this.treeItemList.push({sortableDirective: directive, sortableComponent: component});
@@ -56,7 +57,7 @@ export class TreeControlService {
 
       this.treeItemList[index].sortableDirective = directive;
       if (component === this.floatComponent) {
-        this.changeSelectedItem(directive.element);
+        this.changeSelectedItem(directive.el);
         directive.dragging = true;
       }
     }
@@ -68,8 +69,14 @@ export class TreeControlService {
     });
   }
 
+  removeTreeItem(directive: CDSortableDirective, component) {
+    this.treeItemList.filter(item => item.sortableComponent === component);
+    directive.dragStart.unsubscribe();
+    directive.dragMove.unsubscribe();
+  }
+
   private treeListFormation() {
-    this.clientRects = this.treeItemList.map(sortable => sortable.sortableDirective.element.nativeElement.getBoundingClientRect());
+    this.clientRects = this.treeItemList.map(sortable => sortable.sortableDirective.el.nativeElement.getBoundingClientRect());
   }
 
   private detectSorting(directive: CDSortableDirective, event: PointerEvent) {

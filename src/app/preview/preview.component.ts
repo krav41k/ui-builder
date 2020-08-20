@@ -24,7 +24,6 @@ export class PreviewComponent implements OnInit, AfterViewInit {
 
   constructor(
     private resolver: ComponentFactoryResolver,
-    private componentsStorageService: ComponentsStorageService,
     private viewControlService: ViewControlService,
     private renderer: Renderer2,
     private componentsSS: ComponentsStorageService,
@@ -35,12 +34,9 @@ export class PreviewComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.containerRef.clear();
-    const factory = this.resolver.resolveComponentFactory(this.componentsStorageService.root.type);
-    setTimeout(() => {
-      this.componentsStorageService.root.componentRef = this.containerRef.createComponent(factory);
-      this.componentsStorageService.root.componentRef.instance.component = this.componentsStorageService.root;
-    });
+    this.componentsSS.rootViewContainerRef = this.containerRef;
+    this.componentsSS.resolver = this.resolver;
+    this.componentsSS.initProject();
   }
 
   @HostListener('document:pointerup') onWedding() {

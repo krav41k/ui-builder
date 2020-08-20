@@ -7,16 +7,16 @@
     <p class="root-component">{{componentsSS.root.name}}</p>
     <ng-template ngFor let-item [ngForOf]="componentsSS.root.order">
       <ng-template
-        [ngIf]="componentsSS.root.subObjectsList.get(item).order !== undefined"
+        [ngIf]="componentsSS.root.subComponentsList.get(item).order !== undefined"
         [ngIfThen]="extendedBranch"
         [ngIfElse]="simpleBranch">
       </ng-template>
       <ng-template #extendedBranch>
-        <tree-branch [tree]="componentsSS.root.subObjectsList.get(item)"></tree-branch>
+        <tree-branch [tree]="componentsSS.root.subComponentsList.get(item)"></tree-branch>
       </ng-template>
       <ng-template #simpleBranch>
-        <div cdSortable [sortableComponent]="componentsSS.root.subObjectsList.get(item)" class="list-item">
-          {{componentsSS.root.subObjectsList.get(item).name}}
+        <div cdSortable [sortableComponent]="componentsSS.root.subComponentsList.get(item)" class="list-item">
+          {{componentsSS.root.subComponentsList.get(item).name}}
         </div>
       </ng-template>
     </ng-template>

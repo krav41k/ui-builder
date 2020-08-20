@@ -17,8 +17,7 @@ export class HeaderComponent implements OnInit {
 
   exportProject() {
     const data = this.componentsSS.getProjectJSON();
-
-    this.openDialog('export', data);
+    this.openDialog('export', data, this.componentsSS.projectName);
   }
 
   importProject() {
@@ -29,11 +28,11 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  openDialog(procedure, data?): MatDialogRef<any> {
-    return this.dialog.open(DialogExchangerComponent, {data: {procedure, data}});
+  openDialog(procedure, data?, projectName?): MatDialogRef<any> {
+    return this.dialog.open(DialogExchangerComponent, {data: {procedure, data, projectName}});
   }
 
   changeState(event) {
-    this.componentsSS.eventsStatusSteam$.next(event.checked);
+    this.componentsSS.eventsState$.next(event.checked);
   }
 }

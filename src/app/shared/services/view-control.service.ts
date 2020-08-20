@@ -2,6 +2,7 @@ import {ElementRef, Injectable, Renderer2} from '@angular/core';
 import {ExtendedModelClass, ComponentClass} from '../../object-models/model.classes';
 import {ComponentsStorageService} from './components-storage.service';
 
+
 @Injectable()
 export class ViewControlService {
 
@@ -145,7 +146,7 @@ export class ViewControlService {
 
   changeParent(component: ComponentClass, firstHalf: boolean, parent: ExtendedModelClass, target?: ComponentClass) {
     component.parent.order.splice(component.parent.order.indexOf(component.id), 1);
-    component.parent.subObjectsList.delete(component.id);
+    component.parent.subComponentsList.delete(component.id);
     component.parent.componentRef.instance.rerender().then();
 
     component.parent = parent;
@@ -157,7 +158,7 @@ export class ViewControlService {
     } else {
       firstHalf ? parent.order.unshift(component.id) : parent.order.push(component.id);
     }
-    component.parent.subObjectsList.set(component.id, component);
+    component.parent.subComponentsList.set(component.id, component);
     component.level = component.parent.level + 1;
     parent.componentRef.instance.rerender().then();
   }

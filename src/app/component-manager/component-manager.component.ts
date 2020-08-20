@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {Observable, Subscription} from 'rxjs';
 import {ExtendedModelClass} from '../object-models/model.classes';
@@ -413,9 +413,9 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
   allProperties: PropertyItem[];
 
   constructor(
-    componentsSS: ComponentsStorageService,
+    public componentsSS: ComponentsStorageService,
   ) {
-    this.sub = componentsSS.selectedComponentsSteam$.subscribe((component) => {
+    this.sub = componentsSS.selectedComponents$.subscribe((component) => {
       if (this.selectedComponent === component) {
         return false;
       }

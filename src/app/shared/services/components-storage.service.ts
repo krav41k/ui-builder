@@ -1,23 +1,15 @@
-import {Injectable} from '@angular/core';
-import {ExtendedModelClass, ComponentClass, SimpleModelClass, SimpleComponent, ExtendedComponent} from '../../object-models/model.classes';
+import {ComponentFactoryResolver, ElementRef, Injectable, ViewContainerRef} from '@angular/core';
+import {ExtendedModelClass, ComponentClass, SimpleModelClass, ModelInterface} from '../../object-models/model.classes';
 import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {CCAutocompleteComponent} from '../../object-models/components/view-components/cc.autocomplete.component';
-import {CCPVAutocompleteComponent} from '../../object-models/components/pre-view-components/cc.pv.autocomplete.component';
 import {CCCheckboxComponent} from '../../object-models/components/view-components/cc.checkbox.component';
-import {CCPVCheckboxComponent} from '../../object-models/components/pre-view-components/cc.pv.checkbox.component';
 import {MatDatepicker} from '@angular/material/datepicker';
 import {CCFormFieldComponent} from '../../object-models/components/view-components/cc.form-field.component';
-import {CCPVFormFieldComponent} from '../../object-models/components/pre-view-components/cc.pv.form-field.component';
 import {CCInputComponent} from '../../object-models/components/view-components/cc.input.component';
-import {CCPVInputComponent} from '../../object-models/components/pre-view-components/cc.pv.input.component';
 import {CCRadioButtonComponent} from '../../object-models/components/view-components/cc.radio-button.component';
-import {CCPVRadioButtonComponent} from '../../object-models/components/pre-view-components/cc.pv.radio-button.component';
 import {CCSlideToggleComponent} from '../../object-models/components/view-components/cc.slide-toggle.component';
-import {CCPVSlideToggleComponent} from '../../object-models/components/pre-view-components/cc.pv.slide-toggle.component';
-import {CCPVLinearLayoutComponent} from '../../object-models/components/pre-view-components/cc.pv-linear-layout.component';
 import {CCButtonComponent} from '../../object-models/components/view-components/cc.button.component';
-import {CCPVButtonComponent} from '../../object-models/components/pre-view-components/cc.pv-button.component';
 
 @Injectable()
 export class ComponentsStorageService {
@@ -29,7 +21,7 @@ export class ComponentsStorageService {
     ['Form field', {class: CCFormFieldComponent, type: 'simple'}],
     ['Input', {class: CCInputComponent, type: 'simple'}],
     ['Radio button', {class: CCRadioButtonComponent, type: 'simple'}],
-    ['Select', {class: 'MatSelect',type: 'simple'}],
+    ['Select', {class: 'MatSelect', type: 'simple'}],
     ['Slider', {class: 'MatSlider', type: 'simple'}],
     ['Slide toggle', {class: CCSlideToggleComponent, type: 'simple'}],
     ['Sidenav', {class: 'MatSidenav', type: 'simple'}],
@@ -56,20 +48,33 @@ export class ComponentsStorageService {
   ]);
 
 
-  public root = new ExtendedModelClass(CCLinearLayoutComponent, 0, 'LinearLayout', 0);
-  public componentsList: Map<number, ComponentClass>
-    = new Map<number, ComponentClass>([[0, this.root]]);
-  public componentsSteam$ = new BehaviorSubject(this.componentsList);
+  public root = new ExtendedModelClass(CCLinearLayoutComponent, 0, 'Linear layout', 0);
+  public rootViewContainerRef: ViewContainerRef;
+  public resolver: ComponentFactoryResolver;
 
-  private selectedComponentCoordinates = {x: 0, y: 0};
+  public componentsList = new Map<number, ComponentClass>([[0, this.root]]);
+  public components$ = new BehaviorSubject(this.componentsList);
+  public deletedComponentsList = new Map<number, Map<number, ComponentClass>>();
+
+  public projectName = 'project';
+
+  public selectedComponent = null;
   public idCounter = 1;
   private newComponentData: { componentClass, componentType, componentName };
   public newComponentCell = null;
 
-  public selectedComponentsSteam$: Subject<ComponentClass> = new Subject();
+  public selectedComponents$: Subject<ComponentClass> = new Subject();
 
-  public eventsStatusSteam$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public eventsState$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  initProject() {
+    this.rootViewContainerRef.clear();
+    const factory = this.resolver.resolveComponentFactory(this.root.type);
+    setTimeout(() => {
+      this.root.componentRef = this.rootViewContainerRef.createComponent(factory);
+      this.root.componentRef.instance.component = this.root;
+    });
+  }
 
   onPointerUp() {
     setTimeout(() => {
@@ -102,9 +107,45 @@ export class ComponentsStorageService {
         style,
       );
     this.componentsList.set(this.idCounter, newComponent);
-    this.componentsSteam$.next(this.componentsList);
-    parentComponent?.addObject(newComponent, this.idCounter);
+    this.components$.next(this.componentsList);
+    parentComponent.subComponentsList.set(newComponent.id, newComponent);
+    parentComponent.order.push(newComponent.id);
+    parentComponent.initChildrenView(newComponent, newComponent.id);
     this.idCounter++;
+  }
+
+  deleteComponent(targetComponent: ComponentClass) {
+    if (targetComponent === this.root) return false;
+
+    const nestedDeletedCompList = new Map<number, ComponentClass>();
+    const parentComponent = targetComponent.parent as ExtendedModelClass;
+
+    parentComponent.order = parentComponent.order.filter(id => id !== targetComponent.id);
+    parentComponent.subComponentsList.delete(targetComponent.id);
+
+    const deleteComponentModel = (component) => {
+      nestedDeletedCompList.set(component.id, component);
+      this.componentsList.delete(component.id);
+
+      if (component instanceof ExtendedModelClass) {
+        component.subComponentsList.forEach(subComponent => {
+          deleteComponentModel(subComponent);
+        });
+      }
+    };
+    deleteComponentModel(targetComponent);
+
+    this.deletedComponentsList.set(targetComponent.id, nestedDeletedCompList);
+    parentComponent.componentRef.instance.rerender();
+  }
+
+  renderComponentView(targetComponent: ExtendedModelClass) {
+    targetComponent.componentRef.instance.rerender();
+    targetComponent.subComponentsList.forEach(comp => {
+      if (comp instanceof  ExtendedModelClass) {
+        this.renderComponentView(comp);
+      }
+    });
   }
 
   bindUpdate(id: number, component: ComponentClass) {
@@ -115,11 +156,10 @@ export class ComponentsStorageService {
     typeof data === 'number' ? this.newComponentCell = data : this.newComponentData = data;
   }
 
-  // only for extended components
-  selectComponent(component: ComponentClass, event: PointerEvent) {
-    if (this.selectedComponentCoordinates.x !== event.x && this.selectedComponentCoordinates.y !== event.y) {
-      this.selectedComponentCoordinates = {x: event.x, y: event.y};
-      this.selectedComponentsSteam$.next(component);
+  selectComponent(component: ComponentClass) {
+    if (this.selectedComponent !== component) {
+      this.selectedComponent = component;
+      this.selectedComponents$.next(component);
     }
   }
 
@@ -141,42 +181,70 @@ export class ComponentsStorageService {
       }
       prepareComponentList.set(key, obj);
     });
-    console.log(Object.fromEntries(prepareComponentList));
     return Object.fromEntries(prepareComponentList);
   }
 
-  public parseProjectJSON(data) {
-    return false;
-    console.log(JSON.parse(data));
+   public parseProjectJSON(data) {
+    if (!data) return false;
 
-    if (data === undefined) return false;
+    const newComponentsList = new Map<number, ComponentClass>();
+    let idCounter = 0;
 
-    JSON.parse(data).forEach(value => {
-
+    (Object.values(JSON.parse(data) as ModelInterface)).forEach(value => {
       if (value === undefined) return false;
 
       const componentClassInfo = this.componentLinkList.get(value.name);
+      if (value.id > idCounter) {
+        idCounter = value.id;
+      }
 
-      const component = componentClassInfo.type === 'simple'
-        ? new SimpleModelClass(
+      let component;
+      if (componentClassInfo.type === 'simple') {
+        component = new SimpleModelClass(
           componentClassInfo.class,
           value.id,
           value.name,
-          value.length,
+          value.level,
           null,
           value.style,
           value.childStyle,
           value.floatComponentData,
-        )
-        : new ExtendedModelClass(
+        );
+      } else {
+        component = new ExtendedModelClass(
           componentClassInfo.class,
           value.id,
           value.name,
-          value.length,
+          value.level,
           null,
           value.style,
         );
-    })
-    console.log(this.componentsList);
+        component.order = value.order;
+      }
+      newComponentsList.set(component.id, component);
+    });
+
+    newComponentsList.forEach(comp => {
+      if (comp instanceof ExtendedModelClass) {
+        comp.order.forEach(id => {
+          const nestedComp = newComponentsList.get(id);
+          comp.subComponentsList.set(id, nestedComp);
+          nestedComp.parent = comp;
+        });
+      }
+    });
+    this.componentsList = newComponentsList;
+    this.root = newComponentsList.get(0) as ExtendedModelClass;
+    this.idCounter = ++idCounter;
+    this.initProject();
+    setTimeout(() => {
+      this.root.subComponentsList.forEach(comp => {
+        if (comp instanceof ExtendedModelClass) {
+          this.renderComponentView(comp);
+        }
+      });
+      this.components$.next(this.componentsList);
+      console.log(this.root);
+    });
   }
 }

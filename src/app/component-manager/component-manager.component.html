@@ -7,6 +7,14 @@
     <div class="sc-info">
       <div>id: {{scId}}</div>
       <div>{{scName}}</div>
+      <button
+        mat-icon-button
+        matTooltip="Delete selected component"
+        [disabled]="!componentsSS.selectedComponent"
+        (click)="componentsSS.deleteComponent(componentsSS.selectedComponent)"
+      >
+        <mat-icon class="icon">delete</mat-icon>
+      </button>
     </div>
 
     <mat-divider></mat-divider>
@@ -91,13 +99,13 @@
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel *ngIf="content !== undefined">
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
             Angular Material component properties
           </mat-panel-title>
         </mat-expansion-panel-header>
-          <mat-accordion>
+          <mat-accordion  *ngIf="content !== undefined">
             <mat-expansion-panel class="insert-form-field">
               <mat-expansion-panel-header>
                 <mat-panel-title>

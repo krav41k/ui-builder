@@ -9,12 +9,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   template: `
     <div draggable="true">
       <mat-form-field #coveredComponent>
-        <input matInput type="text" placeholder="text" [disabled]="this.selfComponent.flexComponentData.get('disabled').value">
-<!--        <mat-autocomplete #autoPropertyGroup="matAutocomplete">-->
-<!--          <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">-->
-<!--            {{property}}-->
-<!--          </mat-option>-->
-<!--        </mat-autocomplete>-->
+        <input
+          matInput type="text"
+          [placeholder]="this.selfComponent.flexComponentData.get('placeholder').value"
+          [disabled]="this.selfComponent.flexComponentData.get('disabled').value">
       </mat-form-field>
     </div>
   `,
@@ -39,7 +37,8 @@ export class CCAutocompleteComponent extends SimpleComponent implements OnInit {
   ngOnInit(): void {
     if (this.selfComponent.flexComponentData === undefined) {
       this.selfComponent.flexComponentData = new Map<string, any>([
-        ['disabled', {value: false, inputType: 'boolean'}]
+        ['disabled', {value: false, inputType: 'boolean'}],
+        ['placeholder', {value: 'autocomplete', inputType: 'string'}]
       ]);
     }
   }

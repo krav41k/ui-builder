@@ -80,7 +80,7 @@ export class SimpleModelClass implements ModelInterface {
 
 // Extended class
 export class ExtendedModelClass extends SimpleModelClass {
-  public subObjectsList = new Map<number, any>();
+  public subComponentsList = new Map<number, any>();
   public order = [];
   public nestedSwitch = true;
 
@@ -88,9 +88,7 @@ export class ExtendedModelClass extends SimpleModelClass {
     super(type, id, name, level, parent, style);
   }
 
-  addObject(obj: ComponentClass, id) {
-    this.subObjectsList.set(id, obj);
-    this.order.push(id);
+  initChildrenView(obj: ComponentClass, id) {
     this.componentRef.instance.addComponent = {comp: obj, id};
   }
 }
@@ -111,7 +109,7 @@ export class PreviewComponent {
 }
 
 @Component({
-  selector: 'simple-component',
+  selector: 'ub-simple-component',
   template: `
     <div></div>
   `
@@ -136,11 +134,11 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
     if (element !== undefined) {
       this.childEl = element;
 
-      this.subscriptions.push(this.componentsSS.eventsStatusSteam$.subscribe(state => state
+      this.subscriptions.push(this.componentsSS.eventsState$.subscribe(state => state
         ? element.nativeElement.style.pointerEvents = 'auto'
         : element.nativeElement.style.pointerEvents = 'none'
       ));
-      this.compStyleProcessingS();
+      this.compSecondaryStyleProcessing();
     }
   }
 
@@ -149,7 +147,7 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
   private onDragStart(event: PointerEvent): void {
     event.stopPropagation();
 
-    this.componentsSS.selectedComponentsSteam$.next(this.selfComponent);
+    this.componentsSS.selectComponent(this.selfComponent);
     this.viewControlService.dragStart(this.selfComponent, this.el);
 
     this.draggingS1 = true;
@@ -219,11 +217,11 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
   }
 
   styleProcessing() {
-    this.compStyleProcessingM();
-    this.compStyleProcessingS();
+    this.compMainStyleProcessing();
+    this.compSecondaryStyleProcessing();
   }
 
-  compStyleProcessingM() {
+  compMainStyleProcessing() {
     if (this.selfComponent.style === undefined) {
       this.applyStyle(this.el, this.blueprint);
       this.selfComponent.style = this.el.nativeElement.style.cssText;
@@ -232,7 +230,7 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
     }
   }
 
-  compStyleProcessingS() {
+  compSecondaryStyleProcessing() {
     if (this.selfComponent.childStyle === undefined ) {
       this.applyStyle(this.childEl, this.secondaryBlueprint);
       this.selfComponent.childStyle = this.childEl.nativeElement.style.cssText;
@@ -273,7 +271,6 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
   }
 
   @Input() set addComponent(newComponent: ModelInterface) {
-    console.log(newComponent);
     this.render(newComponent);
   }
 
@@ -318,7 +315,6 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
 
   @HostListener('dragexit', ['$event'])
   private onDragLeave(event: DragEvent) {
-    console.log('drag exit');
     event.stopPropagation();
 
     this.viewControlService.dragClear();
@@ -335,7 +331,7 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
   @HostListener('pointerdown', ['$event'])
   private onPointerDown(event: PointerEvent): void {
     event.stopPropagation();
-    this.componentsSS.selectedComponentsSteam$.next(this.selfComponent);
+    this.componentsSS.selectComponent(this.selfComponent);
     this.viewControlService.dragStart(this.selfComponent, this.el);
 
     this.draggingS2 = true;
@@ -395,7 +391,7 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
     if (component.order.length >= 0) {
       await this.containerRef.clear();
       for (const id of component.order) {
-        const comp = component.subObjectsList.get(id);
+        const comp = component.subComponentsList.get(id);
         this.render({comp, id});
       }
     }

@@ -102,11 +102,11 @@ export class ComponentsLayoutComponent implements OnInit, OnChanges, AfterViewCh
       //   {title: 'Snackbar', tag: 'MatSnackBar'},
       //   {title: 'Tooltip', tag: 'MatTooltip'}
       // ]],
-      ['Data table', [
-        // {title: 'Paginator', viewComponent: 'MatPaginator', preViewComponent: undefined, type: 'simple'},
-        // {title: 'Sort header', viewComponent: 'MatSort', preViewComponent: undefined, type: 'simple'},
-        // {title: 'Table', viewComponent: 'MatTable', preViewComponent: undefined, type: 'extended'}
-      ]]
+      // ['Data table', [
+      //   {title: 'Paginator', viewComponent: 'MatPaginator', preViewComponent: undefined, type: 'simple'},
+      //   {title: 'Sort header', viewComponent: 'MatSort', preViewComponent: undefined, type: 'simple'},
+      //   {title: 'Table', viewComponent: 'MatTable', preViewComponent: undefined, type: 'extended'}
+      // ]]
     ]);
   }
 

@@ -27,16 +27,19 @@ import {MatSnackBar} from '@angular/material/snack-bar';
         [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
         [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
 
-        [color]="this.selfComponent.angularMaterialData.get('color').value"
-        [aria-label]="this.selfComponent.angularMaterialData.get('arialLabel').value"
-        [aria-labelledby]="this.selfComponent.angularMaterialData.get('arialLabelledby').value"
-        [checked]="this.selfComponent.angularMaterialData.get('checked').value"
-        [disableRipple]="this.selfComponent.angularMaterialData.get('disableRipple').value"
-        [labelPosition]="this.selfComponent.angularMaterialData.get('labelPosition').value"
+        [color]="this.selfComponent.flexComponentData.get('color').value"
+        [aria-label]="this.selfComponent.flexComponentData.get('arialLabel').value"
+        [aria-labelledby]="this.selfComponent.flexComponentData.get('arialLabelledby').value"
+        [checked]="this.selfComponent.flexComponentData.get('checked').value"
+        [disableRipple]="this.selfComponent.flexComponentData.get('disableRipple').value"
+        [labelPosition]="this.selfComponent.flexComponentData.get('labelPosition').value"
 
         #coveredComponent
       >
-
+        <ub-capacity
+          [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+          [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+        ></ub-capacity>
       </mat-slide-toggle>
     </div>
   `
@@ -63,6 +66,8 @@ export class CCSlideToggleComponent extends SimpleComponent implements OnInit {
         ['checked', {value: false, inputType: 'boolean'}],
         ['disableRipple', {value: false, inputType: 'boolean'}],
         ['labelPosition', {value: 'before', inputType: 'select', availableValues: ['before', 'after']}],
+        ['capacityType', {value: 'text', inputType: 'select', availableValues: ['text', 'icon']}],
+        ['capacityData', {value: 'slide toggle', inputType: 'string'}],
       ]);
     }
   }

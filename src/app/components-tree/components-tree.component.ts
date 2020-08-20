@@ -16,7 +16,7 @@ export class ComponentsTreeComponent implements OnInit, OnDestroy {
   actualComponentList;
 
   constructor(public componentsSS: ComponentsStorageService) {
-    this.componentsSS.componentsSteam$.subscribe(value => {
+    this.componentsSS.components$.subscribe(value => {
       this.actualComponentList = value;
     });
   }
@@ -24,6 +24,6 @@ export class ComponentsTreeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   ngOnDestroy(): void {
-    this.componentsSS.componentsSteam$.unsubscribe();
+    this.componentsSS.components$.unsubscribe();
   }
 }
