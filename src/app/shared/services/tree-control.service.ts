@@ -132,13 +132,13 @@ export class TreeControlService {
         console.log('case 1');
         const parentOrderIndex = secondComponent.parent.order.indexOf(secondComponent.id);
 
+        secondComponent.subComponentsList.delete(firstComponent.id);
         secondComponent.order.splice(secondComponent.order.indexOf(firstComponent.id), 1);
-        secondComponent.subObjectsList.delete(firstComponent.id);
 
         firstComponent.parent = secondComponent.parent;
 
         firstComponent.level = firstComponent.parent.level + 1;
-        firstComponent.parent.subObjectsList.set(firstComponent.id, firstComponent);
+        firstComponent.parent.subComponentsList.set(firstComponent.id, firstComponent);
         firstComponent.parent.order.splice(parentOrderIndex, 0, firstComponent.id);
         updater = true;
         break;
@@ -146,14 +146,14 @@ export class TreeControlService {
       case (secondComponent.nestedSwitch
         && secondComponent.parent !== firstComponent):
         console.log('case 2');
+        firstComponent.parent.subComponentsList.delete(firstComponent.id);
         firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(firstComponent.id), 1);
-        firstComponent.parent.subObjectsList.delete(firstComponent.id);
 
         firstComponent.parent.componentRef.instance.rerender().then();
         firstComponent.parent = secondComponent;
 
         firstComponent.level = secondComponent.level + 1;
-        secondComponent.subObjectsList.set(firstComponent.id, firstComponent);
+        secondComponent.subComponentsList.set(firstComponent.id, firstComponent);
         secondComponent.order.splice(0, 0, firstComponent.id);
         updater = true;
         break;
@@ -171,13 +171,14 @@ export class TreeControlService {
         && firstComponent.level !== secondComponent.level
         && secondComponent.parent !== firstComponent):
         console.log('case 4');
+        firstComponent.parent.subComponentsList.delete(firstComponent.id);
         firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(firstComponent.id), 1);
-        firstComponent.parent.subObjectsList.delete(firstComponent.id);
 
+        firstComponent.parent.componentRef.instance.rerender().then();
         firstComponent.parent = secondComponent.parent;
 
         firstComponent.level = secondComponent.level;
-        firstComponent.parent.subObjectsList.set(firstComponent.id, firstComponent);
+        firstComponent.parent.subComponentsList.set(firstComponent.id, firstComponent);
         firstComponent.parent.order.splice(firstComponent.parent.order.indexOf(secondComponent.id) + 1, 0, firstComponent.id);
         updater = true;
         break;

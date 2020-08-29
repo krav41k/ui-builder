@@ -53,6 +53,7 @@ export class ComponentsStorageService {
   public resolver: ComponentFactoryResolver;
 
   public componentsList = new Map<number, ComponentClass>([[0, this.root]]);
+  public dropZonesIdArray: string[] = [];
   public components$ = new BehaviorSubject(this.componentsList);
   public deletedComponentsList = new Map<number, Map<number, ComponentClass>>();
 
@@ -139,6 +140,7 @@ export class ComponentsStorageService {
     parentComponent.componentRef.instance.rerender();
   }
 
+  // initiate functions for create or recreate target component view + all nested view
   renderComponentView(targetComponent: ExtendedModelClass) {
     targetComponent.componentRef.instance.rerender();
     targetComponent.subComponentsList.forEach(comp => {
@@ -182,6 +184,23 @@ export class ComponentsStorageService {
       prepareComponentList.set(key, obj);
     });
     return Object.fromEntries(prepareComponentList);
+  }
+
+  getAvailableDropZonesId() {
+
+  }
+
+  addDropZoneId(id: number) {
+    const reducedId = 'cdk-drop-list-' + id;
+    if (this.dropZonesIdArray.findIndex(str => str === reducedId) === -1) {
+      this.dropZonesIdArray.push(reducedId);
+    }
+    console.log(this.dropZonesIdArray);
+  }
+
+  removeDropZoneId(id: number) {
+    const reducedId = 'cdk-drop-list-' + id;
+    this.dropZonesIdArray = this.dropZonesIdArray.filter(str => str !== reducedId);
   }
 
    public parseProjectJSON(data) {
@@ -244,7 +263,6 @@ export class ComponentsStorageService {
         }
       });
       this.components$.next(this.componentsList);
-      console.log(this.root);
     });
   }
 }

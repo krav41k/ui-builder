@@ -45,12 +45,11 @@ export class CCCheckboxComponent  extends SimpleComponent implements OnInit {
   ]);
 
   constructor(
-    viewControlService: ViewControlService,
     componentsStorageService: ComponentsStorageService,
     el: ElementRef,
     snackBar: MatSnackBar
   ) {
-    super(viewControlService, componentsStorageService, el, snackBar);
+    super(componentsStorageService, el, snackBar);
   }
 
   ngOnInit(): void {

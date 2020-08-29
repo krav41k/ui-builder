@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ComponentFactoryResolver,
-  ElementRef, EventEmitter, HostListener, OnDestroy, Output, Renderer2,
+  ElementRef, EventEmitter, HostBinding, HostListener, OnDestroy, OnInit, Output, Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -13,18 +13,26 @@ import {ViewControlService} from '../../../shared/services/view-control.service'
 @Component({
   selector: 'cc-linear-layout',
   template: `
-      <ng-container #container>
+    <div
+      [id]="'cdk-drop-list-' + selfComponent.id"
+      cdkDrag
+      cdkDropList
+      [cdkDropListConnectedTo]="componentsSS.dropZonesIdArray"
+      cdkDropListOrientation="horizontal"
+      [cdkDropListData]="selfComponent"
+      (cdkDropListDropped)="drop($event)"
+      #container>
+      <ng-container #insertPoint>
       </ng-container>
-
-      <cc-preview-linear-layout
-        *cdDraggableHelper="null;dragMove: dragMove;dragEnd: dragEnd"
-      ></cc-preview-linear-layout>
+    </div>
   `,
   styleUrls: ['./style.scss']
 })
 export class CCLinearLayoutComponent extends ExtendedComponent {
 
-  @ViewChild('container', { read: ViewContainerRef }) containerRef;
+  @ViewChild('container', {read: ElementRef}) containerEl: ElementRef;
+
+  @ViewChild('insertPoint', { read: ViewContainerRef }) containerRef: ViewContainerRef;
   blueprint = new Map<string, string>([
     ['width', '100%'],
     ['height', '100%'],
@@ -34,11 +42,10 @@ export class CCLinearLayoutComponent extends ExtendedComponent {
   ]);
 
   constructor(
-    resolver: ComponentFactoryResolver,
     el: ElementRef,
-    viewControlService: ViewControlService,
+    resolver: ComponentFactoryResolver,
     componentsSS: ComponentsStorageService
   ) {
-    super(resolver, el, viewControlService, componentsSS);
+    super(el, resolver, componentsSS);
   }
 }

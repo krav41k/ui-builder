@@ -3,15 +3,15 @@ import {
   Component,
   ComponentFactoryResolver,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostBinding,
   HostListener,
   Input, OnDestroy,
-  ViewChild
+  ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {ViewControlService} from '../shared/services/view-control.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Subscription} from 'rxjs';
+import {CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 
 export type ComponentClass = SimpleModelClass | ExtendedModelClass;
 
@@ -97,7 +97,7 @@ export class ExtendedModelClass extends SimpleModelClass {
 // PreviewComponentClass
 export class PreviewComponent {
 
-  el;
+  el: ElementRef;
   blueprint;
   selfComponent: any;
 
@@ -129,7 +129,7 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
 
   subscriptions: Subscription[] = [];
   childEl: ElementRef;
-  // @ViewChild('coveredComponent', { read: ElementRef }) public childEl: ElementRef;
+
   @ViewChild('coveredComponent', {read: ElementRef}) private set coveredComponent(element: ElementRef) {
     if (element !== undefined) {
       this.childEl = element;
@@ -142,64 +142,14 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
     }
   }
 
-  // pointer events for directive dragging strategy
   @HostListener('pointerdown', ['$event'])
   private onDragStart(event: PointerEvent): void {
     event.stopPropagation();
 
     this.componentsSS.selectComponent(this.selfComponent);
-    this.viewControlService.dragStart(this.selfComponent, this.el);
-
-    this.draggingS1 = true;
-  }
-
-  // drag events for DOM dragging strategy
-  @HostListener('dragenter', ['$event'])
-  private onDragEnter(event: DragEvent) {
-    event.stopPropagation();
-    if (!this.draggingS1) {
-      this.viewControlService.dragEnter(this.selfComponent, this.el);
-    }
-  }
-
-  @HostListener('dragover', ['$event'])
-  private onDragOver(event: DragEvent) {
-    event.stopPropagation();
-    if (!this.draggingS1) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = 'move';
-      if (this.timeoutS1 !== undefined) {
-        window.clearTimeout(this.timeoutS1);
-      }
-      this.timeoutS1 = window.setTimeout(() => {
-        if (this.previousPosition.clientX !== event.clientX && this.previousPosition.clientY !== event.clientY) {
-          this.previousPosition = {clientX: event.clientX, clientY: event.clientY};
-          this.viewControlService.dragOver(event);
-        }
-      }, 10);
-    }
-  }
-
-  @HostListener('dragexit', ['$event'])
-  private onDragLeave(event: DragEvent) {
-    event.stopPropagation();
-
-    if (!this.draggingS1) {
-      this.viewControlService.dragClear();
-    }
-  }
-
-  @HostListener('dragend', ['$event'])
-  private onDragEnd(event) {
-    event.stopPropagation();
-
-    if (this.draggingS1) {
-      this.viewControlService.dragEnd();
-    }
   }
 
   constructor(
-    public viewControlService: ViewControlService,
     public componentsSS: ComponentsStorageService,
     public el: ElementRef,
     public snackBar: MatSnackBar
@@ -256,18 +206,15 @@ export class SimpleComponent extends PreviewComponent implements AfterViewInit, 
 
 // Extended component class
 @Component({
-  selector: 'extended-component',
+  selector: 'ub-extended-component',
   template: `
     <div></div>
   `
 })
-export class ExtendedComponent extends PreviewComponent implements AfterViewInit {
+export class ExtendedComponent extends PreviewComponent implements AfterViewInit, OnDestroy {
 
   @Input() set component(component: ExtendedModelClass) {
     this.selfComponent = component;
-    // if (typeof component.order !== 'undefined') {
-    //   this.rerender();
-    // }
   }
 
   @Input() set addComponent(newComponent: ModelInterface) {
@@ -275,14 +222,8 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
   }
 
   selfComponent: ExtendedModelClass;
-  containerRef;
-
-  private draggingS2 = false;
-  private timeoutS2;
-  private previousPosition: {clientX: number; clientY: number} = {clientX: 0, clientY: 0};
-  dragStart = new EventEmitter<PointerEvent>();
-  dragMove = new EventEmitter<PointerEvent>();
-  dragEnd = new EventEmitter<PointerEvent>();
+  containerEl: ElementRef;
+  containerRef: ViewContainerRef;
 
   @HostListener('pointerup') onWedding() {
     if (this.componentsSS.newComponentCell === null) {
@@ -290,99 +231,50 @@ export class ExtendedComponent extends PreviewComponent implements AfterViewInit
     }
   }
 
-  // drag events for DOM dragging strategy
-  @HostListener('dragenter', ['$event'])
-  private onDragEnter(event: DragEvent) {
-    event.stopPropagation();
-    this.viewControlService.dragEnter(this.selfComponent, this.el);
-  }
-
-  @HostListener('dragover', ['$event'])
-  private onDragOver(event: DragEvent) {
-    event.stopPropagation();
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-    if (this.timeoutS2 !== undefined) {
-      window.clearTimeout(this.timeoutS2);
-    }
-    this.timeoutS2 = window.setTimeout(() => {
-      if (this.previousPosition.clientX !== event.clientX && this.previousPosition.clientY !== event.clientY) {
-        this.previousPosition = {clientX: event.clientX, clientY: event.clientY};
-        this.viewControlService.dragOver(event);
-      }
-    }, 10);
-  }
-
-  @HostListener('dragexit', ['$event'])
-  private onDragLeave(event: DragEvent) {
-    event.stopPropagation();
-
-    this.viewControlService.dragClear();
-  }
-
-  @HostListener('dragend', ['$event'])
-  private onDragEnd(event) {
-    event.stopPropagation();
-
-    this.viewControlService.dragEnd();
-  }
-
-  // // pointer events for directive dragging strategy
   @HostListener('pointerdown', ['$event'])
   private onPointerDown(event: PointerEvent): void {
     event.stopPropagation();
     this.componentsSS.selectComponent(this.selfComponent);
-    this.viewControlService.dragStart(this.selfComponent, this.el);
-
-    this.draggingS2 = true;
-    this.dragStart.emit(event);
-  }
-
-  @HostListener('document:pointermove', ['$event'])
-  private onDocumentPointerMove(event: PointerEvent): void {
-    if (this.draggingS2) {
-      this.dragMove.emit(event);
-    }
-    //   if (this.timeoutS2 !== undefined) {
-    //     window.clearTimeout(this.timeoutS2);
-    //   }
-    //   this.timeoutS2 = window.setTimeout(() => {
-    //     if (this.draggingS2) {
-    //       this.viewControlService.onMouseMove(event);
-    //     }
-    //   }, 100);
-  }
-
-  @HostListener('document:pointerup', ['$event'])
-  private onDocumentPointerUp(event: PointerEvent) {
-    if (this.draggingS2) {
-      this.draggingS2 = false;
-      this.dragEnd.emit(event);
-      this.viewControlService.dragEnd(event);
-    }
   }
 
   constructor(
-    private resolver: ComponentFactoryResolver,
     public el: ElementRef,
-    private viewControlService: ViewControlService,
-    private componentsSS: ComponentsStorageService,
+    private resolver: ComponentFactoryResolver,
+    public componentsSS: ComponentsStorageService,
   ) {
     super();
   }
 
   ngAfterViewInit() {
     this.el.nativeElement.id = this.selfComponent.id;
-    this.styleProcessing();
+    this.styleProcessing(this.containerEl);
+    this.styleProcessing(this.el);
     this.rerender().then();
+    this.componentsSS.addDropZoneId(this.selfComponent.id);
   }
 
-  styleProcessing() {
-    if (this.selfComponent.style === undefined) {
-      this.applyStyle(this.el, this.blueprint);
-      this.selfComponent.style = this.el.nativeElement.style.cssText;
+  ngOnDestroy(): void {
+    this.componentsSS.removeDropZoneId(this.selfComponent.id);
+  }
+
+  drop(event: CdkDragDrop<ExtendedModelClass>) {
+    console.log(event);
+    console.log(event.container.data.order);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data.order, event.previousIndex, event.currentIndex);
+      event.container.data.componentRef.instance.rerender();
     } else {
-      this.el.nativeElement.style.cssText = this.selfComponent.style;
+
+    }
+    console.log(event.container.data.order);
+  }
+
+  styleProcessing(el: ElementRef) {
+    if (this.selfComponent.style === undefined) {
+      this.applyStyle(el, this.blueprint);
+      this.selfComponent.style = el.nativeElement.style.cssText;
+    } else {
+      el.nativeElement.style.cssText = this.selfComponent.style;
     }
   }
 

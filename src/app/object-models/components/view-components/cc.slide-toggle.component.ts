@@ -49,12 +49,11 @@ export class CCSlideToggleComponent extends SimpleComponent implements OnInit {
   secondaryBlueprint = new Map<string, string>([]);
 
   constructor(
-    viewControlService: ViewControlService,
     componentsStorageService: ComponentsStorageService,
     el: ElementRef,
     snackBar: MatSnackBar
   ) {
-    super(viewControlService, componentsStorageService, el, snackBar);
+    super(componentsStorageService, el, snackBar);
   }
 
   ngOnInit(): void {

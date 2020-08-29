@@ -36,6 +36,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
@@ -84,6 +85,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 
     OverlayModule,
     ClipboardModule,
+
+    DragDropModule,
   ],
   exports: [
     MatAutocompleteModule,
@@ -95,9 +98,11 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     MatSelectModule,
     MatSliderModule,
     MatSlideToggleModule,
+
     MatMenuModule,
     MatSidenavModule,
     MatToolbarModule,
+
     MatCardModule,
     MatDividerModule,
     MatExpansionModule,
@@ -106,6 +111,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     MatStepperModule,
     MatTabsModule,
     MatTreeModule,
+
     MatButtonModule,
     MatButtonToggleModule,
     MatBadgeModule,
@@ -114,16 +120,22 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatRippleModule,
+
     MatBottomSheetModule,
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
+
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+
     MatNativeDateModule,
+
     OverlayModule,
     ClipboardModule,
+
+    DragDropModule,
   ]
 })
 export class MaterialModule {}

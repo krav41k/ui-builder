@@ -499,6 +499,9 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
     if (inputType === 'main') {
       this.selectedComponent.componentRef.instance.el.nativeElement.style[obj.name] = obj.value;
       this.selectedComponent.style = this.selectedComponent.componentRef.instance.el.nativeElement.style.cssText;
+      if (this.selectedComponent.componentRef.instance.containerEl !== undefined) {
+        this.selectedComponent.componentRef.instance.styleProcessing(this.selectedComponent.componentRef.instance.containerEl);
+      }
     } else {
       this.selectedComponent.componentRef.instance.childEl.nativeElement.style[obj.name] = obj.value;
       this.selectedComponent.childStyle = this.selectedComponent.componentRef.instance.childEl.nativeElement.style.cssText;
