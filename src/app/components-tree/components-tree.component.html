@@ -12,7 +12,7 @@
         [ngIfElse]="simpleBranch">
       </ng-template>
       <ng-template #extendedBranch>
-        <tree-branch [tree]="componentsSS.root.subComponentsList.get(item)"></tree-branch>
+        <ub-tree-branch [tree]="componentsSS.root.subComponentsList.get(item)"></ub-tree-branch>
       </ng-template>
       <ng-template #simpleBranch>
         <div cdSortable [sortableComponent]="componentsSS.root.subComponentsList.get(item)" class="list-item">

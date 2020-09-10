@@ -1,17 +1,20 @@
 import {
-  AfterViewInit,
   Component,
-  ElementRef, OnDestroy, OnInit,
+  ElementRef, OnInit,
 } from '@angular/core';
-import {SimpleComponent} from '../../model.classes';
-import {ViewControlService} from '../../../shared/services/view-control.service';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {CdkDragMove, CdkDragStart} from '@angular/cdk/drag-drop';
+import {SimpleComponent} from '../class models/simple.component';
 
 @Component({
   selector: 'cc-button',
   template: `
-    <div cdkDrag [ngSwitch]="this.selfComponent.flexComponentData.get('matButton').value">
+    <div
+        cdkDrag
+        (cdkDragMoved)="onCdkDragMove($event)"
+        [cdkDragData]="selfComponent"
+        [ngSwitch]="this.selfComponent.flexComponentData.get('matButton').value">
 
         <button
           *ngSwitchCase="'button'"
@@ -187,9 +190,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 export class CCButtonComponent extends SimpleComponent implements OnInit {
 
   blueprint = new Map<string, string>([]);
-  secondaryBlueprint = new Map<string, string>([
-    // ['backgroundColor', 'red']
-  ]);
+  secondaryBlueprint = new Map<string, string>([]);
 
   constructor(
     componentsStorageService: ComponentsStorageService,
@@ -212,6 +213,15 @@ export class CCButtonComponent extends SimpleComponent implements OnInit {
             'miniFabButton'
           ]}]
       ]);
+    }
+  }
+
+  onCdkDragMove(event: CdkDragMove<any>) {
+    if (this.startPointer) {
+      this.pointer = event.pointerPosition;
+    } else {
+      this.startPointer = event.pointerPosition;
+
     }
   }
 }

@@ -1,60 +1,26 @@
 import {ComponentFactoryResolver, ElementRef, Injectable, ViewContainerRef} from '@angular/core';
-import {ExtendedModelClass, ComponentClass, SimpleModelClass, ModelInterface} from '../../object-models/model.classes';
-import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
+
 import {BehaviorSubject, Subject} from 'rxjs';
-import {CCAutocompleteComponent} from '../../object-models/components/view-components/cc.autocomplete.component';
-import {CCCheckboxComponent} from '../../object-models/components/view-components/cc.checkbox.component';
-import {MatDatepicker} from '@angular/material/datepicker';
-import {CCFormFieldComponent} from '../../object-models/components/view-components/cc.form-field.component';
-import {CCInputComponent} from '../../object-models/components/view-components/cc.input.component';
-import {CCRadioButtonComponent} from '../../object-models/components/view-components/cc.radio-button.component';
-import {CCSlideToggleComponent} from '../../object-models/components/view-components/cc.slide-toggle.component';
-import {CCButtonComponent} from '../../object-models/components/view-components/cc.button.component';
+
+import { ExtendedModelClass } from 'src/app/object-models/components/class models/extended-model.class';
+import { ComponentClass, ModelInterface } from 'src/app/object-models/components/class models/model.interface';
+import { SimpleModelClass } from 'src/app/object-models/components/class models/simple-model.class';
+import { components } from '../data/components';
+import { CCLinearLayoutComponent } from 'src/app/object-models/components/view-components/cc.linear-layout.component';
 
 @Injectable()
 export class ComponentsStorageService {
 
-  componentLinkList = new Map<string, any>([
-    ['Autocomplete', {class: CCAutocompleteComponent,  type: 'simple'}],
-    ['Checkbox', {class: CCCheckboxComponent,  type: 'simple'}],
-    ['Datepicker', {class: MatDatepicker,  type: 'simple'}],
-    ['Form field', {class: CCFormFieldComponent, type: 'simple'}],
-    ['Input', {class: CCInputComponent, type: 'simple'}],
-    ['Radio button', {class: CCRadioButtonComponent, type: 'simple'}],
-    ['Select', {class: 'MatSelect', type: 'simple'}],
-    ['Slider', {class: 'MatSlider', type: 'simple'}],
-    ['Slide toggle', {class: CCSlideToggleComponent, type: 'simple'}],
-    ['Sidenav', {class: 'MatSidenav', type: 'simple'}],
-    ['Toolbar', {class: 'MatToolbar', type: 'simple'}],
-    ['Menu', {class: 'MatMenu', type: 'simple'}],
-    ['Linear layout', {class: CCLinearLayoutComponent, type: 'extended'}],
-    ['Card', {class: 'MatCard', type: 'extended'}],
-    ['Divider', {class: 'MatDivider', type: 'extended'}],
-    ['Expansion Panel', {class: 'MatExpansion', type: 'extended'}],
-    ['Grid list', {class: 'MatGridList', type: 'extended'}],
-    ['List', {class: 'MatList', type: 'extended'}],
-    ['Stepper', {class: 'MatStepper', type: 'extended'}],
-    ['Tabs', {class: 'MatTabs', type: 'extended'}],
-    ['Tree', {class: 'MatTree', type: 'extended'}],
-    ['Button', {class: CCButtonComponent, type: 'simple'}],
-    ['Button toggle', {class: 'MatButtonToggle', type: 'simple'}],
-    ['Chips', {class: 'MatChips', type: 'simple'}],
-    ['Icon', {class: 'MatIcon', type: 'simple'}],
-    ['Progress spinner', {class: 'MatProgressSpinner', type: 'simple'}],
-    ['Progress bar', {class: 'MatProgressBar', type: 'simple'}],
-    ['Paginator', {class: 'MatPaginator', type: 'simple'}],
-    ['Sort header', {class: 'MatSort', type: 'simple'}],
-    ['Table', {class: 'MatTable', type: 'extended'}],
-  ]);
-
+  componentLinkList: Map<string, any> = components;
 
   public root = new ExtendedModelClass(CCLinearLayoutComponent, 0, 'Linear layout', 0);
   public rootViewContainerRef: ViewContainerRef;
   public resolver: ComponentFactoryResolver;
 
   public componentsList = new Map<number, ComponentClass>([[0, this.root]]);
-  public dropZonesIdArray: string[] = [];
-  public components$ = new BehaviorSubject(this.componentsList);
+  public dropZoneIdPrefix = 'cdk-drop-list-';
+  public dropZonesIdArray: string[] = [this.dropZoneIdPrefix + '0'];
+  public components$ = new Subject();
   public deletedComponentsList = new Map<number, Map<number, ComponentClass>>();
 
   public projectName = 'project';
@@ -90,16 +56,16 @@ export class ComponentsStorageService {
   addComponent(data, id, style?) {
     const parentComponent = this.componentsList.get(id) as ExtendedModelClass;
     let newComponent;
-    newComponent = data.componentType === 'simple'
-      ? new SimpleModelClass(
+    if (data.componentType === 'simple') {
+      newComponent = new SimpleModelClass(
         data.componentClass,
         this.idCounter,
         data.componentName,
         parentComponent.level + 1,
-        parentComponent,
-        style,
-      )
-      : new ExtendedModelClass(
+        parentComponent, style
+      );
+    } else {
+      newComponent = new ExtendedModelClass(
         data.componentClass,
         this.idCounter,
         data.componentName,
@@ -107,6 +73,8 @@ export class ComponentsStorageService {
         parentComponent,
         style,
       );
+      this.addDropZoneId(this.idCounter);
+    }
     this.componentsList.set(this.idCounter, newComponent);
     this.components$.next(this.componentsList);
     parentComponent.subComponentsList.set(newComponent.id, newComponent);
@@ -123,6 +91,7 @@ export class ComponentsStorageService {
 
     parentComponent.order = parentComponent.order.filter(id => id !== targetComponent.id);
     parentComponent.subComponentsList.delete(targetComponent.id);
+    this.removeDropZoneId(targetComponent.id);
 
     const deleteComponentModel = (component) => {
       nestedDeletedCompList.set(component.id, component);
@@ -132,6 +101,7 @@ export class ComponentsStorageService {
         component.subComponentsList.forEach(subComponent => {
           deleteComponentModel(subComponent);
         });
+        this.removeDropZoneId(component.id);
       }
     };
     deleteComponentModel(targetComponent);
@@ -186,20 +156,15 @@ export class ComponentsStorageService {
     return Object.fromEntries(prepareComponentList);
   }
 
-  getAvailableDropZonesId() {
-
-  }
-
   addDropZoneId(id: number) {
-    const reducedId = 'cdk-drop-list-' + id;
+    const reducedId = this.dropZoneIdPrefix + id;
     if (this.dropZonesIdArray.findIndex(str => str === reducedId) === -1) {
-      this.dropZonesIdArray.push(reducedId);
+      this.dropZonesIdArray.unshift(reducedId);
     }
-    console.log(this.dropZonesIdArray);
   }
 
   removeDropZoneId(id: number) {
-    const reducedId = 'cdk-drop-list-' + id;
+    const reducedId = this.dropZoneIdPrefix + id;
     this.dropZonesIdArray = this.dropZonesIdArray.filter(str => str !== reducedId);
   }
 
@@ -207,6 +172,7 @@ export class ComponentsStorageService {
     if (!data) return false;
 
     const newComponentsList = new Map<number, ComponentClass>();
+    this.dropZonesIdArray = [];
     let idCounter = 0;
 
     (Object.values(JSON.parse(data) as ModelInterface)).forEach(value => {
@@ -239,6 +205,7 @@ export class ComponentsStorageService {
           value.style,
         );
         component.order = value.order;
+        this.addDropZoneId(value.id);
       }
       newComponentsList.set(component.id, component);
     });

@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponent} from '../../model.classes';
+import {PreviewComponent} from '../class models/preview.component';
 import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({

@@ -1,0 +1,21 @@
+<div cdSortable [sortableComponent]="branch" class="list-item">
+  <div class="tree-branch-toggle" (click)="toggle(branch.nestedSwitch)">{{toggleSymbol}}</div>
+  {{branch.name}}
+</div>
+<ng-template [ngIf]="branch.nestedSwitch">
+  <ng-template ngFor let-item [ngForOf]="branch.order">
+    <ng-template
+      [ngIf]="branch.subComponentsList.get(item).order !== undefined"
+      [ngIfThen]="extendedBranch"
+      [ngIfElse]="simpleBranch"
+    ></ng-template>
+    <ng-template #extendedBranch>
+      <ub-tree-branch [tree]="branch.subComponentsList.get(item)"></ub-tree-branch>
+    </ng-template>
+    <ng-template #simpleBranch>
+      <div cdSortable [sortableComponent]="branch.subComponentsList.get(item)" class="list-item">
+        {{branch.subComponentsList.get(item).name}}
+      </div>
+    </ng-template>
+  </ng-template>
+</ng-template>

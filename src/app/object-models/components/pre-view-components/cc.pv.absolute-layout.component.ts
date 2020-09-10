@@ -2,12 +2,12 @@ import {AfterViewInit, Component, ElementRef} from '@angular/core';
 import {PreviewComponent} from '../class models/preview.component';
 
 @Component({
-  selector: 'cc-preview-linear-layout',
+  selector: 'cc-preview-absolute-layout',
   template: `
-    <ng-container #container>Linear layout</ng-container>
+    <ng-container #container>Absolute layout</ng-container>
   `,
 })
-export class CCPVLinearLayoutComponent extends PreviewComponent implements AfterViewInit {
+export class CCPVAbsoluteLayoutComponent extends PreviewComponent implements AfterViewInit {
   blueprint = new Map<string, string>([
     ['padding', '50px'],
     ['border', 'black dotted 1px'],

@@ -1,16 +1,17 @@
-import {AfterContentInit, AfterViewInit, Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatButton} from '@angular/material/button';
 
 @Component({
-  selector: 'dialog-exchanger',
-  templateUrl: './dialog-exchanger.component.html'
+  selector: 'ub-dialog-exchanger',
+  templateUrl: './dialog-exchanger.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogExchangerComponent implements AfterViewInit {
 
   @ViewChild('downloadButton') downloadButEl: ElementRef;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.downloadButEl?.nativeElement.setAttribute(
@@ -26,5 +27,6 @@ export class DialogExchangerComponent implements AfterViewInit {
       this.data.data = loadendEvent.target.result;
     });
     reader.readAsText(event.target.files[0]);
+    this.cdr.detectChanges();
   }
 }

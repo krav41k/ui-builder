@@ -1,27 +1,27 @@
 import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   OnDestroy,
-  OnInit, Renderer2,
 } from '@angular/core';
+
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {TreeControlService} from '../shared/services/tree-control.service';
 
 @Component({
-  selector: 'app-components-tree',
+  selector: 'ub-components-tree',
   templateUrl: './components-tree.component.html',
-  styleUrls: ['./components-tree.component.scss']
+  styleUrls: ['./components-tree.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ComponentsTreeComponent implements OnInit, OnDestroy {
+export class ComponentsTreeComponent implements OnDestroy {
 
-  actualComponentList;
-
-  constructor(public componentsSS: ComponentsStorageService) {
-    this.componentsSS.components$.subscribe(value => {
-      this.actualComponentList = value;
+  constructor(
+    public componentsSS: ComponentsStorageService,
+    private cdr: ChangeDetectorRef,
+  ) {
+    this.componentsSS.components$.subscribe(() => {
+      setTimeout(() =>  this.cdr.detectChanges(), 0);
     });
   }
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.componentsSS.components$.unsubscribe();

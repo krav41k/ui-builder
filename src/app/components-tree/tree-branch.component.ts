@@ -1,37 +1,17 @@
 import {
-  AfterContentInit,
+  AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   Input,
 } from '@angular/core';
-import {ExtendedModelClass} from '../object-models/model.classes';
+
 import {TreeControlService} from '../shared/services/tree-control.service';
+import {ExtendedModelClass} from '../object-models/components/class models/extended-model.class';
 
 @Component({
-  selector: 'tree-branch',
-  template: `
-      <div cdSortable [sortableComponent]="branch" class="list-item">
-          <div class="tree-branch-toggle" (click)="toggle(branch.nestedSwitch)">{{toggleSymbol}}</div>
-          {{branch.name}}
-      </div>
-      <ng-template [ngIf]="branch.nestedSwitch">
-          <ng-template ngFor let-item [ngForOf]="branch.order">
-              <ng-template
-                      [ngIf]="branch.subComponentsList.get(item).order !== undefined"
-                      [ngIfThen]="extendedBranch"
-                      [ngIfElse]="simpleBranch"
-              ></ng-template>
-              <ng-template #extendedBranch>
-                  <tree-branch [tree]="branch.subComponentsList.get(item)"></tree-branch>
-              </ng-template>
-              <ng-template #simpleBranch>
-                  <div cdSortable [sortableComponent]="branch.subComponentsList.get(item)" class="list-item">
-                      {{branch.subComponentsList.get(item).name}}
-                  </div>
-              </ng-template>
-          </ng-template>
-      </ng-template>
-  `,
-  styleUrls: ['./components-tree.component.scss']
+  selector: 'ub-tree-branch',
+  templateUrl: './tree-branch.component.html',
+  styleUrls: ['./components-tree.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeBranchComponent implements AfterContentInit {
 
@@ -45,7 +25,7 @@ export class TreeBranchComponent implements AfterContentInit {
     this.branch = tree;
   }
 
-  constructor(private treeControlService: TreeControlService) {}
+  constructor(private treeControlService: TreeControlService, private cdr: ChangeDetectorRef) {}
 
   ngAfterContentInit(): void {
     this.toggle(!this.branch.nestedSwitch);
@@ -59,6 +39,7 @@ export class TreeBranchComponent implements AfterContentInit {
       this.branch.nestedSwitch = true;
       this.toggleSymbol = '-';
     }
+    this.cdr.detectChanges();
   }
 }
 

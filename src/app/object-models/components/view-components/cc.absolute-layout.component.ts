@@ -10,7 +10,7 @@ import {ComponentsStorageService} from '../../../shared/services/components-stor
 import {ExtendedComponent} from '../class models/extended.component';
 
 @Component({
-  selector: 'cc-linear-layout',
+  selector: 'cc-absolute-layout',
   template: `
     <div
       [id]="this.componentsSS.dropZoneIdPrefix + selfComponent.id"
@@ -18,7 +18,6 @@ import {ExtendedComponent} from '../class models/extended.component';
       [cdkDragDisabled]="!selfComponent.parent"
       cdkDropList
       [cdkDropListConnectedTo]="componentsSS.dropZonesIdArray"
-      cdkDropListOrientation="vertical"
       [cdkDropListData]="selfComponent"
       (cdkDropListDropped)="extendedDrop($event)"
       #container>
@@ -28,19 +27,16 @@ import {ExtendedComponent} from '../class models/extended.component';
   `,
   styleUrls: ['./style.scss']
 })
-export class CCLinearLayoutComponent extends ExtendedComponent {
+export class CCAbsoluteLayoutComponent extends ExtendedComponent {
 
   blueprint = new Map<string, string>([
     ['width', '100%'],
     ['height', '100%'],
-    ['backgroundColor', 'white'],
   ]);
   secondaryBlueprint = new Map<string, string>([
     ['width', '100%'],
     ['height', '100%'],
-    ['backgroundColor', 'white'],
-    ['display', 'flex'],
-    ['flexDirection', 'column']
+    ['backgroundColor', 'white']
   ]);
 
   constructor(
@@ -54,12 +50,23 @@ export class CCLinearLayoutComponent extends ExtendedComponent {
   extendedDrop(event: CdkDragDrop<any>) {
     if (event.item.data) {
       const droppedCompRef = event.item.data.componentRef.instance;
+      const pointer = droppedCompRef.pointer;
+      const componentBoundingClientRect = droppedCompRef.el.nativeElement.getBoundingClientRect();
+
+      const positionOffset = {
+        y: droppedCompRef.startPointer.y - componentBoundingClientRect.y,
+        x: droppedCompRef.startPointer.x - componentBoundingClientRect.x
+      };
 
       this.drop(event);
 
-      droppedCompRef.processProperty('main', 'position', 'static');
-      droppedCompRef.processProperty('main', 'top', '0');
-      droppedCompRef.processProperty('main', 'left', '0');
+      const containerBoundingClientRect = this.el.nativeElement.getBoundingClientRect();
+      const top = pointer.y - containerBoundingClientRect.y - positionOffset.y;
+      const left = pointer.x - containerBoundingClientRect.x - positionOffset.x;
+
+      droppedCompRef.processProperty('main', 'position', 'relative');
+      droppedCompRef.processProperty('main', 'top', Math.round(top) + 'px');
+      droppedCompRef.processProperty('main', 'left', Math.round(left) + 'px');
     }
   }
 }

@@ -1,6 +1,7 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
-import {ExtendedModelClass, ComponentClass} from '../../object-models/model.classes';
 import {ComponentsStorageService} from './components-storage.service';
+import {ComponentClass} from '../../object-models/components/class models/model.interface';
+import {ExtendedModelClass} from '../../object-models/components/class models/extended-model.class';
 
 
 @Injectable()

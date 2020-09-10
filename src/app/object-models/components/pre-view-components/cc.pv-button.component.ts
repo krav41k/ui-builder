@@ -1,14 +1,10 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   Component,
-  ContentChild,
   ElementRef,
-  HostListener,
   ViewChild,
-  ViewContainerRef
 } from '@angular/core';
-import {PreviewComponent, SimpleComponent} from '../../model.classes';
+import {PreviewComponent} from '../class models/preview.component';
 import {MatButton} from '@angular/material/button';
 
 @Component({

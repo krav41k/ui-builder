@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponent} from '../../model.classes';
+import {PreviewComponent} from '../class models/preview.component';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 @Component({

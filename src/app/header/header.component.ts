@@ -1,12 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {ComponentsStorageService} from '../shared/services/components-storage.service';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+
+import {ComponentsStorageService} from '../shared/services/components-storage.service';
 import {DialogExchangerComponent} from '../dialog-exchanger/dialog-exchanger.component';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnInit {
 

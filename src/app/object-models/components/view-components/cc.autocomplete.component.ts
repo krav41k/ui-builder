@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {SimpleComponent} from '../../model.classes';
-import {ViewControlService} from '../../../shared/services/view-control.service';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {SimpleComponent} from '../class models/simple.component';
 
 @Component({
   selector: 'cc-autocomplete',

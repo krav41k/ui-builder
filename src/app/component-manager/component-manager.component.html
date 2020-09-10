@@ -19,16 +19,16 @@
 
     <mat-divider></mat-divider>
 
-    <mat-accordion *ngIf="selectedComponent !== undefined">
+    <mat-accordion *ngIf="selectedComponent">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
             <mat-panel-title>Layout</mat-panel-title>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let item of layoutPropertiesList | keyvalue" class="property-applier-kit">
+        <div *ngFor="let item of selectedComponent.layoutPropertiesList | keyvalue" class="property-applier-kit">
 
-          <flexible-input [label]="item.value.name" [data]="item.value"></flexible-input>
+          <ub-flexible-input [label]="item.value.name" [data]="item.value"></ub-flexible-input>
 
           <div *ngIf="item.value.value !== item.value.actualValue" class="buttons-kit">
             <button mat-icon-button (click)="applyInput(item.value, 'main')">
@@ -41,16 +41,38 @@
         </div>
       </mat-expansion-panel>
 
-      <ng-template [ngIf]="scIsSimple">
+      <ng-template [ngIf]="scIsSimple" [ngIfElse]="containerPropertyControl">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Component properties
             </mat-panel-title>
           </mat-expansion-panel-header>
+          <div *ngFor="let item of selectedComponent.componentPropertiesList | keyvalue" class="property-applier-kit">
+
+            <ub-flexible-input [label]="item.value.name" [data]="item.value"></ub-flexible-input>
+
+            <div *ngIf="item.value.value !== item.value.actualValue" class="buttons-kit">
+              <button mat-icon-button (click)="applyInput(item.value, 'secondary')">
+                <mat-icon>done</mat-icon>
+              </button>
+              <button mat-icon-button (click)="cancelInput(item.value)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </ng-template>
+      <ng-template #containerPropertyControl>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Container properties
+            </mat-panel-title>
+          </mat-expansion-panel-header>
           <div *ngFor="let item of componentPropertiesList | keyvalue" class="property-applier-kit">
 
-            <flexible-input [label]="item.value.name" [data]="item.value"></flexible-input>
+            <ub-flexible-input [label]="item.value.name" [data]="item.value"></ub-flexible-input>
 
             <div *ngIf="item.value.value !== item.value.actualValue" class="buttons-kit">
               <button mat-icon-button (click)="applyInput(item.value, 'secondary')">
@@ -74,12 +96,12 @@
           <div class="layout-selection">
             <mat-button-toggle-group #propertyGroup="matButtonToggleGroup" name="layoutSelect">
               <mat-button-toggle value="main">Layout</mat-button-toggle>
-              <mat-button-toggle [disabled]="!scIsSimple" value="secondary">Component</mat-button-toggle>
+              <mat-button-toggle value="child">Component</mat-button-toggle>
             </mat-button-toggle-group>
             <button
               mat-icon-button
-              [disabled]="!(propertyGroup.value !== undefined && selectedProperty.value !== '')"
-              (click)="processProperty(propertyGroup.value, selectedProperty.value, propertyValue.value)">
+              [disabled]="!(propertyGroup.value && selectedProperty.value !== '')"
+              (click)="selectedComponent.componentRef.instance.processProperty(propertyGroup.value, selectedProperty.value, propertyValue.value)">
               <mat-icon>done</mat-icon>
             </button>
           </div>
@@ -87,7 +109,7 @@
             <mat-label>Property</mat-label>
             <input #selectedProperty="matInput" matInput type="text" placeholder="property" [matAutocomplete]="autoPropertyGroup" (input)="onInput($event, allPropertiesList)" (focus)="onFocus($event, allPropertiesList)">
             <mat-autocomplete #autoPropertyGroup="matAutocomplete">
-              <mat-option *ngFor="let property of filteredPropertiesObservable | async" [value]="property">
+              <mat-option *ngFor="let property of filteredProperties$ | async" [value]="property">
                 {{property}}
               </mat-option>
             </mat-autocomplete>
@@ -105,15 +127,15 @@
             Angular Material component properties
           </mat-panel-title>
         </mat-expansion-panel-header>
-          <mat-accordion  *ngIf="content !== undefined">
+          <mat-accordion  *ngIf="content">
             <mat-expansion-panel class="insert-form-field">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   {{content.operationName}}
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <flexible-input *ngFor="let item of content.requiredFields" [label]="item.name" [data]="item" class="insert-form-field"></flexible-input>
-              <button mat-stroked-button class="width100" (click)="addContent()">ADD</button>
+              <ub-flexible-input *ngFor="let item of content.requiredFields" [label]="item.name" [data]="item" class="insert-form-field"></ub-flexible-input>
+              <button mat-stroked-button [style.width]="'100%'" (click)="addContent()">ADD</button>
 
               <mat-accordion *ngFor="let item of content.value; index as i">
                 <mat-expansion-panel class="insert-form-field">
@@ -122,12 +144,12 @@
                       {{content.prefix + i}}
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <flexible-input *ngFor="let field of getKeys(item)" [label]="field" [data]="item" [key]="field" [inputType]="'string'" class="insert-form-field"></flexible-input>
+                  <ub-flexible-input *ngFor="let field of item | keyvalue" [label]="field.key" [data]="item" [key]="field.key" [inputType]="'string'" class="insert-form-field"></ub-flexible-input>
                 </mat-expansion-panel>
               </mat-accordion>
             </mat-expansion-panel>
           </mat-accordion>
-        <flexible-input *ngFor="let item of selectedComponent.flexComponentData | keyvalue" [label]="item.key" [data]="item.value" class="property-applier-kit"></flexible-input>
+        <ub-flexible-input *ngFor="let item of selectedComponent.flexComponentData | keyvalue" [label]="item.key" [data]="item.value" class="property-applier-kit"></ub-flexible-input>
       </mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -136,8 +158,8 @@
             <mat-panel-title>Angular Material special properties</mat-panel-title>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let item of selectedComponent.angularMaterialData | keyvalue ;index as i" class="property-applier-kit">
-          <flexible-input [label]="item.key" [data]="item.value" class="width100"></flexible-input>
+        <div *ngFor="let item of selectedComponent.angularMaterialData | keyvalue; index as i" class="property-applier-kit">
+          <ub-flexible-input [label]="item.key" [data]="item.value" [style.width]="'100%'"></ub-flexible-input>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

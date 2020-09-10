@@ -5,7 +5,6 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  //background: #e0e0e0;
   background: white;
   overflow: hidden;
 }
@@ -45,13 +44,8 @@ mat-panel-title {
 }
 
 mat-form-field {
-
   margin-top: 5px;
   margin-bottom: 5px;
-
-  &::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
 }
 
 .property-applier-kit {
@@ -99,8 +93,4 @@ mat-form-field {
   button {
     margin-bottom: 10px;
   }
-}
-
-.width100 {
-  width: 100%;
 }

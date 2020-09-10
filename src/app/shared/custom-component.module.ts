@@ -1,4 +1,7 @@
 import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+
 import {CCLinearLayoutComponent} from '../object-models/components/view-components/cc.linear-layout.component';
 import {DraggableDirective} from './directives/draggable.directive';
 import {DraggableHelperDirective} from './directives/draggable-helper.directive';
@@ -7,15 +10,14 @@ import {CCButtonComponent} from '../object-models/components/view-components/cc.
 import {CCPVLinearLayoutComponent} from '../object-models/components/pre-view-components/cc.pv-linear-layout.component';
 import {MaterialModule} from './material.module';
 import {CCPVButtonComponent} from '../object-models/components/pre-view-components/cc.pv-button.component';
-import {MatDirectiveApplierDirective} from './directives/mat-directive-applier.directive';
-import {CommonModule} from '@angular/common';
+
 import {CCAutocompleteComponent} from '../object-models/components/view-components/cc.autocomplete.component';
 import {CCPVAutocompleteComponent} from '../object-models/components/pre-view-components/cc.pv.autocomplete.component';
 import {CCCheckboxComponent} from '../object-models/components/view-components/cc.checkbox.component';
 import {CCPVCheckboxComponent} from '../object-models/components/pre-view-components/cc.pv.checkbox.component';
 import {CCFormFieldComponent} from '../object-models/components/view-components/cc.form-field.component';
 import {CCPVFormFieldComponent} from '../object-models/components/pre-view-components/cc.pv.form-field.component';
-import {FormsModule} from '@angular/forms';
+
 import {CCInputComponent} from '../object-models/components/view-components/cc.input.component';
 import {CCPVInputComponent} from '../object-models/components/pre-view-components/cc.pv.input.component';
 import {CCRadioButtonComponent} from '../object-models/components/view-components/cc.radio-button.component';
@@ -24,8 +26,11 @@ import {FlexibleInputComponent} from '../component-manager/flexible-input/flexib
 import {CCSlideToggleComponent} from '../object-models/components/view-components/cc.slide-toggle.component';
 import {CCPVSlideToggleComponent} from '../object-models/components/pre-view-components/cc.pv.slide-toggle.component';
 import {DialogExchangerComponent} from '../dialog-exchanger/dialog-exchanger.component';
-import {ExtendedComponent, SimpleComponent} from '../object-models/model.classes';
 import {CapacityComponent} from '../capacity/capacity.component';
+import {CCAbsoluteLayoutComponent} from '../object-models/components/view-components/cc.absolute-layout.component';
+import {CCPVAbsoluteLayoutComponent} from '../object-models/components/pre-view-components/cc.pv.absolute-layout.component';
+import {SimpleComponent} from '../object-models/components/class models/simple.component';
+import {ExtendedComponent} from '../object-models/components/class models/extended.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,7 @@ import {CapacityComponent} from '../capacity/capacity.component';
     CCInputComponent,
     CCRadioButtonComponent,
     CCSlideToggleComponent,
+    CCAbsoluteLayoutComponent,
 
     CCPVLinearLayoutComponent,
     CCPVButtonComponent,
@@ -52,22 +58,21 @@ import {CapacityComponent} from '../capacity/capacity.component';
     CCPVInputComponent,
     CCPVRadioButtonComponent,
     CCPVSlideToggleComponent,
+    CCPVAbsoluteLayoutComponent,
 
     DraggableDirective,
     DraggableHelperDirective,
     CDSortableDirective,
-    MatDirectiveApplierDirective,
   ],
   imports: [
     MaterialModule,
     CommonModule,
-    FormsModule,
+    FormsModule
   ],
   exports: [
     DraggableDirective,
     DraggableHelperDirective,
     CDSortableDirective,
-    MatDirectiveApplierDirective,
     FlexibleInputComponent,
     CapacityComponent,
   ],
