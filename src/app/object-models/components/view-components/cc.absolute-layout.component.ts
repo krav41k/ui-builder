@@ -15,6 +15,7 @@ import {ExtendedComponent} from '../class models/extended.component';
     <div
       [id]="this.componentsSS.dropZoneIdPrefix + selfComponent.id"
       cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
       [cdkDragDisabled]="!selfComponent.parent"
       cdkDropList
       [cdkDropListConnectedTo]="componentsSS.dropZonesIdArray"

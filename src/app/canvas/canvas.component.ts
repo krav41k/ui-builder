@@ -1,35 +1,27 @@
 import {
   AfterViewInit,
   Component,
-  ComponentFactoryResolver, Host,
+  ComponentFactoryResolver,
   HostListener,
   OnInit, Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
-import {ViewControlService} from '../shared/services/view-control.service';
 
 @Component({
-  selector: 'app-preview',
-  templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.scss']
+  selector: 'ub-canvas',
+  templateUrl: './canvas.component.html',
+  styleUrls: ['./canvas.component.scss']
 })
-export class PreviewComponent implements OnInit, AfterViewInit {
+export class CanvasComponent implements OnInit, AfterViewInit {
   @ViewChild('container', { read: ViewContainerRef }) containerRef;
-
-  @HostListener('dragenter') private onDragEnter() {
-    this.viewControlService.dragClear();
-  }
 
   constructor(
     private resolver: ComponentFactoryResolver,
-    private viewControlService: ViewControlService,
     private renderer: Renderer2,
     private componentsSS: ComponentsStorageService,
-  ) {
-    this.viewControlService.renderer = renderer;
-  }
+  ) {}
 
   ngOnInit(): void {}
 

@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 
 import {ComponentsStorageService} from '../shared/services/components-storage.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'ub-components-tree',
@@ -14,16 +15,18 @@ import {ComponentsStorageService} from '../shared/services/components-storage.se
 })
 export class ComponentsTreeComponent implements OnDestroy {
 
+  componentsUpdateSub: Subscription;
+
   constructor(
     public componentsSS: ComponentsStorageService,
     private cdr: ChangeDetectorRef,
   ) {
-    this.componentsSS.components$.subscribe(() => {
+    this.componentsUpdateSub = this.componentsSS.components$.subscribe(() => {
       setTimeout(() =>  this.cdr.detectChanges(), 0);
     });
   }
 
   ngOnDestroy(): void {
-    this.componentsSS.components$.unsubscribe();
+    this.componentsUpdateSub.unsubscribe();
   }
 }

@@ -1,12 +1,18 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
+
 import {MatSnackBar} from '@angular/material/snack-bar';
+
+import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {SimpleComponent} from '../class models/simple.component';
 
 @Component({
   selector: 'cc-checkbox',
   template: `
-    <div draggable="true">
+    <div
+      cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
+      [cdkDragData]="selfComponent">
+
       <mat-checkbox
         (click)="openSnackBar()"
         [matBadge]="this.selfComponent.angularMaterialData.get('badgeMessage').value"
@@ -32,16 +38,18 @@ import {SimpleComponent} from '../class models/simple.component';
         [color]="selfComponent.flexComponentData.get('color').value"
         [labelPosition]="selfComponent.flexComponentData.get('labelPosition').value"
         (change)="selfComponent.flexComponentData.get('checked').value = $event.checked"
-        #coveredComponent
-      ></mat-checkbox>
+        #coveredComponent>
+        <ub-capacity
+          [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+          [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+        ></ub-capacity>
+      </mat-checkbox>
     </div>
   `
 })
 export class CCCheckboxComponent  extends SimpleComponent implements OnInit {
   blueprint = new Map<string, string>([]);
-  secondaryBlueprint = new Map<string, string>([
-    // ['backgroundColor', 'red']
-  ]);
+  secondaryBlueprint = new Map<string, string>([]);
 
   constructor(
     componentsStorageService: ComponentsStorageService,
@@ -59,6 +67,8 @@ export class CCCheckboxComponent  extends SimpleComponent implements OnInit {
         ['checked', {value: false, inputType: 'boolean'}],
         ['color', {value: 'primary', inputType: 'select', availableValues: ['primary', 'accent', 'warn']}],
         ['labelPosition', {value: 'before', inputType: 'select', availableValues: ['labelPosition', 'after']}],
+        ['capacityType', {value: 'text', inputType: 'select', availableValues: ['text', 'icon']}],
+        ['capacityData', {value: 'slide toggle', inputType: 'string'}],
       ]);
     }
   }

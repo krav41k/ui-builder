@@ -11,7 +11,7 @@ export class DialogExchangerComponent implements AfterViewInit {
 
   @ViewChild('downloadButton') downloadButEl: ElementRef;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data, private cdr: ChangeDetectorRef) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.downloadButEl?.nativeElement.setAttribute(
@@ -25,8 +25,8 @@ export class DialogExchangerComponent implements AfterViewInit {
     const reader = new FileReader();
     reader.addEventListener('loadend', (loadendEvent) => {
       this.data.data = loadendEvent.target.result;
+      this.cdr.detectChanges();
     });
     reader.readAsText(event.target.files[0]);
-    this.cdr.detectChanges();
   }
 }

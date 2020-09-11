@@ -4,7 +4,6 @@ import {
   Input,
 } from '@angular/core';
 
-import {TreeControlService} from '../shared/services/tree-control.service';
 import {ExtendedModelClass} from '../object-models/components/class models/extended-model.class';
 
 @Component({
@@ -16,7 +15,7 @@ import {ExtendedModelClass} from '../object-models/components/class models/exten
 export class TreeBranchComponent implements AfterContentInit {
 
   branch: ExtendedModelClass;
-  toggleSymbol = '-';
+  toggleSymbol: '+'|'-' = '-';
 
   @Input() set tree(tree: ExtendedModelClass) {
     tree.subComponentsList.forEach(item => {
@@ -25,7 +24,7 @@ export class TreeBranchComponent implements AfterContentInit {
     this.branch = tree;
   }
 
-  constructor(private treeControlService: TreeControlService, private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterContentInit(): void {
     this.toggle(!this.branch.nestedSwitch);

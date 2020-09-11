@@ -135,7 +135,7 @@ export class ComponentsStorageService {
     }
   }
 
-  public getProjectJSON() {
+  public getProjectJSON(): Object {
     const prepareComponentList = new Map<number, any>();
     this.componentsList.forEach((value, key) => {
       const obj: any  = {

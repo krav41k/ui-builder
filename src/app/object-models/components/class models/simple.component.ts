@@ -7,6 +7,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {PreviewComponent} from './preview.component';
 import {SimpleModelClass} from './simple-model.class';
+import {CdkDragMove} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'ub-simple-component',

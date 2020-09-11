@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 * {
   user-select: none;
 }
@@ -27,13 +29,14 @@ mat-card {
   height: 100%;
   flex: 1;
   overflow: auto;
+  @include mat-elevation(5);
 }
 
 .palette-components-list {
   height: 100%;
   flex: 1.2;
   overflow: auto;
-  box-shadow: inset 1px 0px 10px rgba(0, 0, 0, .3), inset -1px 0px 10px rgba(0, 0, 0, .01);
+  @include mat-elevation(1);
 }
 
 .palette-components-list mat-list-item {
@@ -60,8 +63,6 @@ mat-list {
   position: absolute;
   z-index: 10;
   pointer-events: none;
-  //min-width: max-content;
-  //min-height: max-content;
 }
 
 .title {

@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
+import {Subscription} from 'rxjs';
 
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
@@ -11,11 +12,14 @@ import {DialogExchangerComponent} from '../dialog-exchanger/dialog-exchanger.com
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnDestroy {
+
+  subscriptions: Subscription[] = [];
 
   constructor(public componentsSS: ComponentsStorageService, public dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe);
   }
 
   exportProject() {
@@ -24,11 +28,11 @@ export class HeaderComponent implements OnInit {
   }
 
   importProject() {
-    this.openDialog('import').afterClosed().subscribe(result => {
+    this.subscriptions.push(this.openDialog('import').afterClosed().subscribe(result => {
       if (result) {
         this.componentsSS.parseProjectJSON(result);
       }
-    });
+    }));
   }
 
   openDialog(procedure, data?, projectName?): MatDialogRef<any> {

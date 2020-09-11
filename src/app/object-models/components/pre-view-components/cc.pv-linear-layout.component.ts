@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ElementRef} from '@angular/core';
+
 import {PreviewComponent} from '../class models/preview.component';
 
 @Component({
@@ -15,9 +16,5 @@ export class CCPVLinearLayoutComponent extends PreviewComponent implements After
 
   constructor( public el: ElementRef ) {
     super();
-  }
-
-  ngAfterViewInit() {
-    this.applyStyle(this.el, this.blueprint);
   }
 }

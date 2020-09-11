@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {PreviewComponent} from '../class models/preview.component';
+
 import {MatFormField} from '@angular/material/form-field';
+
+import {PreviewComponent} from '../class models/preview.component';
 
 @Component({
   selector: 'cc-preview-form-field',
@@ -13,8 +15,4 @@ import {MatFormField} from '@angular/material/form-field';
 export class CCPVFormFieldComponent extends PreviewComponent implements AfterViewInit {
   @ViewChild(MatFormField, { read: ElementRef }) el;
   blueprint = new Map<string, string>([]);
-
-  ngAfterViewInit(): void {
-    this.applyStyle(this.el, this.blueprint);
-  }
 }

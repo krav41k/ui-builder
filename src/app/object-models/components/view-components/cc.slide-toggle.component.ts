@@ -1,12 +1,17 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
+
 import {MatSnackBar} from '@angular/material/snack-bar';
+
+import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {SimpleComponent} from '../class models/simple.component';
 
 @Component({
   selector: 'cc-slide-toggle',
   template: `
-    <div draggable="true">
+    <div
+      cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
+      [cdkDragData]="selfComponent">
       <mat-slide-toggle
         (click)="openSnackBar()"
         [matBadge]="this.selfComponent.angularMaterialData.get('badgeMessage').value"

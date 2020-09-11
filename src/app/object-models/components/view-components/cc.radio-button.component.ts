@@ -6,7 +6,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'cc-radio-button',
   template: `
-    <div draggable="true">
+    <div
+      cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
+      [cdkDragData]="selfComponent">
       <mat-radio-group
         (click)="openSnackBar()"
         [matBadge]="this.selfComponent.angularMaterialData.get('badgeMessage').value"

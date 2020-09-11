@@ -6,7 +6,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'cc-input',
   template: `
-    <div draggable="true">
+    <div
+      cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
+      [cdkDragData]="selfComponent">
       <mat-form-field
         [appearance]="selfComponent.flexComponentData.get('appearance').value"
         [color]="selfComponent.flexComponentData.get('color').value"

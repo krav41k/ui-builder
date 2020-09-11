@@ -1,48 +1,45 @@
-import {CCAutocompleteComponent} from '../../object-models/components/view-components/cc.autocomplete.component';
-import {CCPVAutocompleteComponent} from '../../object-models/components/pre-view-components/cc.pv.autocomplete.component';
-import {CCCheckboxComponent} from '../../object-models/components/view-components/cc.checkbox.component';
-import {CCPVCheckboxComponent} from '../../object-models/components/pre-view-components/cc.pv.checkbox.component';
-import {MatDatepicker} from '@angular/material/datepicker';
-import {CCFormFieldComponent} from '../../object-models/components/view-components/cc.form-field.component';
-import {CCPVFormFieldComponent} from '../../object-models/components/pre-view-components/cc.pv.form-field.component';
-import {CCInputComponent} from '../../object-models/components/view-components/cc.input.component';
-import {CCPVInputComponent} from '../../object-models/components/pre-view-components/cc.pv.input.component';
-import {CCRadioButtonComponent} from '../../object-models/components/view-components/cc.radio-button.component';
-import {CCPVRadioButtonComponent} from '../../object-models/components/pre-view-components/cc.pv.radio-button.component';
-import {CCSlideToggleComponent} from '../../object-models/components/view-components/cc.slide-toggle.component';
-import {CCPVSlideToggleComponent} from '../../object-models/components/pre-view-components/cc.pv.slide-toggle.component';
-import {CCLinearLayoutComponent} from '../../object-models/components/view-components/cc.linear-layout.component';
-import {CCPVLinearLayoutComponent} from '../../object-models/components/pre-view-components/cc.pv-linear-layout.component';
-import {CCAbsoluteLayoutComponent} from '../../object-models/components/view-components/cc.absolute-layout.component';
-import {CCPVAbsoluteLayoutComponent} from '../../object-models/components/pre-view-components/cc.pv.absolute-layout.component';
-import {CCButtonComponent} from '../../object-models/components/view-components/cc.button.component';
-import {CCPVButtonComponent} from '../../object-models/components/pre-view-components/cc.pv-button.component';
 import {ComponentItem} from '../interfaces/component-item';
+
+import {
+  CCAbsoluteLayoutComponent,
+  CCAutocompleteComponent, CCButtonComponent,
+  CCCheckboxComponent,
+  CCFormFieldComponent,
+  CCInputComponent, CCLinearLayoutComponent, CCPVAbsoluteLayoutComponent,
+  CCPVAutocompleteComponent, CCPVButtonComponent,
+  CCPVCheckboxComponent,
+  CCPVFormFieldComponent,
+  CCPVInputComponent, CCPVLinearLayoutComponent,
+  CCPVRadioButtonComponent,
+  CCPVSlideToggleComponent,
+  CCRadioButtonComponent, CCSlideToggleComponent
+} from '../../object-models/components';
+
 
 export const componentsUnderCategories = new Map<string, ComponentItem[]>([
   ['Form Controls', [
     {title: 'Autocomplete', viewComponent: CCAutocompleteComponent, preViewComponent: CCPVAutocompleteComponent, type: 'simple'},
     {title: 'Checkbox', viewComponent: CCCheckboxComponent, preViewComponent: CCPVCheckboxComponent, type: 'simple'},
-    {title: 'Datepicker', viewComponent: MatDatepicker, preViewComponent: undefined, type: 'simple'},
+    // {title: 'Datepicker', viewComponent: MatDatepicker, preViewComponent: undefined, type: 'simple'},
     {title: 'Form field', viewComponent: CCFormFieldComponent, preViewComponent: CCPVFormFieldComponent, type: 'simple'},
     {title: 'Input', viewComponent: CCInputComponent, preViewComponent: CCPVInputComponent, type: 'simple'},
     {title: 'Radio button', viewComponent: CCRadioButtonComponent, preViewComponent: CCPVRadioButtonComponent, type: 'simple'},
-    {title: 'Select', viewComponent: 'MatSelect', preViewComponent: undefined, type: 'simple'},
-    {title: 'Slider', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Select', viewComponent: 'MatSelect', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Slider', viewComponent: 'MatSlider', preViewComponent: undefined, type: 'simple'},
     {title: 'Slide toggle', viewComponent: CCSlideToggleComponent, preViewComponent: CCPVSlideToggleComponent, type: 'simple'},
   ]],
   ['Navigation', [
-    {title: 'Menu', viewComponent: 'MatMenu', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Menu', viewComponent: 'MatMenu', preViewComponent: undefined, type: 'simple'},
     // {title: 'Sidenav', viewComponent: 'MatSidenav', preViewComponent: undefined, type: 'simple'},
     // {title: 'Toolbar', viewComponent: 'MatToolbar', preViewComponent: undefined, type: 'simple'}
   ]],
   ['Layout', [
     {title: 'Linear layout', viewComponent: CCLinearLayoutComponent, preViewComponent: CCPVLinearLayoutComponent, type: 'extended'},
     {title: 'Absolute layout', viewComponent: CCAbsoluteLayoutComponent, preViewComponent: CCPVAbsoluteLayoutComponent, type: 'extended'},
-    {title: 'Card', viewComponent: 'MatCard', preViewComponent: undefined, type: 'extended'},
-    {title: 'Divider', viewComponent: 'MatDivider', preViewComponent: undefined, type: 'extended'},
-    {title: 'Expansion Panel', viewComponent: 'MatExpansion', preViewComponent: undefined, type: 'extended'},
-    {title: 'Grid list', viewComponent: 'MatGridList', preViewComponent: undefined, type: 'extended'},
+    // {title: 'Card', viewComponent: 'MatCard', preViewComponent: undefined, type: 'extended'},
+    // {title: 'Divider', viewComponent: 'MatDivider', preViewComponent: undefined, type: 'extended'},
+    // {title: 'Expansion Panel', viewComponent: 'MatExpansion', preViewComponent: undefined, type: 'extended'},
+    // {title: 'Grid list', viewComponent: 'MatGridList', preViewComponent: undefined, type: 'extended'},
     // {title: 'List', viewComponent: 'MatList', preViewComponent: undefined, type: 'extended'},
     // {title: 'Stepper', viewComponent: 'MatStepper', preViewComponent: undefined, type: 'extended'},
     // {title: 'Tabs', viewComponent: 'MatTabs', preViewComponent: undefined, type: 'extended'},
@@ -50,12 +47,12 @@ export const componentsUnderCategories = new Map<string, ComponentItem[]>([
   ]],
   ['Buttons & Indicators', [
     {title: 'Button', viewComponent: CCButtonComponent, preViewComponent: CCPVButtonComponent, type: 'simple'},
-    {title: 'Button toggle', viewComponent: 'MatButtonToggle', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Button toggle', viewComponent: 'MatButtonToggle', preViewComponent: undefined, type: 'simple'},
     // {title: 'Badge', tag: 'MatBadge', preViewComponent: undefined, type: 'simple'},
-    {title: 'Chips', viewComponent: 'MatChips', preViewComponent: undefined, type: 'simple'},
-    {title: 'Icon', viewComponent: 'MatIcon', preViewComponent: undefined, type: 'simple'},
-    {title: 'Progress spinner', viewComponent: 'MatProgressSpinner', preViewComponent: undefined, type: 'simple'},
-    {title: 'Progress bar', viewComponent: 'MatProgressBar', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Chips', viewComponent: 'MatChips', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Icon', viewComponent: 'MatIcon', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Progress spinner', viewComponent: 'MatProgressSpinner', preViewComponent: undefined, type: 'simple'},
+    // {title: 'Progress bar', viewComponent: 'MatProgressBar', preViewComponent: undefined, type: 'simple'},
     // {title: 'Ripples', tag: 'MatRipple', preViewComponent: '', type: 'simple'}
   ]],
   // ['Popups & Modals', [
@@ -74,7 +71,7 @@ export const componentsUnderCategories = new Map<string, ComponentItem[]>([
 export const components = new Map<string, any>([
   ['Autocomplete', {class: CCAutocompleteComponent,  type: 'simple'}],
   ['Checkbox', {class: CCCheckboxComponent,  type: 'simple'}],
-  ['Datepicker', {class: MatDatepicker,  type: 'simple'}],
+  // ['Datepicker', {class: MatDatepicker,  type: 'simple'}],
   ['Form field', {class: CCFormFieldComponent, type: 'simple'}],
   ['Input', {class: CCInputComponent, type: 'simple'}],
   ['Radio button', {class: CCRadioButtonComponent, type: 'simple'}],

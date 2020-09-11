@@ -4,7 +4,6 @@ import {
 } from '@angular/core';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {CdkDragMove, CdkDragStart} from '@angular/cdk/drag-drop';
 import {SimpleComponent} from '../class models/simple.component';
 
 @Component({
@@ -36,8 +35,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -60,8 +62,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -84,8 +89,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -108,8 +116,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -132,8 +143,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -156,8 +170,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
 
         <button
@@ -180,8 +197,11 @@ import {SimpleComponent} from '../class models/simple.component';
           [matTooltip]="this.selfComponent.angularMaterialData.get('tooltipMessage').value"
           [matTooltipDisabled]="this.selfComponent.angularMaterialData.get('tooltipDisabled').value"
           [matTooltipPosition]="this.selfComponent.angularMaterialData.get('tooltipPosition').value"
-          #coveredComponent
-        >button
+          #coveredComponent>
+          <ub-capacity
+            [type]="this.selfComponent.flexComponentData.get('capacityType').value"
+            [data]="this.selfComponent.flexComponentData.get('capacityData').value"
+          ></ub-capacity>
         </button>
       </div>
   `,
@@ -203,6 +223,8 @@ export class CCButtonComponent extends SimpleComponent implements OnInit {
   ngOnInit(): void {
     if (this.selfComponent.flexComponentData === undefined) {
       this.selfComponent.flexComponentData = new Map<string, any>([
+        ['capacityType', {value: 'text', inputType: 'select', availableValues: ['text', 'icon']}],
+        ['capacityData', {value: 'button', inputType: 'string'}],
         ['matButton', {value: 'raisedButton', inputType: 'select', availableValue: [
             'button',
             'raisedButton',
@@ -211,17 +233,8 @@ export class CCButtonComponent extends SimpleComponent implements OnInit {
             'iconButton',
             'fabButton',
             'miniFabButton'
-          ]}]
+          ]}],
       ]);
-    }
-  }
-
-  onCdkDragMove(event: CdkDragMove<any>) {
-    if (this.startPointer) {
-      this.pointer = event.pointerPosition;
-    } else {
-      this.startPointer = event.pointerPosition;
-
     }
   }
 }

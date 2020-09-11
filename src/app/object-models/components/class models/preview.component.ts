@@ -1,17 +1,27 @@
-import {ElementRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef} from '@angular/core';
 
 import {propertyItems} from '../../../shared/data/property-items';
 import {PropertyItem} from '../../../shared/interfaces/property-item';
+import {Axis} from '../../../shared/classes/axis';
+import {CdkDragMove} from '@angular/cdk/drag-drop';
 
-export class PreviewComponent {
+@Component({
+  selector: 'ub-preview-component',
+  template: `<div></div>`
+})
+export class PreviewComponent implements AfterViewInit{
 
   el: ElementRef;
   childEl: ElementRef;
   blueprint;
   secondaryBlueprint;
   selfComponent: any;
-  startPointer;
-  pointer;
+  startPointer: Axis;
+  pointer: Axis;
+
+  ngAfterViewInit(): void {
+    this.applyStyle(this.el, this.blueprint);
+  }
 
   applyStyle(el: ElementRef, blueprint) {
     for (const item of blueprint) {
@@ -51,7 +61,9 @@ export class PreviewComponent {
 
   styleProcessing() {
     this.compMainStyleProcessing();
-    this.compSecondaryStyleProcessing();
+    if (this.childEl) {
+      this.compSecondaryStyleProcessing();
+    }
   }
 
   compMainStyleProcessing() {
@@ -69,6 +81,14 @@ export class PreviewComponent {
       this.selfComponent.childStyle = this.childEl.nativeElement.style.cssText;
     } else {
       this.childEl.nativeElement.style.cssText = this.selfComponent.childStyle;
+    }
+  }
+
+  onCdkDragMove(event: CdkDragMove<any>) {
+    if (this.startPointer) {
+      this.pointer = event.pointerPosition;
+    } else {
+      this.startPointer = event.pointerPosition;
     }
   }
 }

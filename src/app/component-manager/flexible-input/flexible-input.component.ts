@@ -9,8 +9,8 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 export class FlexibleInputComponent {
 
   @Input() label: string;
-  @Input() data;
-  @Input() inputType;
-  @Input() key;
+  @Input() data: any;
+  @Input() inputType: string;
+  @Input() key: string;
 
 }

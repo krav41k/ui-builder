@@ -27,7 +27,7 @@
     </div>
   </ng-template>
   <ng-template #customKeyValue>
-    <div [ngSwitch]="data.inputType === undefined ? inputType : data.inputType" style="width: 100%">
+    <div [ngSwitch]="data.inputType === undefined ? inputType : data.inputType" [style.width]="'100%'">
       <div *ngSwitchCase="'label'" class="property-group-label">
         <span>{{data[key]}}</span>
       </div>

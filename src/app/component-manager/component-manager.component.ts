@@ -16,8 +16,6 @@ import {ComponentClass} from '../object-models/components/class models/model.int
 })
 export class ComponentManagerComponent implements OnInit, OnDestroy {
 
-  // readonly object: typeof Object = Object;
-
   // sc - selected component
   visibility = true;
   selectedComponent: ComponentClass;
@@ -139,9 +137,5 @@ export class ComponentManagerComponent implements OnInit, OnDestroy {
       newEntity[item.name] = item.value;
     });
     content.value.push(newEntity);
-  }
-
-  getKeys(obj) {
-    return Object.keys(obj);
   }
 }

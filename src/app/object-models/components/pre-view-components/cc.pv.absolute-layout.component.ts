@@ -16,8 +16,4 @@ export class CCPVAbsoluteLayoutComponent extends PreviewComponent implements Aft
   constructor( public el: ElementRef ) {
     super();
   }
-
-  ngAfterViewInit() {
-    this.applyStyle(this.el, this.blueprint);
-  }
 }

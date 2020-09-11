@@ -8,7 +8,10 @@ import {ComponentsStorageService} from '../../../shared/services/components-stor
 @Component({
   selector: 'cc-preview-autocomplete',
   template: `
-    <div draggable="true">
+    <div
+      cdkDrag
+      (cdkDragMoved)="onCdkDragMove($event)"
+      [cdkDragData]="selfComponent">
       <mat-form-field
         [appearance]="selfComponent.flexComponentData.get('appearance').value"
         [color]="selfComponent.flexComponentData.get('color').value"
