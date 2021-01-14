@@ -26,6 +26,9 @@ import {PreviewComponent} from '../object-models/components/class models/preview
 import {SimpleComponent} from '../object-models/components/class models/simple.component';
 import {ExtendedComponent} from '../object-models/components/class models/extended.component';
 import {MaterialModule} from './material.module';
+import {CCDragZoneComponent} from '../object-models/components/view-components/cc.drag-zone.component';
+import {MovableDirective} from './directives/movable.directive';
+import {MovableAreaDirective} from './directives/movable-area.directive';
 
 
 @NgModule({
@@ -46,6 +49,7 @@ import {MaterialModule} from './material.module';
     CCRadioButtonComponent,
     CCSlideToggleComponent,
     CCAbsoluteLayoutComponent,
+    CCDragZoneComponent,
 
     CCPVLinearLayoutComponent,
     CCPVButtonComponent,
@@ -60,6 +64,8 @@ import {MaterialModule} from './material.module';
     DraggableDirective,
     DraggableHelperDirective,
     CDSortableDirective,
+    MovableDirective,
+    MovableAreaDirective,
   ],
   imports: [
     MaterialModule,
@@ -72,6 +78,7 @@ import {MaterialModule} from './material.module';
     CDSortableDirective,
     FlexibleInputComponent,
     CapacityComponent,
+    MovableDirective
   ],
 })
 export class CustomComponentModule {}

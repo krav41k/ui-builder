@@ -7,13 +7,15 @@ import { ComponentClass, ModelInterface } from 'src/app/object-models/components
 import { SimpleModelClass } from 'src/app/object-models/components/class models/simple-model.class';
 import { components } from '../data/components';
 import { CCLinearLayoutComponent } from 'src/app/object-models/components/view-components/cc.linear-layout.component';
+import {CCAbsoluteLayoutComponent} from '../../object-models/components';
+import {CCDragZoneComponent} from '../../object-models/components/view-components/cc.drag-zone.component';
 
 @Injectable()
 export class ComponentsStorageService {
 
   componentLinkList: Map<string, any> = components;
 
-  public root = new ExtendedModelClass(CCLinearLayoutComponent, 0, 'Linear layout', 0);
+  public root = new ExtendedModelClass(CCDragZoneComponent, 0, 'Drag zone', 0);
   public rootViewContainerRef: ViewContainerRef;
   public resolver: ComponentFactoryResolver;
 

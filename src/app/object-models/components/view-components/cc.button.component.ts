@@ -10,6 +10,7 @@ import {SimpleComponent} from '../class models/simple.component';
   selector: 'cc-button',
   template: `
     <div
+        cdMovable
         cdkDrag
         (cdkDragMoved)="onCdkDragMove($event)"
         [cdkDragData]="selfComponent"
