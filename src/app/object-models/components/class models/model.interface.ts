@@ -1,7 +1,5 @@
 import {ComponentRef} from '@angular/core';
 
-import {Subject} from 'rxjs';
-
 import {SimpleModelClass} from './simple-model.class';
 import {ExtendedModelClass} from './extended-model.class';
 

@@ -28,7 +28,6 @@ import {ExtendedComponent} from '../object-models/components/class models/extend
 import {MaterialModule} from './material.module';
 import {CCDragZoneComponent} from '../object-models/components/view-components/cc.drag-zone.component';
 import {MovableDirective} from './directives/movable.directive';
-import {MovableAreaDirective} from './directives/movable-area.directive';
 
 
 @NgModule({
@@ -65,7 +64,6 @@ import {MovableAreaDirective} from './directives/movable-area.directive';
     DraggableHelperDirective,
     CDSortableDirective,
     MovableDirective,
-    MovableAreaDirective,
   ],
   imports: [
     MaterialModule,

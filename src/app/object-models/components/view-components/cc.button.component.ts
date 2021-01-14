@@ -11,6 +11,7 @@ import {SimpleComponent} from '../class models/simple.component';
   template: `
     <div
         cdMovable
+        [cdOwnerComp]="selfRef"
         cdkDrag
         (cdkDragMoved)="onCdkDragMove($event)"
         [cdkDragData]="selfComponent"
@@ -210,8 +211,12 @@ import {SimpleComponent} from '../class models/simple.component';
 })
 export class CCButtonComponent extends SimpleComponent implements OnInit {
 
-  blueprint = new Map<string, string>([]);
+  blueprint = new Map<string, string>([
+    ['display', 'inline-block']
+  ]);
   secondaryBlueprint = new Map<string, string>([]);
+
+  selfRef: SimpleComponent;
 
   constructor(
     componentsStorageService: ComponentsStorageService,
@@ -237,5 +242,6 @@ export class CCButtonComponent extends SimpleComponent implements OnInit {
           ]}],
       ]);
     }
+    this.selfRef = this;
   }
 }

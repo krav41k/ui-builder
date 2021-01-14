@@ -6,7 +6,6 @@ import {ComponentsStorageService} from '../../../shared/services/components-stor
   selector: 'cc-drag-zone',
   template: `
     <div
-      cdMovableArea
       #container>
         <ng-container #insertPoint>
         </ng-container>
