@@ -4,6 +4,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
 import {SimpleComponent} from '../class models/simple.component';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'cc-slide-toggle',
@@ -55,9 +56,10 @@ export class CCSlideToggleComponent extends SimpleComponent implements OnInit {
   constructor(
     componentsStorageService: ComponentsStorageService,
     el: ElementRef,
+    sanitizer: DomSanitizer,
     snackBar: MatSnackBar
   ) {
-    super(componentsStorageService, el, snackBar);
+    super(componentsStorageService, el, sanitizer, snackBar);
   }
 
   ngOnInit(): void {

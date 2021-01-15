@@ -9,6 +9,8 @@ import { components } from '../data/components';
 import { CCLinearLayoutComponent } from 'src/app/object-models/components/view-components/cc.linear-layout.component';
 import {CCAbsoluteLayoutComponent} from '../../object-models/components';
 import {CCDragZoneComponent} from '../../object-models/components/view-components/cc.drag-zone.component';
+import {ExtendedComponent} from '../../object-models/components/class models/extended.component';
+import {SimpleComponent} from '../../object-models/components/class models/simple.component';
 
 @Injectable()
 export class ComponentsStorageService {
@@ -82,6 +84,11 @@ export class ComponentsStorageService {
     parentComponent.subComponentsList.set(newComponent.id, newComponent);
     parentComponent.order.push(newComponent.id);
     parentComponent.initChildrenView(newComponent, newComponent.id);
+    const parentClientRect = parentComponent.componentRef.location.nativeElement.getBoundingClientRect();
+    if (parentComponent.componentRef.instance instanceof CCDragZoneComponent) {
+      newComponent.componentRef.instance.position.x = Math.round(data.componentPosition.x - parentClientRect.left);
+      newComponent.componentRef.instance.position.y = Math.round(data.componentPosition.y - parentClientRect.top);
+    }
     this.idCounter++;
   }
 
@@ -126,6 +133,7 @@ export class ComponentsStorageService {
     this.componentsList.set(id, component);
   }
 
+  // ExtendedComponent calls method with self id(number), Components layout calls method with data
   onWedding(data: number | any) {
     typeof data === 'number' ? this.newComponentCell = data : this.newComponentData = data;
   }

@@ -4,6 +4,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 
 import {SimpleComponent} from '../class models/simple.component';
 import {ComponentsStorageService} from '../../../shared/services/components-storage.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'cc-preview-autocomplete',
@@ -38,9 +39,10 @@ export class CCFormFieldComponent extends SimpleComponent implements OnInit {
   constructor(
     componentsStorageService: ComponentsStorageService,
     el: ElementRef,
+    sanitizer: DomSanitizer,
     snackBar: MatSnackBar
   ) {
-    super(componentsStorageService, el, snackBar);
+    super(componentsStorageService, el, sanitizer, snackBar);
   }
 
   ngOnInit(): void {

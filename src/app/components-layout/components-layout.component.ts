@@ -98,7 +98,7 @@ export class ComponentsLayoutComponent implements AfterViewChecked {
   }
 
   // удаляет компонент и сообщает об этом сторедж сервису
-  @HostListener('document:pointerup') onDragEnd() {
+  @HostListener('document:pointerup', ['$event']) onDragEnd(event: PointerEvent) {
     if (this.dragging) {
       this.dragging = false;
       this.container.remove();
@@ -106,7 +106,8 @@ export class ComponentsLayoutComponent implements AfterViewChecked {
       this.componentsSS.onWedding({
         componentClass: this.selectedComponentView,
         componentType: this.selectedComponentType,
-        componentName: this.selectedComponent
+        componentName: this.selectedComponent,
+        componentPosition: { x: event.clientX, y: event.clientY}
       });
     }
   }
